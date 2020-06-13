@@ -22,16 +22,6 @@ class AboutFace
 
 
     /**
-     * returns a Token object given an id
-     * @param tokenId   the <id> of the token to retrieve.
-     * @return Token
-     */
-    static getTokenByTokenID(tokenId)
-    {
-        return TokenLayer.instance.objects.children.find(token => token.data._id == tokenId);
-    }
-
-    /**
      * returns the degrees to rotate a token
      * @param {int} dX     the value of x2 - x1
      * @param {int} dY     the value of y2 - y1
@@ -96,7 +86,7 @@ class AboutFace
         if (!game.settings.get(mod,"enable")) return;
     
         // rotate the token
-        let t = AboutFace.getTokenByTokenID(token._id);
+        let t = canvas.tokens.get(token._id);
         t.data.rotation = rotationValue;
         t.rotate({angle:rotationValue,snap:45});
         t.refresh();
