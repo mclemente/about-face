@@ -63,7 +63,6 @@ class AboutFace
             token.flags.AboutFace.set('x',token.x);
             token.flags.AboutFace.set('y',token.y);
             token.flags.AboutFace.set('facing',0);
-            
         }
     
         // current rotation
@@ -90,7 +89,7 @@ class AboutFace
         t.data.rotation = rotationValue;
         t.rotate({angle:rotationValue,snap:45});
         t.refresh();
-        t.update({rotation:rotationValue});
+        //t.update({rotation:rotationValue});
     }
 }
 
