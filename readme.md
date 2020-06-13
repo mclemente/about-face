@@ -17,7 +17,7 @@ Just move your tokens!
 
 
 ## Credit
-The original idea for this module was proposed by `@Talwin Greenwood` on the FVTT discord.
+Assistance from several Discord users, including @Forien and @Stan
 
 ## License
 This Foundry VTT module, writen by Eadorin, is licensed under a [Commons Clause License](https://commonsclause.com/).
