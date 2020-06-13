@@ -10,6 +10,9 @@ Simply use the install module screen within the FoundryVTT setup
 Just move your tokens!
 
 
+## Known Issues / Limitations
+This has only been tested with square grids (not hexes) and uses 45 degree snapping for tokens.
+
 ## Troubleshooting
 
 #### How do I keep certain tokens from spinning?
