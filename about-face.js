@@ -194,9 +194,9 @@ export class AboutFace
 
     static hoverTokenEventHandler(token,opt) {
 
-        if (game.user.id != token.owner) { 
-            return;
-        };
+        // if (game.user.id != token.owner) { 
+        //     return;
+        // };
 
         if (useIndicator && opt) {
             
