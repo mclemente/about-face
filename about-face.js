@@ -37,7 +37,21 @@ Hooks.once("init", () => {
         choices: {
             "0" : "about-face.options.indicator.choices.0",
             "1" : "about-face.options.indicator.choices.1",
-            "2" : "about-face.options.indicator.choices.2",
+            "2" : "about-face.options.indicator.choices.2"
+        }
+    });
+
+    game.settings.register(mod,'flip-or-rotate', {
+        name: "about-face.options.flip-or-rotate.name",
+        hint: "about-face.options.flip-or-rotate.hint",
+        scope: "world",
+        config: true,
+        default: "rotate",
+        type: String,
+        choices: {
+            "rotate" : "about-face.options.flip-or-rotate.choices.rotate",
+            "flip-v" : "about-face.options.flip-or-rotate.choices.flip-v",
+            "flip-h" : "about-face.options.flip-or-rotate.choices.flip-h"
         }
     });
 
@@ -53,6 +67,7 @@ export class AboutFace
 {
     static ready() {
         
+        TokenIndicators = [];
         for ( let [i, token] of canvas.tokens.placeables.entries()){
             if (!(token instanceof Token)) { continue; }
             //if (token.owner) {
@@ -92,11 +107,17 @@ export class AboutFace
             }
             
         });
-        console.log("TI",tokenIndicators);
+
         tokenIndicators.forEach( ti => {
             let dir = AboutFace.getRotationDegrees(null, null, direction);
             if (!ti) return; // addresses a weird issue where a token might be removed.
+
+            if ( game.settings.get(mod,'flip-or-rotate') == 'flip') {
+                // mySprite.scale.y = -1
+            } 
+            
             token_rotation = ti.rotate(dir);
+            
             ti.token.update({rotate:token_rotation});
         });
     }
@@ -176,9 +197,14 @@ export class AboutFace
         let t = canvas.tokens.get(token._id);
 
         if (useIndicator) {
+            if (!rotationValue) { return;}
             let ti = (TokenIndicators.filter(ti => ti.token.id == token._id))[0];
             ti.show();
-            ti.rotate(rotationValue);
+            try {
+                ti.rotate(rotationValue);
+            } catch (e) {
+                console.log('sprite not set for some reason..still creating it?');
+            }
             if (useIndicator == "1") { ti.hide();}
 
         }
@@ -200,6 +226,7 @@ export class AboutFace
 
         if (useIndicator && opt) {
             
+            if (!token.indicator) { return;}
             // show the indicator
             token.indicator.show();
             //token.flags.AboutFace.set('show',true);
@@ -317,8 +344,9 @@ onkeydown = onkeyup = function (e) {
 
 
 
-
-Hooks.on("ready",AboutFace.ready);
+Hooks.on("canvasReady",AboutFace.ready);
+//Hooks.on("ready",AboutFace.ready);
+// Hooks.on("updateScene",AboutFace.ready);
 Hooks.on("updateToken",AboutFace.updateTokenEventHandler);
 Hooks.on("controlToken",AboutFace.controlTokenEventHandler);
 
