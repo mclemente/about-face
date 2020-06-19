@@ -20,7 +20,7 @@ Two options are available in the game settings module config. Otherwise, with ev
 - Have experienced an issue where locking a token makes it unusable until refresh
 - Direction indicators are created using the other players' colors. Because of the way drawing works, players will need to refresh after connecting in order to see all the colors *BUG
 - Unsure if 'facing' state carries from one session to another.
-- May need to refresh if redrawing the scene or moving tokens to a new scene.
+- May need to refresh if redrawing the scene or moving tokens to a new scene. *should be fixed
 
 ## Troubleshooting
 - Refresh Foundry VTT webpage

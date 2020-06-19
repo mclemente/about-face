@@ -8,6 +8,7 @@ const mod = 'about-face';
 const modDisplayName = "About Face"
 import { TokenIndicator } from './src/token-indicator.js';
 
+
 CONFIG.debug.hooks=true;
 
 // ---- a few var inits ----
@@ -38,6 +39,18 @@ Hooks.once("init", () => {
             "0" : "about-face.options.indicator.choices.0",
             "1" : "about-face.options.indicator.choices.1",
             "2" : "about-face.options.indicator.choices.2"
+        }
+    });
+    game.settings.register(mod,'indicator-sprite', {
+        name: "about-face.options.indicator-sprite.name",
+        hint: "about-face.options.indicator-sprite.hint",
+        scope: "world",
+        config: true,
+        default: "normal",
+        type: String,
+        choices: {
+            "normal" : "about-face.options.indicator-sprite.choices.normal",
+            "large-triangle" : "about-face.options.indicator-sprite.choices.large",
         }
     });
 
@@ -76,7 +89,8 @@ export class AboutFace
                 // }
                 
                 let ti = TokenIndicator.init(token);
-                ti.create();
+
+                ti.create(game.settings.get(mod,"indicator-sprite"));
                 if (!useIndicator || useIndicator == "1") {
                     ti.hide();
                 }
@@ -97,9 +111,8 @@ export class AboutFace
         if (!useIndicator) { return }
         let tokenIndicators = [];
 
-        console.log("actives",activeTokens);
         activeTokens.forEach(token => {
-            console.log(token);
+
             tokenIndicators.push((TokenIndicators.filter(ti => ti.token.id == token.id))[0]);
             if (token.data.flags.AboutFace) {
                 token.data.flags.AboutFace.set('facing',AboutFace.getRotationDegrees(direction));
@@ -112,9 +125,7 @@ export class AboutFace
             let dir = AboutFace.getRotationDegrees(null, null, direction);
             if (!ti) return; // addresses a weird issue where a token might be removed.
 
-            if ( game.settings.get(mod,'flip-or-rotate') == 'flip') {
-                // mySprite.scale.y = -1
-            } 
+  
             
             token_rotation = ti.rotate(dir);
             
@@ -196,8 +207,9 @@ export class AboutFace
 
         let t = canvas.tokens.get(token._id);
 
+        // show indicators based on appearance
         if (useIndicator) {
-            if (!rotationValue) { return;}
+            if (typeof rotationValue === "undefined" || rotationValue == null) { return;}
             let ti = (TokenIndicators.filter(ti => ti.token.id == token._id))[0];
             ti.show();
             try {
@@ -208,7 +220,38 @@ export class AboutFace
             if (useIndicator == "1") { ti.hide();}
 
         }
+
+        // enable ability to flip the token
+        if (game.settings.get(mod,'flip-or-rotate') !== "rotate") {
+            if (game.settings.get(mod,'flip-or-rotate') == "flip-v") {
+                if (rotationValue == 0) {
+                    t.scale.y = 1;
+                    t.pivot.y = t.height;
+                } else if (rotationValue == 180) {
+                    t.scale.y=-1;
+                    t.pivot.y= -(t.height);
+                }
+
+            } else {
+                if (rotationValue == 90) {
+                    t.scale.x=-1;
+                    t.pivot.x=-(t.width);
+                } else if (rotationValue == 270) {
+                    t.scale.x=1;
+                    t.pivot.x=t.width;
+                }
+            }
+            t.update({rotation:0});
+            return;
+        }
         
+        // sets z-Indexes for custom..need to move this out of update() and into ready();
+        if (useIndicator) {
+            t.sortableChildren = true;
+            t.indicator.zIndex = 1;
+            t.target.zIndex = 5;
+            t.icon.zIndex = 10;
+        }
 
         if (!enableRotation) return;
         
@@ -355,13 +398,3 @@ Hooks.on("ready",() => {
     Hooks.on("closeSettingsConfig",AboutFace.closeSettingsConfigEventHandler);
 })
 
-
-/*** Utility Stuff, will be hoisted ***/
-function getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
-}
-
-function getTokenOwner(token, includeGM=false) {
-    let owners = getKeyByValue(token.actor.data.permission,3);
-    console.log("OWNERS",owners);
-}
