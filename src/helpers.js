@@ -1,20 +1,40 @@
-/*** Utility Stuff, will be hoisted ***/
+/*** Utility Stuff ***/
 export function getKeyByValue(object, value) {
     return Object.keys(object).filter(key => object[key] === value);
 }
 
-export function getTokenOwner(token, includeGM=false) {
+export async function getTokenOwner(token, includeGM=false) {
     let owners = getKeyByValue(token.actor.data.permission,3);
     let ret = [];
     for (let y = 0; y < owners.length; y++) {
-        let u = Users.instance.get(owners[y]);
+        let u = await Users.instance.get(owners[y]);
         if (includeGM) {
             ret.push(u);
             continue;
         } else {
+            if (!u) { ret.push(u);continue;}
             if (!u.isGM) { ret.push(u);}
         }
     }
     return ret;
 
+}
+
+
+export function getInput(prompt) {
+    return new Promise(resolve => {
+        new Dialog({
+            title: prompt,
+            content: '<div align="center"><input id="dialog_box" style="width:375px"></input></div>',
+            buttons: {
+                ok: {
+                    label: "OK",
+                    callback: () => {
+                        resolve(document.getElementById("dialog_box").value)
+                    }
+                }
+            },
+            default:"ok"
+        }).render(true);
+    });
 }

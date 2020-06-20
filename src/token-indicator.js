@@ -1,4 +1,4 @@
-import { SpriteID} from './sprite-id.js';
+import { SpriteID } from './sprite-id.js';
 
 import * as Helpers from './helpers.js';
 
@@ -73,9 +73,12 @@ export class TokenIndicator {
 
         let indicator_color = colorStringToHex("FF0000");
 
-        if (this.token.actor.isPC) {
-            indicator_color = colorStringToHex(Helpers.getTokenOwner(this.token)[0].color);
+        if (this.token.actor) {
+            if (this.token.actor.isPC) {
+                indicator_color = colorStringToHex(Helpers.getTokenOwner(this.token)[0].color);
+            }
         }
+        
         let triangle = this.generateTriangleIndicator("normal",indicator_color,0x000000);
 
         return triangle;
