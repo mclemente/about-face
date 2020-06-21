@@ -82,7 +82,7 @@ export class AboutFace
         
         TokenIndicators = [];
         for ( let [i, token] of canvas.tokens.placeables.entries()){
-            if (!(token instanceof Token)) { continue; }
+            if (!(token instanceof Token) || !token.actor) { continue; }
             //if (token.owner) {
                 // if (token.actor.isPC && game.user.isGM) {
                 //     continue;
