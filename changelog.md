@@ -1,6 +1,11 @@
 # CHANGELOG
 
 
+## [1.0.6] 2020-06-21
+
+### BUGFIXES
+- corrected issue with actors not being associated with tokens
+
 
 ## [1.0.5] 2020-06-18
 

@@ -69,13 +69,14 @@ export class TokenIndicator {
     /**
      * This is the default indicator & style. A small triangle
      */
-    generateDefaultIndicator() {
+    async generateDefaultIndicator() {
 
         let indicator_color = colorStringToHex("FF0000");
 
         if (this.token.actor) {
             if (this.token.actor.isPC) {
-                indicator_color = colorStringToHex(Helpers.getTokenOwner(this.token)[0].color);
+                let user = await(Helpers.getTokenOwner(this.token));
+                indicator_color = colorStringToHex(user[0].data.color);
             }
         }
         
@@ -178,17 +179,17 @@ export class TokenIndicator {
      * Create the indicator using the instance's indicator sprite
      * If one hasn't been specified/set, use the default
      */
-    create(sprite="") {
+    async create(sprite="") {
         if (!this.sprite && sprite == "") {
-            this.sprite = this.generateDefaultIndicator();
+            this.sprite = await this.generateDefaultIndicator();
             
             // this.sprite = this.generateSpaceIndicator('',0x000000);
             // this.sprite = this.generateStarIndicator();
         } else if (sprite != "") {
             if (sprite == "large-triangle") {
-                this.sprite = this.generateTriangleIndicator('large',0xEAFF00,0x000000);
+                this.sprite = await this.generateTriangleIndicator('large',0xEAFF00,0x000000);
             } else {
-                this.sprite = this.generateDefaultIndicator();
+                this.sprite = await this.generateDefaultIndicator();
             }
         }
 

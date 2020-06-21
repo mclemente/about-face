@@ -78,7 +78,7 @@ Hooks.once("init", () => {
 
 export class AboutFace
 {
-    static ready() {
+    static async ready() {
         
         TokenIndicators = [];
         for ( let [i, token] of canvas.tokens.placeables.entries()){
@@ -88,7 +88,7 @@ export class AboutFace
                 //     continue;
                 // }
                 
-                let ti = TokenIndicator.init(token);
+                let ti = await TokenIndicator.init(token);
 
                 ti.create(game.settings.get(mod,"indicator-sprite"));
                 if (!useIndicator || useIndicator == "1") {

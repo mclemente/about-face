@@ -1,4 +1,7 @@
-/*** Utility Stuff ***/
+/**
+ * Some utility functions
+ * v0.3
+ */
 export function getKeyByValue(object, value) {
     return Object.keys(object).filter(key => object[key] === value);
 }
@@ -17,7 +20,14 @@ export async function getTokenOwner(token, includeGM=false) {
         }
     }
     return ret;
+}
 
+export async function getTokenByTokenID(id) {
+    return canvas.tokens.placeables.find( x => {return x.id === id});
+}
+export async function getTokenByTokenName(name) {
+    // return game.scenes.active.data.tokens.find( x => {return x._name === name});
+    return canvas.tokens.placeables.find( x => { return x.id == id});
 }
 
 
