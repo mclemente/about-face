@@ -76,7 +76,9 @@ export class TokenIndicator {
         if (this.token.actor) {
             if (this.token.actor.isPC) {
                 let user = await(Helpers.getTokenOwner(this.token));
-                indicator_color = colorStringToHex(user[0].data.color);
+                if (user.length > 0) {
+                    indicator_color = colorStringToHex(user[0].data.color);
+                } 
             }
         }
         

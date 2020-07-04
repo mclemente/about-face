@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+
+
+## [1.0.6] 2020-07-04
+
+### BUGFIXES
+- corrected issue with indicator color at startup
+
+
 ## [1.0.6] 2020-06-21
 
 ### BUGFIXES

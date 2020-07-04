@@ -9,7 +9,7 @@ const modDisplayName = "About Face"
 import { TokenIndicator } from './src/token-indicator.js';
 
 
-CONFIG.debug.hooks=true;
+// CONFIG.debug.hooks=true;
 
 // ---- a few var inits ----
 var TokenIndicators = []; // an array to hold all of the TokenIndicator instances
@@ -271,6 +271,7 @@ export class AboutFace
             
             if (!token.indicator) { return;}
             // show the indicator
+            console.log("Indicator",token.indicator);
             token.indicator.show();
             //token.flags.AboutFace.set('show',true);
         } else {
