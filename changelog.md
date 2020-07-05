@@ -1,10 +1,11 @@
 # CHANGELOG
 
 
-
+## [1.0.7] 2020-07-05
+### BUGFIXES
+- corrected issue attempting to hide non-registered sprites
 
 ## [1.0.6] 2020-07-04
-
 ### BUGFIXES
 - corrected issue with indicator color at startup
 
