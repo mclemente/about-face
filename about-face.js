@@ -223,15 +223,18 @@ export class AboutFace {
                 return;
             }
             let ti = (TokenIndicators.filter(ti => ti.token.id == token._id))[0];
-            ti.show();
-            try {
-                ti.rotate(rotationValue);
-            } catch (e) {
-                console.log('sprite not set for some reason..still creating it?');
+            if (ti) {
+                ti.show();
+                try {
+                    ti.rotate(rotationValue);
+                } catch (e) {
+                    console.log('sprite not set for some reason..still creating it?');
+                }
+                if (useIndicator == "1") {
+                    ti.hide();
+                }
             }
-            if (useIndicator == "1") {
-                ti.hide();
-            }
+
 
         }
 

@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## [1.0.7] 2020-07-05
+## [1.6.3] 2020-07-05
 ### BUGFIXES
 - corrected issue attempting to hide non-registered sprites
 
