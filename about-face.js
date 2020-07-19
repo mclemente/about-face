@@ -12,8 +12,6 @@ import {
 } from './src/token-indicator.js';
 
 
-CONFIG.debug.hooks = true;
-
 // ---- a few var inits ----
 var TokenIndicators = []; // an array to hold all of the TokenIndicator instances
 var useIndicator, enableRotation; // convenience
