@@ -4,21 +4,30 @@
   "description": "Rotates Tokens and provide indicators for direction based on movement",
   "version": "1.6.3",
   "author": "Eadorin (eadorin@gmail.com)",
-  "esmodules": ["about-face.js"],
+  "esmodules": [
+    "about-face.js"
+  ],
   "compatibleCoreVersion": "0.6.4",
   "minimumCoreVersion": "0.6.0",
   "manifest": "https://raw.githubusercontent.com/eadorin/about-face/master/module.json",
   "download": "https://github.com/eadorin/about-face/archive/master.zip",
   "url": "https://github.com/eadorin/about-face",
   "changelog": "https:github.com/eadorin/about-face/blob/v1.6.3/changelog.md",
-  "languages": [{
-    "lang": "en",
-    "name": "English",
-    "path": "lang/en.json"
-  },
-  {
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
       "lang": "pt-BR",
       "name": "Português (Brasil)",
       "path": "lang/pt-BR.json"
-    }]
+    },
+    {
+      "lang": "es",
+      "name": "Castellano",
+      "path": "lang/es-ES.json"
+    }
+  ]
 }
