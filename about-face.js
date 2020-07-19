@@ -5,13 +5,14 @@
  * version 1.0                  by Eadorin
  */
 const mod = 'about-face';
-const modDisplayName = "About Face"
+const modKey = 'position';
+const modDisplayName = "About Face";
 import {
     TokenIndicator
 } from './src/token-indicator.js';
 
 
-// CONFIG.debug.hooks=true;
+CONFIG.debug.hooks = true;
 
 // ---- a few var inits ----
 var TokenIndicators = []; // an array to hold all of the TokenIndicator instances
@@ -82,6 +83,11 @@ export class AboutFace {
     static async ready() {
 
         TokenIndicators = [];
+
+        for (let i = 0; i < TokenLayer.instance.ownedTokens.length; i++) {
+            AboutFace.setRotationFlags(TokenLayer.instance.ownedTokens[i], 0);
+        }
+
         for (let [i, token] of canvas.tokens.placeables.entries()) {
             if (!(token instanceof Token) || !token.actor) {
                 continue;
@@ -90,9 +96,9 @@ export class AboutFace {
             // if (token.actor.isPC && game.user.isGM) {
             //     continue;
             // }
+            //AboutFace.setRotationFlags(token, 0);
 
             let ti = await TokenIndicator.init(token);
-
             ti.create(game.settings.get(mod, "indicator-sprite"));
             if (!useIndicator || useIndicator == "1") {
 
@@ -109,32 +115,47 @@ export class AboutFace {
 
     /* -------------------------------------------- */
 
+    static async setRotationFlags(token, rotation_value) {
+        console.log("Setting:", token.data);
+        // if (typeof token.getFlag(mod, modKey) === 'undefined') {
+        let position = {
+            "x": token.data.x,
+            "y": token.data.y,
+            "facing": rotation_value
+        };
+        //token.data.flags[mod][modKey] = position;
+        if (typeof token.getFlag(mod, modKey) !== 'undefined') {
+            await token.unsetFlag(mod, modKey, position);
+        }
+        await token.setFlag(mod, modKey, position);
+        // }
+        return token;
+    }
 
     /**
      * Rotation function primarily used by our key event handlers
      */
-    static rotate(direction) {
-
+    static async rotate(direction) {
         if (!useIndicator) {
             return
         }
         let tokenIndicators = [];
-
         activeTokens.forEach(token => {
-
             tokenIndicators.push((TokenIndicators.filter(ti => ti.token.id == token.id))[0]);
-            if (token.data.flags.AboutFace) {
-                token.data.flags.AboutFace.set('facing', AboutFace.getRotationDegrees(direction));
-                //token.update({data:token.data});
-            }
+            // if (token.data.flags.AboutFace) {
+            //     token.data.flags.AboutFace.set('facing', AboutFace.getRotationDegrees(direction));
+            //     //token.update({data:token.data});
+            // }
+            let pos = token.getFlag(mod, modKey);
+            pos.facing = AboutFace.getRotationDegrees(direction);
+            token.unsetFlag(mod, modKey);
+            token.setFlag(mod, modKey, pos);
 
         });
 
         tokenIndicators.forEach(ti => {
             let dir = AboutFace.getRotationDegrees(null, null, direction);
             if (!ti) return; // addresses a weird issue where a token might be removed.
-
-
 
             token_rotation = ti.rotate(dir);
 
@@ -152,7 +173,7 @@ export class AboutFace {
      * @return int
      **/
     static getRotationDegrees(dX = null, dY = null, dir = null) {
-        var rotation = 0;
+        var rotation;
         if ((dX == 0 && dY < 0) || dir == "up") rotation = 180; // up
         else if ((dX == 0 && dY > 0) || dir == "down") rotation = 0; // down
         else if ((dX > 0 && dY == 0) || dir == "right") rotation = 270; // to the right
@@ -161,10 +182,10 @@ export class AboutFace {
         else if ((dX < 0 && dY == 0) || dir == "left") rotation = 90; // to the left
         else if ((dX < 0 && dY > 0) || dir == "down-left") rotation = 45; // down to the left
         else if ((dX < 0 && dY < 0) || dir == "up-left") rotation = 135 // up to the left
-        token_rotation = rotation;
+        let token_rotation = rotation || 0;
 
         // i messed with every version of atan, atan2 I could come up with; inverted Y makes it tough
-        return rotation;
+        return token_rotation;
 
     }
 
@@ -179,110 +200,137 @@ export class AboutFace {
      * @param {*} userId 
      */
     static async updateTokenEventHandler(scene, token, updateData, options, userId) {
-
-
         if (options.lockRotation) {
             // the token should not rotate!
         }
-        if (typeof token === 'undefined') return;
 
-        // the client doesn't get the update during the controlToken handler
-        if (!("AboutFace" in token.flags)) {
-            token.flags.AboutFace = new Map();
-            token.flags.AboutFace.set('x', token.x);
-            token.flags.AboutFace.set('y', token.y);
-            token.flags.AboutFace.set('facing', token_rotation);
+        if (typeof token === 'undefined') return;
+        token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
+        token.refresh();
+        // console.log("Before:", token);
+        if (typeof token.getFlag(mod, modKey) === 'undefined') {
+            token.data.flags[mod][modKey] = {
+                'x': token.x,
+                'y': token.y,
+                'facing': 0
+            };
         }
 
-        // current rotation
-        let facing = token.flags.AboutFace.get('facing');
+        // let pos = await token.getFlag(mod, modKey);
+        let pos = token.data.flags[mod][modKey];
+        // console.log(pos);
+        // console.log("TokenX, TokenY", token.x, token.y);
+        // console.log("After:", token);
 
-        // calculate new rotation
 
+        let dX = (updateData.x) ? updateData.x - pos.x : 0; // new X
+        let dY = (updateData.y) ? updateData.y - pos.y : 0; // new Ydata.
+        let facing = pos.facing; // facing direction
 
-        let rotationValue = (updateData.rotation) ? updateData.rotation : AboutFace.getRotationDegrees(token.x - token.flags.AboutFace.get('x'), token.y - token.flags.AboutFace.get('y'));
+        let dir = AboutFace.getRotationDegrees(dX, dY); // new way to rotate
+        // token.setFlag(mod, 'facing', dir);
+
+        // console.log(pos);
+        // console.log(token);
+        // console.log("dX,dY,facing,dir", dX, dY, facing, dir);
+
+        // Don't rotate b/c of option
+        // Get Old Position
+        // Get new rotation Direction
+        // rotate token Direction
+        // if indicator, rotate it as well
 
         // update our recorded position
-        token.flags.AboutFace.set('x', token.x);
-        token.flags.AboutFace.set('y', token.y);
+        pos.x = (updateData.x) ? updateData.x : token.x;
+        pos.y = (updateData.y) ? updateData.y : token.y;
+        pos.facing = dir;
+        token.data.flags[mod][modKey] = pos;
+        // console.log('pos :>> ', pos);
 
         // exit if new direction is same as old
-        if (rotationValue == facing) return;
+
+
+        if ((dir == facing) && (game.settings.get(mod, 'flip-or-rotate') == "rotate")) return;
 
         // update direction here, preventing rotate() from triggering stack issue
-        token.flags.AboutFace.set('facing', rotationValue);
-
         // don't rotate because of user setting
         if (!enableRotation && !useIndicator) return;
 
-        let t = canvas.tokens.get(token._id);
-
-        // show indicators based on appearance
         if (useIndicator) {
-            if (typeof rotationValue === "undefined" || rotationValue == null) {
+            if (typeof dir === "undefined" || dir == null) {
                 return;
             }
-            let ti = (TokenIndicators.filter(ti => ti.token.id == token._id))[0];
-            if (ti) {
-                ti.show();
+            if (token.indicator) {
+                // token.indicator.show;
+
                 try {
-                    ti.rotate(rotationValue);
+                    token.indicator.rotate(dir);
                 } catch (e) {
-                    console.log('sprite not set for some reason..still creating it?');
+                    // sprite isn't ther. sad.
                 }
                 if (useIndicator == "1") {
-                    ti.hide();
+                    // token.indicator.hide();
                 }
+                token.sortableChildren = true;
+                token.indicator.zIndex = 1;
+                token.target.zIndex = 5;
+                token.icon.zIndex = 10;
+                token.refresh();
+                token.indicator.rotate(dir);
+
             }
 
-
+            // let token_rotation = token.indicator.rotate(dir);
         }
 
         // enable ability to flip the token
+        // token.width !== token.w lol
         if (game.settings.get(mod, 'flip-or-rotate') !== "rotate") {
+            
             if (game.settings.get(mod, 'flip-or-rotate') == "flip-v") {
-                if (rotationValue == 0) {
-                    t.scale.y = 1;
-                    t.pivot.y = t.height;
-                } else if (rotationValue == 180) {
-                    t.scale.y = -1;
-                    t.pivot.y = -(t.height);
+                if (pos.facing == 0) {
+                    token.icon.scale.y = 1;
+                    token.pivot.y = token.h;
+                } else if (pos.facing == 180) {
+                    token.icon.scale.y = -1;
+                    token.pivot.y = -(token.h);
                 }
 
             } else {
-                if (rotationValue == 90) {
-                    t.scale.x = -1;
-                    t.pivot.x = -(t.width);
-                } else if (rotationValue == 270) {
-                    t.scale.x = 1;
-                    t.pivot.x = t.width;
+                console.log("Horizontal test", dir);
+                if (pos.facing == 90) {
+                    token.icon.scale.x = -1;
+                    // token.pivot.x = -(token.w);
+                    // token.pivot.x = 0;
+                } else if (pos.facing == 270) {
+                    token.icon.scale.x = 1;
+                    // token.pivot.x = 0;
                 }
             }
-            t.update({
-                rotation: 0
-            });
+
+            // token.update({
+            //     rotation: 0
+            // });
             return;
         }
 
-        // sets z-Indexes for custom..need to move this out of update() and into ready();
-        if (useIndicator) {
-            t.sortableChildren = true;
-            t.indicator.zIndex = 1;
-            t.target.zIndex = 5;
-            t.icon.zIndex = 10;
-        }
+
+
 
         if (!enableRotation) return;
 
-        t.data.rotation = rotationValue;
-        t.rotate({
-            angle: rotationValue,
-            snap: 45
+        token.data.rotation = dir;
+        // token.rotate({
+        //     angle: dir,
+        //     snap: 45
+        // });
+        token.refresh();
+        token.update({
+            rotation: dir
         });
-        t.refresh();
-        t.update({
-            rotation: rotationValue
-        });
+        token.refresh();
+        // token.refresh();
+        // token.refresh();
     }
 
     static hoverTokenEventHandler(token, opt) {
@@ -297,7 +345,6 @@ export class AboutFace {
                 return;
             }
             // show the indicator
-            console.log("Indicator", token.indicator);
             token.indicator.show();
             //token.flags.AboutFace.set('show',true);
         } else {
@@ -348,6 +395,8 @@ export class AboutFace {
             if (index > -1) {
                 activeTokens.splice(index, 1);
             }
+
+            AboutFace.setRotationFlags(token, 0);
         }
     }
 
@@ -370,9 +419,8 @@ export class AboutFace {
             default:
                 break;
         }
-        console.log(useIndicator);
+        // console.log(useIndicator);
     }
-
 }
 
 
@@ -434,6 +482,7 @@ Hooks.on("canvasReady", AboutFace.ready);
 //Hooks.on("ready",AboutFace.ready);
 // Hooks.on("updateScene",AboutFace.ready);
 Hooks.on("updateToken", AboutFace.updateTokenEventHandler);
+// Hooks.on("updateToken", AboutFace.updateTokenEventHandler);
 Hooks.on("controlToken", AboutFace.controlTokenEventHandler);
 
 Hooks.on("hoverToken", AboutFace.hoverTokenEventHandler);

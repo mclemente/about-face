@@ -66,7 +66,10 @@ export class TokenIndicator {
      * hide the instance
      */
     hide() {
-        this.sprite.visible = false;
+        if (this.sprite) {
+            this.sprite.visible = false;
+        }
+
     }
 
     hasSprite() {
