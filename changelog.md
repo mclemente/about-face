@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## [1.6.5] 2020-07-19
+### ADDED
+- Portugese Support! -- thanks to @HonzoNebro
+- Castilian Support! -- thanks to @HonzoNebro
+### BUGFIXES
+- resolved issue with tokens jumping when using Horizontal flip
+- fixed pesky bug causing a delay in updates
+
+
 ## [1.6.3] 2020-07-05
 ### BUGFIXES
 - corrected issue attempting to hide non-registered sprites
