@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [1.6.6] 2020-08-02
+### BUGFIXES
+- corrected some directional stuff
+- fixed problem with token vision
+
+### KNOWN ISSUES
+- performance seems to be .. not great and needs optimized. =(
 
 ## [1.6.5] 2020-07-19
 ### ADDED

@@ -199,8 +199,8 @@ export class AboutFace {
         if (token.getFlag(mod, modKey) === undefined) {
             pos = {
                 'x': token.x,
-              'y': token.y,
-              'facing': 0
+                'y': token.y,
+                'facing': 0
             };
             setProperty(updateData.flags, `${mod}.${modKey}`, pos);
         } else {
@@ -214,13 +214,13 @@ export class AboutFace {
         let facing = pos.facing; // facing direction
 
         let dir = AboutFace.getRotationDegrees(dX, dY); // new way to rotate
-    
+
         // update our new position
         pos.x = (updateData.x) ? updateData.x : token.x;
         pos.y = (updateData.y) ? updateData.y : token.y;
         pos.facing = dir;
         setProperty(updateData.flags, `${mod}.${modKey}`, pos);
-  
+
         // exit if new direction is same as old
         if ((dir == facing) && (game.settings.get(mod, 'flip-or-rotate') == "rotate")) return;
 
@@ -251,14 +251,17 @@ export class AboutFace {
                 token.icon.zIndex = 10;
                 token.refresh();
                 token.indicator.rotate(dir);
+
+                canvas.sight.updateToken(token);
             }
             // let token_rotation = token.indicator.rotate(dir);
+            canvas.sight.updateToken(token);
         }
         //==================================================================
         // Token Flipping
         // token.width !== token.w lol
         if (game.settings.get(mod, 'flip-or-rotate') !== "rotate") {
-            
+
             if (game.settings.get(mod, 'flip-or-rotate') == "flip-v") {
                 if (pos.facing == 0) {
                     updateData.mirrorY = true;
@@ -284,8 +287,8 @@ export class AboutFace {
                 }
             }
         }
-        
-        return;
+        // canvas.sight.updateToken(token);
+        // return;
 
         if (!enableRotation) return;
 
@@ -294,11 +297,12 @@ export class AboutFace {
         //     angle: dir,
         //     snap: 45
         // });
-        token.refresh();
+        // token.refresh();
         token.update({
             rotation: dir
         });
-        token.refresh();
+        // token.refresh();
+        canvas.sight.updateToken(token);
     }
 
     static hoverTokenEventHandler(token, opt) {
@@ -452,4 +456,4 @@ Hooks.on("controlToken", AboutFace.controlTokenEventHandler);
 Hooks.on("hoverToken", AboutFace.hoverTokenEventHandler);
 Hooks.on("ready", () => {
     Hooks.on("closeSettingsConfig", AboutFace.closeSettingsConfigEventHandler);
-})
+});

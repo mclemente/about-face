@@ -2,7 +2,7 @@
   "name": "about-face",
   "title": "About Face",
   "description": "Rotates Tokens and provide indicators for direction based on movement",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "author": "Eadorin (eadorin@gmail.com)",
   "esmodules": [
     "about-face.js"
@@ -13,8 +13,7 @@
   "download": "https://github.com/eadorin/about-face/archive/master.zip",
   "url": "https://github.com/eadorin/about-face",
   "changelog": "https:github.com/eadorin/about-face/blob/v1.6.5/changelog.md",
-  "languages": [
-    {
+  "languages": [{
       "lang": "en",
       "name": "English",
       "path": "lang/en.json"
