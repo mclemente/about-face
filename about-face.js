@@ -188,19 +188,25 @@ export class AboutFace {
             // the token should not rotate!
         }
 
-        if (typeof token === 'undefined') return;
+        if (token === undefined) return;
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
         token.refresh();
-        if (typeof token.getFlag(mod, modKey) === 'undefined') {
-            token.data.flags[mod][modKey] = {
-                'x': token.x,
-                'y': token.y,
-                'facing': 0
-            };
-        }
 
-        // get old position data
-        let pos = token.data.flags[mod][modKey];
+        let pos;
+        if (updateData.flags === undefined) {
+            updateData.flags = {};
+        }
+        if (token.getFlag(mod, modKey) === undefined) {
+            pos = {
+                'x': token.x,
+              'y': token.y,
+              'facing': 0
+            };
+            setProperty(updateData.flags, `${mod}.${modKey}`, pos);
+        } else {
+            // get old position data
+            pos = token.getFlag(mod, modKey);
+        }
 
         // calculate new position data
         let dX = (updateData.x) ? updateData.x - pos.x : 0; // new X
@@ -213,7 +219,7 @@ export class AboutFace {
         pos.x = (updateData.x) ? updateData.x : token.x;
         pos.y = (updateData.y) ? updateData.y : token.y;
         pos.facing = dir;
-        token.data.flags[mod][modKey] = pos;
+        setProperty(updateData.flags, `${mod}.${modKey}`, pos);
   
         // exit if new direction is same as old
         if ((dir == facing) && (game.settings.get(mod, 'flip-or-rotate') == "rotate")) return;
@@ -255,27 +261,31 @@ export class AboutFace {
             
             if (game.settings.get(mod, 'flip-or-rotate') == "flip-v") {
                 if (pos.facing == 0) {
-                    token.icon.scale.y = 1;
-                    token.pivot.y = token.h;
+                    updateData.mirrorY = true;
+                    // token.icon.scale.y = 1;
+                    // token.pivot.y = token.h;
                 } else if (pos.facing == 180) {
-                    token.icon.scale.y = -1;
-                    token.pivot.y = -(token.h);
+                    updateData.mirrorY = false;
+                    // token.icon.scale.y = -1;
+                    // token.pivot.y = -(token.h);
                 }
 
             } else {
                 console.log("Horizontal test", dir);
                 if (pos.facing == 90) {
-                    token.icon.scale.x = -1;
+                    updateData.mirrorX = true;
+                    // token.icon.scale.x = -1;
                     // token.pivot.x = -(token.w);
                     // token.pivot.x = 0;
                 } else if (pos.facing == 270) {
-                    token.icon.scale.x = 1;
+                    updateData.mirrorX = false;
+                    // token.icon.scale.x = 1;
                     // token.pivot.x = 0;
                 }
             }
-            return;
         }
-
+        
+        return;
 
         if (!enableRotation) return;
 
@@ -437,7 +447,7 @@ onkeydown = onkeyup = function (e) {
 
 
 Hooks.on("canvasReady", AboutFace.ready);
-Hooks.on("updateToken", AboutFace.updateTokenEventHandler);
+Hooks.on("preUpdateToken", AboutFace.updateTokenEventHandler);
 Hooks.on("controlToken", AboutFace.controlTokenEventHandler);
 Hooks.on("hoverToken", AboutFace.hoverTokenEventHandler);
 Hooks.on("ready", () => {
