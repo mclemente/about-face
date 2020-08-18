@@ -36,10 +36,10 @@ export class TokenIndicator {
      */
     rotate(deg) {
         if (!this.sprite) {
-            throw 'No sprite to rotate';
             return false;
         }
         this.sprite.angle = deg;
+        return true;
     }
 
     /* -------------------------------------------- */
@@ -214,6 +214,8 @@ export class TokenIndicator {
 
         this.c.addChild(this.sprite);
         this.token.addChild(this.c);
+
+        return true;
 
     }
 

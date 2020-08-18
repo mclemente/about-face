@@ -83,7 +83,7 @@ export class AboutFace {
         TokenIndicators = [];
 
         for (let i = 0; i < TokenLayer.instance.ownedTokens.length; i++) {
-            AboutFace.setRotationFlags(TokenLayer.instance.ownedTokens[i], 0);
+            //AboutFace.setRotationFlags(TokenLayer.instance.ownedTokens[i], 0);
         }
 
         for (let [i, token] of canvas.tokens.placeables.entries()) {
@@ -92,21 +92,23 @@ export class AboutFace {
             }
 
             let ti = await TokenIndicator.init(token);
-            ti.create(game.settings.get(mod, "indicator-sprite"));
+            await ti.create(game.settings.get(mod, "indicator-sprite"));
             if (!useIndicator || useIndicator == "1") {
-
                 if (ti.hasSprite()) {
                     ti.hide();
                 }
             }
             TokenIndicators.push(ti);
+
+            token.indicator.rotate((token.getFlag(mod, modKey)).facing);
         }
+
+
     }
 
     /* -------------------------------------------- */
 
     static async setRotationFlags(token, rotation_value) {
-        console.log("Setting:", token.data);
 
         let position = {
             "x": token.data.x,
@@ -220,6 +222,7 @@ export class AboutFace {
         pos.y = (updateData.y) ? updateData.y : token.y;
         pos.facing = dir;
         setProperty(updateData.flags, `${mod}.${modKey}`, pos);
+        setProperty(updateData, 'rotation', dir);
 
         // exit if new direction is same as old
         if ((dir == facing) && (game.settings.get(mod, 'flip-or-rotate') == "rotate")) return;
@@ -274,7 +277,6 @@ export class AboutFace {
                 }
 
             } else {
-                console.log("Horizontal test", dir);
                 if (pos.facing == 90) {
                     updateData.mirrorX = true;
                     // token.icon.scale.x = -1;
@@ -368,7 +370,7 @@ export class AboutFace {
                 activeTokens.splice(index, 1);
             }
 
-            AboutFace.setRotationFlags(token, 0);
+            // AboutFace.setRotationFlags(token, 0);
         }
     }
 
@@ -452,6 +454,9 @@ onkeydown = onkeyup = function (e) {
 
 Hooks.on("canvasReady", AboutFace.ready);
 Hooks.on("preUpdateToken", AboutFace.updateTokenEventHandler);
+Hooks.on("updateToken", (scene, id, token, ...args) => {
+    // console.log(id);
+});
 Hooks.on("controlToken", AboutFace.controlTokenEventHandler);
 Hooks.on("hoverToken", AboutFace.hoverTokenEventHandler);
 Hooks.on("ready", () => {

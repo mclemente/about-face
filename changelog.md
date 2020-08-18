@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [1.6.7] 2020-08-02
+### BUGFIXES
+- fixed problem where directions would reset on reload
+- fixed mirror token issue
+- 
+
 ## [1.6.6] 2020-08-02
 ### BUGFIXES
 - corrected some directional stuff
