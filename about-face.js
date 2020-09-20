@@ -11,7 +11,7 @@ import {
     TokenIndicator
 } from './src/token-indicator.js';
 
-
+CONFIG.debug.hooks = true;
 // ---- a few var inits ----
 var TokenIndicators = []; // an array to hold all of the TokenIndicator instances
 var useIndicator, enableRotation; // convenience
@@ -91,19 +91,25 @@ export class AboutFace {
                 continue;
             }
 
-            let ti = await TokenIndicator.init(token);
-            await ti.create(game.settings.get(mod, "indicator-sprite"));
-            if (!useIndicator || useIndicator == "1") {
-                if (ti.hasSprite()) {
-                    ti.hide();
-                }
-            }
+            let ti = await AboutFace.getIndicator(token);
+
             TokenIndicators.push(ti);
 
             token.indicator.rotate((token.getFlag(mod, modKey)).facing);
         }
 
 
+    }
+
+    static async getIndicator(token) {
+        let ti = await TokenIndicator.init(token);
+        await ti.create(game.settings.get(mod, "indicator-sprite"));
+        if (!useIndicator || useIndicator == "1") {
+            if (ti.hasSprite()) {
+                ti.hide();
+            }
+        }
+        return ti;
     }
 
     /* -------------------------------------------- */
@@ -127,13 +133,13 @@ export class AboutFace {
      */
     static async rotate(direction) {
         if (!useIndicator) {
-            return
+            return;
         }
         let tokenIndicators = [];
         activeTokens.forEach(token => {
             tokenIndicators.push((TokenIndicators.filter(ti => ti.token.id == token.id))[0]);
             let pos = token.getFlag(mod, modKey);
-            pos.facing = AboutFace.getRotationDegrees(direction);
+            pos.facing = AboutFace.getRotationDegrees(null, null, direction);
             token.unsetFlag(mod, modKey);
             token.setFlag(mod, modKey, pos);
 
@@ -145,9 +151,9 @@ export class AboutFace {
 
             token_rotation = ti.rotate(dir);
 
-            ti.token.update({
-                rotate: token_rotation
-            });
+            // ti.token.update({
+            //     rotation: dir
+            // });
         });
     }
 
@@ -186,6 +192,8 @@ export class AboutFace {
      * @param {*} userId 
      */
     static async updateTokenEventHandler(scene, token, updateData, options, userId) {
+
+
         if (options.lockRotation) {
             // the token should not rotate!
         }
@@ -215,14 +223,15 @@ export class AboutFace {
         let dY = (updateData.y) ? updateData.y - pos.y : 0; // new Y
         let facing = pos.facing; // facing direction
 
+        // console.log("AboutFace", dX, dY, facing);
+        if (dX === 0 && dY === 0 && facing === 0) return;
         let dir = AboutFace.getRotationDegrees(dX, dY); // new way to rotate
 
         // update our new position
         pos.x = (updateData.x) ? updateData.x : token.x;
         pos.y = (updateData.y) ? updateData.y : token.y;
         pos.facing = dir;
-        setProperty(updateData.flags, `${mod}.${modKey}`, pos);
-        setProperty(updateData, 'rotation', dir);
+
 
         // exit if new direction is same as old
         if ((dir == facing) && (game.settings.get(mod, 'flip-or-rotate') == "rotate")) return;
@@ -231,9 +240,16 @@ export class AboutFace {
         // don't rotate because of user setting
         if (!enableRotation && !useIndicator) return;
 
+
+
+        // the following enables on move, but also breaks it on shift
+
+
+
         //==================================================================
         // Indicator Handling
         if (useIndicator) {
+
             if (typeof dir === "undefined" || dir == null) {
                 return;
             }
@@ -265,6 +281,7 @@ export class AboutFace {
         // token.width !== token.w lol
         if (game.settings.get(mod, 'flip-or-rotate') !== "rotate") {
 
+            console.log("AboutFace", pos.facing);
             if (game.settings.get(mod, 'flip-or-rotate') == "flip-v") {
                 if (pos.facing == 0) {
                     updateData.mirrorY = true;
@@ -288,9 +305,13 @@ export class AboutFace {
                     // token.pivot.x = 0;
                 }
             }
+            return;
+
         }
-        // canvas.sight.updateToken(token);
-        // return;
+        setProperty(updateData.flags, `${mod}.${modKey}`, pos);
+        setProperty(updateData, 'rotation', dir);
+        canvas.sight.updateToken(token);
+
 
         if (!enableRotation) return;
 
@@ -395,6 +416,16 @@ export class AboutFace {
         }
         // console.log(useIndicator);
     }
+
+    static async createTokenHandler(scene, token) {
+        let ti = await TokenIndicator.init(canvas.tokens.placeables.filter(tokenPlaceable => tokenPlaceable.id == token._id)[0]);
+        ti.create(game.settings.get(mod, "indicator-sprite"));
+        if (!useIndicator || useIndicator == "1") {
+            ti.hide();
+        }
+        TokenIndicators.push(ti);
+    }
+
 }
 
 
@@ -451,7 +482,7 @@ onkeydown = onkeyup = function (e) {
 }
 
 
-
+Hooks.on("createToken", AboutFace.createTokenHandler);
 Hooks.on("canvasReady", AboutFace.ready);
 Hooks.on("preUpdateToken", AboutFace.updateTokenEventHandler);
 Hooks.on("updateToken", (scene, id, token, ...args) => {

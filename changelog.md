@@ -1,10 +1,18 @@
 # CHANGELOG
 
+
+## [1.6.7] 2020-09-19
+### BUGFIXES
+- fixed reload direction, part 2
+- fixed flip issue
+- addressed a performance issue
+- fixed issue where new token required refresh; thanks to @BlitzKraig
+
 ## [1.6.7] 2020-08-02
 ### BUGFIXES
 - fixed problem where directions would reset on reload
 - fixed mirror token issue
-- 
+
 
 ## [1.6.6] 2020-08-02
 ### BUGFIXES
