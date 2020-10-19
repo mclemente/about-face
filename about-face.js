@@ -11,7 +11,7 @@ import {
     TokenIndicator
 } from './src/token-indicator.js';
 
-CONFIG.debug.hooks = true;
+CONFIG.debug.hooks = false;
 // ---- a few var inits ----
 var TokenIndicators = []; // an array to hold all of the TokenIndicator instances
 var useIndicator, enableRotation; // convenience
@@ -193,6 +193,7 @@ export class AboutFace {
      */
     static async updateTokenEventHandler(scene, token, updateData, options, userId) {
 
+        if (!updateData.x && !updateData.y) return;
 
         if (options.lockRotation) {
             // the token should not rotate!
@@ -200,7 +201,7 @@ export class AboutFace {
 
         if (token === undefined) return;
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
-        token.refresh();
+        //token.refresh();
 
         let pos;
         if (updateData.flags === undefined) {
@@ -264,17 +265,17 @@ export class AboutFace {
                 if (useIndicator == "1") {
                     // token.indicator.hide();
                 }
-                token.sortableChildren = true;
-                token.indicator.zIndex = 1;
-                token.target.zIndex = 5;
-                token.icon.zIndex = 10;
-                token.refresh();
-                token.indicator.rotate(dir);
+                // token.sortableChildren = true;
+                // token.indicator.zIndex = 1;
+                // token.target.zIndex = 5;
+                // token.icon.zIndex = 10;
+                // token.refresh();
+                //token.indicator.rotate(dir);
 
-                canvas.sight.updateToken(token);
+                //canvas.sight.updateToken(token);
             }
             // let token_rotation = token.indicator.rotate(dir);
-            canvas.sight.updateToken(token);
+            //canvas.sight.updateToken(token);
         }
         //==================================================================
         // Token Flipping
@@ -418,12 +419,21 @@ export class AboutFace {
     }
 
     static async createTokenHandler(scene, token) {
-        let ti = await TokenIndicator.init(canvas.tokens.placeables.filter(tokenPlaceable => tokenPlaceable.id == token._id)[0]);
+ 
+        let t = canvas.tokens.placeables.find(tokenPlaceable => tokenPlaceable.id === token._id);
+        let ti = await TokenIndicator.init(t);
+        //let ti = await TokenIndicator.init(canvas.tokens.placeables.filter(tokenPlaceable => tokenPlaceable.id == token._id)[0]);
         ti.create(game.settings.get(mod, "indicator-sprite"));
         if (!useIndicator || useIndicator == "1") {
             ti.hide();
         }
+        let pos = {
+            'x': token.x,
+            'y': token.y,
+            'facing': token.rotation
+        };        
         TokenIndicators.push(ti);
+        t.setFlag(mod,modKey,pos);
     }
 
 }
