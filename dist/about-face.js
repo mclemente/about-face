@@ -9,7 +9,8 @@ const modKey = 'position';
 const modDisplayName = "About Face";
 import {
     TokenIndicator
-} from './src/token-indicator.js';
+} from './scripts/token-indicator.js';
+import {log, LogLevel } from './scripts/logging.js'
 
 CONFIG.debug.hooks = false;
 // ---- a few var inits ----
@@ -79,22 +80,20 @@ Hooks.once("init", () => {
 
 export class AboutFace {
     static async ready() {
-
+        log(LogLevel.INFO, 'ready');        
         TokenIndicators = [];
-
-        for (let i = 0; i < TokenLayer.instance.ownedTokens.length; i++) {
-            //AboutFace.setRotationFlags(TokenLayer.instance.ownedTokens[i], 0);
-        }
-
         for (let [i, token] of canvas.tokens.placeables.entries()) {
             if (!(token instanceof Token) || !token.actor) {
                 continue;
             }
 
+            log(LogLevel.INFO, 'ready: token ',token.name);
+
             let ti = await AboutFace.getIndicator(token);
 
             TokenIndicators.push(ti);
-
+            if (!token.getFlag(mod, modKey)) log(LogLevel.ERROR, 'ready: token getFlag problem', token.name);
+            // debugger;
             token.indicator.rotate((token.getFlag(mod, modKey)).facing);
         }
 
@@ -102,6 +101,7 @@ export class AboutFace {
     }
 
     static async getIndicator(token) {
+        console.log('getIndicator', token);
         let ti = await TokenIndicator.init(token);
         await ti.create(game.settings.get(mod, "indicator-sprite"));
         if (!useIndicator || useIndicator == "1") {
@@ -115,7 +115,7 @@ export class AboutFace {
     /* -------------------------------------------- */
 
     static async setRotationFlags(token, rotation_value) {
-
+        console.log('setRotationFlags', token);
         let position = {
             "x": token.data.x,
             "y": token.data.y,
@@ -132,6 +132,7 @@ export class AboutFace {
      * Rotation function primarily used by our key event handlers
      */
     static async rotate(direction) {
+        console.log('rotate', direction);
         if (!useIndicator) {
             return;
         }
@@ -194,7 +195,7 @@ export class AboutFace {
     static async updateTokenEventHandler(scene, token, updateData, options, userId) {
 
         if (!updateData.x && !updateData.y) return;
-
+        console.log('updateTokenEventHandler', token);
         if (options.lockRotation) {
             // the token should not rotate!
         }
@@ -282,7 +283,7 @@ export class AboutFace {
         // token.width !== token.w lol
         if (game.settings.get(mod, 'flip-or-rotate') !== "rotate") {
 
-            console.log("AboutFace", pos.facing);
+            log('updateTokenEventHandler, pos:', pos.facing);
             if (game.settings.get(mod, 'flip-or-rotate') == "flip-v") {
                 if (pos.facing == 0) {
                     updateData.mirrorY = true;
@@ -422,7 +423,6 @@ export class AboutFace {
  
         let t = canvas.tokens.placeables.find(tokenPlaceable => tokenPlaceable.id === token._id);
         let ti = await TokenIndicator.init(t);
-        //let ti = await TokenIndicator.init(canvas.tokens.placeables.filter(tokenPlaceable => tokenPlaceable.id == token._id)[0]);
         ti.create(game.settings.get(mod, "indicator-sprite"));
         if (!useIndicator || useIndicator == "1") {
             ti.hide();
