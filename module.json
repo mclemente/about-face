@@ -25,8 +25,8 @@
     },
     {
       "lang": "es",
-      "name": "Castellano",
-      "path": "lang/es-ES.json"
+      "name": "Español",
+      "path": "lang/es.json"
     }
   ]
 }
