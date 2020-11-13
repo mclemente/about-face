@@ -106,7 +106,7 @@ export class AboutFace {
     }
 
     static async getIndicator(token) {
-        log(LogLevel.DEBUG, 'getIndicator', token);
+        log(LogLevel.INFO, 'getIndicator', token);
         let ti = await TokenIndicator.init(token);
         await ti.create(game.settings.get(mod, "indicator-sprite"));
         if (!useIndicator || useIndicator == "1") {
@@ -120,7 +120,7 @@ export class AboutFace {
     /* -------------------------------------------- */
 
     static async setRotationFlags(token, rotation_value) {
-        log(LogLevel.DEBUG, 'setRotationFlags', token);
+        log(LogLevel.INFO, 'setRotationFlags', token);
         let position = {
             "x": token.data.x,
             "y": token.data.y,
@@ -137,7 +137,7 @@ export class AboutFace {
      * Rotation function primarily used by our key event handlers
      */
     static async rotate(direction) {
-        log(LogLevel.DEBUG,'rotate', direction);
+        log(LogLevel.INFO,'rotate', direction);
         if (!useIndicator) {
             return;
         }
@@ -200,7 +200,7 @@ export class AboutFace {
     static async updateTokenEventHandler(scene, token, updateData, options, userId) {
 
         if (!updateData.x && !updateData.y) return;
-        log(LogLevel.DEBUG, 'updateTokenEventHandler', token);
+        log(LogLevel.INFO, 'updateTokenEventHandler', token);
         if (options.lockRotation) {
             // the token should not rotate!
         }
