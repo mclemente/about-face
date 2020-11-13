@@ -101,7 +101,7 @@ export class AboutFace {
     }
 
     static async getIndicator(token) {
-        console.log('getIndicator', token);
+        log(LogLevel.INFO, 'getIndicator', token);
         let ti = await TokenIndicator.init(token);
         await ti.create(game.settings.get(mod, "indicator-sprite"));
         if (!useIndicator || useIndicator == "1") {
@@ -115,7 +115,7 @@ export class AboutFace {
     /* -------------------------------------------- */
 
     static async setRotationFlags(token, rotation_value) {
-        console.log('setRotationFlags', token);
+        log(LogLevel.INFO, 'setRotationFlags', token);
         let position = {
             "x": token.data.x,
             "y": token.data.y,
@@ -132,7 +132,7 @@ export class AboutFace {
      * Rotation function primarily used by our key event handlers
      */
     static async rotate(direction) {
-        console.log('rotate', direction);
+        log(LogLevel.INFO,'rotate', direction);
         if (!useIndicator) {
             return;
         }
@@ -195,7 +195,7 @@ export class AboutFace {
     static async updateTokenEventHandler(scene, token, updateData, options, userId) {
 
         if (!updateData.x && !updateData.y) return;
-        console.log('updateTokenEventHandler', token);
+        log(LogLevel.INFO, 'updateTokenEventHandler', token);
         if (options.lockRotation) {
             // the token should not rotate!
         }
@@ -312,7 +312,7 @@ export class AboutFace {
         }
         setProperty(updateData.flags, `${mod}.${modKey}`, pos);
         setProperty(updateData, 'rotation', dir);
-        canvas.sight.updateToken(token);
+        //canvas.sight.updateToken(token);
 
 
         if (!enableRotation) return;
@@ -327,7 +327,7 @@ export class AboutFace {
             rotation: dir
         });
         // token.refresh();
-        canvas.sight.updateToken(token);
+        //canvas.sight.updateToken(token);
     }
 
     static hoverTokenEventHandler(token, opt) {
