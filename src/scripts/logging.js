@@ -18,7 +18,7 @@ export var LogLevel;
  * @param {...any} args - console.log() arguments
  */
 export function log(messageLevel, ...args) {
-    if (messageLevel > CONFIG.logLevel)
+    if (messageLevel > CONFIG[MODULE_ID].logLevel)
         return;
     if (messageLevel === LogLevel.ERROR)
         console.error(MODULE_ID + ' | ', ...args);

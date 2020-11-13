@@ -13,6 +13,9 @@ import {
 import {log, LogLevel } from './scripts/logging.js'
 
 CONFIG.debug.hooks = false;
+CONFIG[mod] = {logLevel:1};
+
+
 // ---- a few var inits ----
 var TokenIndicators = []; // an array to hold all of the TokenIndicator instances
 var useIndicator, enableRotation; // convenience
@@ -21,6 +24,8 @@ var token_rotation = 0;
 /* -------------------------------------------- */
 
 Hooks.once("init", () => {
+    log(LogLevel.INFO, 'initialising...')
+
     game.settings.register(mod, 'enable-rotation', {
         name: "about-face.options.enable-rotation.name",
         hint: "about-face.options.enable-rotation.hint",
@@ -87,7 +92,7 @@ export class AboutFace {
                 continue;
             }
 
-            log(LogLevel.INFO, 'ready: token ',token.name);
+            log(LogLevel.DEBUG, 'ready: token ',token.name);
 
             let ti = await AboutFace.getIndicator(token);
 
@@ -101,7 +106,7 @@ export class AboutFace {
     }
 
     static async getIndicator(token) {
-        log(LogLevel.INFO, 'getIndicator', token);
+        log(LogLevel.DEBUG, 'getIndicator', token);
         let ti = await TokenIndicator.init(token);
         await ti.create(game.settings.get(mod, "indicator-sprite"));
         if (!useIndicator || useIndicator == "1") {
@@ -115,7 +120,7 @@ export class AboutFace {
     /* -------------------------------------------- */
 
     static async setRotationFlags(token, rotation_value) {
-        log(LogLevel.INFO, 'setRotationFlags', token);
+        log(LogLevel.DEBUG, 'setRotationFlags', token);
         let position = {
             "x": token.data.x,
             "y": token.data.y,
@@ -132,7 +137,7 @@ export class AboutFace {
      * Rotation function primarily used by our key event handlers
      */
     static async rotate(direction) {
-        log(LogLevel.INFO,'rotate', direction);
+        log(LogLevel.DEBUG,'rotate', direction);
         if (!useIndicator) {
             return;
         }
@@ -195,7 +200,7 @@ export class AboutFace {
     static async updateTokenEventHandler(scene, token, updateData, options, userId) {
 
         if (!updateData.x && !updateData.y) return;
-        log(LogLevel.INFO, 'updateTokenEventHandler', token);
+        log(LogLevel.DEBUG, 'updateTokenEventHandler', token);
         if (options.lockRotation) {
             // the token should not rotate!
         }
