@@ -86,7 +86,7 @@ export class TokenIndicator {
         let indicator_color = colorStringToHex("FF0000");
 
         if (this.token.actor) {
-            if (this.token.actor.isPC) {
+            if (this.token.actor.hasPlayerOwner) {
                 let user = await (Helpers.getTokenOwner(this.token));
                 if (user.length > 0) {
                     indicator_color = colorStringToHex(user[0].data.color);
