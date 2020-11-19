@@ -85,7 +85,7 @@ export class TokenIndicator {
         let indicator_color = colorStringToHex("FF0000");
 
         if (this.token.actor) {
-            if (this.token.actor.isPC) {
+            if (this.token.actor.hasPlayerOwner) {
                 let user = await (Helpers.getTokenOwner(this.token));
                 if (user.length > 0) {
                     indicator_color = colorStringToHex(user[0].data.color);
@@ -208,9 +208,9 @@ export class TokenIndicator {
 
         this.sprite.zIndex = -1;
         this.sprite.position.x = this.token.w / 2;
-        this.sprite.position.y = this.token.w / 2;
+        this.sprite.position.y = this.token.h / 2;
         this.sprite.anchor.set(.5);
-        this.sprite.angle = 0;
+        this.sprite.angle = this.token.angle;
 
         this.c.addChild(this.sprite);
         this.token.addChild(this.c);
