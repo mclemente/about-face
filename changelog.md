@@ -2,7 +2,7 @@
 
 ## [1.6.10] 
 ### FEATURES
-- Added logging module in `/helpers`, convert `console.log` to `log(LogLevel.INFO,...`
+- Added logging module in `/scripts`, convert `console.log` to `log(LogLevel.INFO,...`
 ### BUGFIXES
 - Fix ActorIsPC Deprecated
 
