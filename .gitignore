@@ -1,3 +1,7 @@
 src/foundry.js
 _notes.*
 .jshintrc
+node_modules
+dist
+.vscode
+foundryconfig.json
