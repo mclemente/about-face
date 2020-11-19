@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## [1.6.10] 
+### FEATURES
+- Added logging module in `/helpers`, convert `console.log` to `log(LogLevel.INFO,...`
+### BUGFIXES
+- Fix ActorIsPC Deprecated
+
+## [1.6.9] 
+### RESTRUCTURE
+- Added build tools from [Foundry Project Creator](https://gitlab.com/foundry-projects/foundry-pc/create-foundry-project)
+- Remove redundant packages. 
+- Restructure file folders for src and dist.
+
+## [1.6.8] 
+### BUGFIXES
+- fix bug when token is created and not moved before update 
+- (moved setFlag to createTokenHandler)
 
 ## [1.6.7] 2020-09-19
 ### BUGFIXES
