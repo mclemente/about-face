@@ -50,8 +50,8 @@ function getManifest() {
 /**
  * Copy static files
  */
-async function copyFiles() {
-	gulp.src(['src/**/*']).pipe(gulp.dest('dist'));
+function copyFiles() {
+	return gulp.src(['src/**/*']).pipe(gulp.dest('dist'));
 }
 
 /**
@@ -304,6 +304,6 @@ exports.update = updateManifest;
 exports.publish = gulp.series(
 	clean,
 	updateManifest,
-	gulp.series(clean, copyFiles),
+	copyFiles,
 	packageBuild,
 );
