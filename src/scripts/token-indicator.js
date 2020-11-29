@@ -56,7 +56,7 @@ export class TokenIndicator {
      * @param {int|float} deg  -- rotate the sprite the specified amount
      */
     rotate(deg) {
-        // debugger;
+        this.token.rotate(deg);
         if (!this.sprite) {
             return false;
         }

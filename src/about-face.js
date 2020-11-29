@@ -274,16 +274,13 @@ export class AboutFace {
      * @param {*} userId 
      */
     static async updateTokenEventHandler(scene, token, updateData, options, userId) {
-        if (!updateData.flags && !updateData.flags[MODULE_ID]?.direction) return;
+        if (updateData.flags == null || updateData.flags[MODULE_ID]?.direction == null) return;
         log(LogLevel.DEBUG, 'updateTokenEventHandler', token);
 
         if (token === undefined) return;
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
 
-        TokenIndicatorsObj[token.id].token.rotate(updateData.flags[MODULE_ID]?.direction);
         TokenIndicatorsObj[token.id].rotate(updateData.flags[MODULE_ID]?.direction);
-        
-        debugger;
     }
 
     
