@@ -3,3 +3,4 @@ _notes.*
 .jshintrc
 node_modules
 dist
+notes

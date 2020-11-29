@@ -5,6 +5,7 @@
  * version 1.6.5                  by Eadorin
  */
 const mod = 'about-face';
+const MODULE_ID = mod;
 const modKey = 'position';
 const modDisplayName = "About Face";
 import {
@@ -20,6 +21,7 @@ CONFIG[mod] = {logLevel:1};
 var TokenIndicators = []; // an array to hold all of the TokenIndicator instances
 var useIndicator, enableRotation; // convenience
 var token_rotation = 0;
+let TokenIndicatorsObj = {};
 
 /* -------------------------------------------- */
 
@@ -87,6 +89,7 @@ export class AboutFace {
     static async ready() {
         log(LogLevel.INFO, 'ready');        
         TokenIndicators = [];
+        TokenIndicatorsObj = {};
         for (let [i, token] of canvas.tokens.placeables.entries()) {
             if (!(token instanceof Token) || !token.actor) {
                 continue;
@@ -94,12 +97,14 @@ export class AboutFace {
 
             log(LogLevel.DEBUG, 'ready: token ',token.name);
 
-            let ti = await AboutFace.getIndicator(token);
+            //let ti = await AboutFace.getIndicator(token);
 
-            TokenIndicators.push(ti);
-            if (!token.getFlag(mod, modKey)) log(LogLevel.ERROR, 'ready: token getFlag problem', token.name);
+            TokenIndicatorsObj[token.id] = await new TokenIndicator(token).create();
+
+            // TokenIndicators.push(ti);
+            // if (!token.getFlag(mod, modKey)) log(LogLevel.ERROR, 'ready: token getFlag problem', token.name);
             // debugger;
-            token.indicator.rotate((token.getFlag(mod, modKey)).facing);
+            // token.indicator.rotate((token.getFlag(mod, modKey)).facing);
         }
 
 
@@ -197,13 +202,107 @@ export class AboutFace {
      * @param {*} options 
      * @param {*} userId 
      */
-    static async updateTokenEventHandler(scene, token, updateData, options, userId) {
+    static async preUpdateTokenEventHandler(scene, token, updateData, options, userId) {
+        // the GM will observe all movement of tokens and set appropriate flags
+        if (!game.user.isGM) return
+        if (!updateData.x && !updateData.y) return;
+        log(LogLevel.DEBUG, 'updateTokenEventHandler', token);
 
+        token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
+
+        // check for movement
+        const lastPos = new PIXI.Point(TokenIndicatorsObj[token.id].token.x, TokenIndicatorsObj[token.id].token.y);
+        // calculate new position data
+        let dX = (updateData.x) ? updateData.x - lastPos.x : 0; // new X
+        let dY = (updateData.y) ? updateData.y - lastPos.y : 0; // new Y
+        if (dX === 0 && dY === 0 && facing === 0) return;
+        let dir = AboutFace.getRotationDegrees(dX, dY);
+
+        return token.setFlag(MODULE_ID, 'direction', dir);
+
+        // if (options.lockRotation) {
+        //     // the token should not rotate!
+        // }
+
+        
+        // //token.refresh();
+
+        // let pos;
+        // if (updateData.flags === undefined) {
+        //     updateData.flags = {};
+        // }
+        // if (token.getFlag(mod, modKey) === undefined) {
+        //     pos = {
+        //         'x': token.x,
+        //         'y': token.y,
+        //         'facing': 0
+        //     };
+        //     setProperty(updateData.flags, `${mod}.${modKey}`, pos);
+        // } else {
+        //     // get old position data
+        //     pos = token.getFlag(mod, modKey);
+        // }
+
+
+
+        // // console.log("AboutFace", dX, dY, facing);
+        // te
+
+        // // update our new position
+        // pos.x = (updateData.x) ? updateData.x : token.x;
+        // pos.y = (updateData.y) ? updateData.y : token.y;
+        // pos.facing = dir;
+
+
+        // // exit if new direction is same as old
+        // if ((dir == facing) && (game.settings.get(mod, 'flip-or-rotate') == "rotate")) return;
+
+        // // update direction here, preventing rotate() from triggering stack issue
+        // // don't rotate because of user setting
+        // if (!enableRotation && !useIndicator) return;
+
+    };
+
+    /* -------------------------------------------- */
+
+    /**
+     * Gets the new rotational value and rotates the token
+     * @param {Scene} scene         - the current scene
+     * @param {object} token        - data of the clicked token
+     * @param {object} updateData   - the data that was actually updated by the move
+     * @param {*} options 
+     * @param {*} userId 
+     */
+    static async updateTokenEventHandler(scene, token, updateData, options, userId) {
+        if (!updateData.flags && !updateData.flags[MODULE_ID]?.direction) return;
+        log(LogLevel.DEBUG, 'updateTokenEventHandler', token);
+
+        if (token === undefined) return;
+        token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
+
+        TokenIndicatorsObj[token.id].token.rotate(updateData.flags[MODULE_ID]?.direction);
+        TokenIndicatorsObj[token.id].rotate(updateData.flags[MODULE_ID]?.direction);
+        
+        debugger;
+    }
+
+    
+    /**
+     * Gets the new rotational value and rotates the token
+     * @param {Scene} scene         - the current scene
+     * @param {object} token        - data of the clicked token
+     * @param {object} updateData   - the data that was actually updated by the move
+     * @param {*} options 
+     * @param {*} userId 
+     */
+    static async updateTokenEventHandlerOld(scene, token, updateData, options, userId) {
         if (!updateData.x && !updateData.y) return;
         log(LogLevel.DEBUG, 'updateTokenEventHandler', token);
         if (options.lockRotation) {
             // the token should not rotate!
         }
+
+        
 
         if (token === undefined) return;
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
@@ -499,10 +598,8 @@ onkeydown = onkeyup = function (e) {
 
 Hooks.on("createToken", AboutFace.createTokenHandler);
 Hooks.on("canvasReady", AboutFace.ready);
-Hooks.on("preUpdateToken", AboutFace.updateTokenEventHandler);
-Hooks.on("updateToken", (scene, id, token, ...args) => {
-    // console.log(id);
-});
+Hooks.on("preUpdateToken", AboutFace.preUpdateTokenEventHandler);
+Hooks.on("updateToken",  AboutFace.updateTokenEventHandler);
 Hooks.on("controlToken", AboutFace.controlTokenEventHandler);
 Hooks.on("hoverToken", AboutFace.hoverTokenEventHandler);
 Hooks.on("ready", () => {

@@ -9,23 +9,44 @@ import * as Helpers from './helpers.js';
  */
 export class TokenIndicator {
 
-    constructor(token, sprite = false) {
+    constructor(token, sprite = {}) {
         this.token = token;
         this.sprite = sprite;
         this.owner = token.owner;
-
-        this.c = new PIXI.Container();
-        token.indicator = this;
+        this.c = new PIXI.Container();        
     }
 
     /* -------------------------------------------- */
 
     /**
-     * Creates a new instance of the class with the token
-     * @param {Token} token  -- the token getting the indicator
+     * Create the indicator using the instance's indicator sprite
+     * If one hasn't been specified/set, use the default
      */
-    static init(token) {
-        return (new TokenIndicator(token));
+    async create(sprite = {}) {
+        if (!sprite) {
+            this.sprite = await this.generateDefaultIndicator();
+
+            // this.sprite = this.generateSpaceIndicator('',0x000000);
+            // this.sprite = this.generateStarIndicator();
+        } else {
+            if (sprite == "large-triangle") {
+                this.sprite = await this.generateTriangleIndicator('large', 0xEAFF00, 0x000000);
+            } else {
+                this.sprite = await this.generateDefaultIndicator();
+            }
+        }
+
+        this.sprite.zIndex = -1;
+        this.sprite.position.x = this.token.w / 2;
+        this.sprite.position.y = this.token.h / 2;
+        this.sprite.anchor.set(.5);
+        this.sprite.angle = this.token.angle;
+
+        this.c.addChild(this.sprite);
+        this.token.addChild(this.c);
+
+        return this;
+
     }
 
     /* -------------------------------------------- */
@@ -187,37 +208,6 @@ export class TokenIndicator {
     }
 
 
-    /* -------------------------------------------- */
 
-    /**
-     * Create the indicator using the instance's indicator sprite
-     * If one hasn't been specified/set, use the default
-     */
-    async create(sprite = "") {
-        if (!this.sprite && sprite == "") {
-            this.sprite = await this.generateDefaultIndicator();
-
-            // this.sprite = this.generateSpaceIndicator('',0x000000);
-            // this.sprite = this.generateStarIndicator();
-        } else if (sprite != "") {
-            if (sprite == "large-triangle") {
-                this.sprite = await this.generateTriangleIndicator('large', 0xEAFF00, 0x000000);
-            } else {
-                this.sprite = await this.generateDefaultIndicator();
-            }
-        }
-
-        this.sprite.zIndex = -1;
-        this.sprite.position.x = this.token.w / 2;
-        this.sprite.position.y = this.token.h / 2;
-        this.sprite.anchor.set(.5);
-        this.sprite.angle = this.token.angle;
-
-        this.c.addChild(this.sprite);
-        this.token.addChild(this.c);
-
-        return true;
-
-    }
 
 }
