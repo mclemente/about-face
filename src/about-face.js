@@ -4,16 +4,14 @@
  * 
  * version 1.6.5                  by Eadorin
  */
-const mod = 'about-face';
-const modKey = 'position';
-const modDisplayName = "About Face";
-import {
-    TokenIndicator
-} from './scripts/TokenIndicator.js';
-import {log, LogLevel } from './scripts/logging.js'
+
+import { TokenIndicator } from './scripts/TokenIndicator.js';
+import { log, LogLevel } from './scripts/logging.js'
+
+const MODULE_ID = 'about-face';
 
 CONFIG.debug.hooks = false;
-CONFIG[mod] = {logLevel:1};
+CONFIG[MODULE_ID] = {logLevel:1};
 
 
 // ---- a few var inits ----
@@ -26,64 +24,56 @@ var token_rotation = 0;
 Hooks.once("init", () => {
     log(LogLevel.INFO, 'initialising...')
 
-    game.settings.register(mod, 'enable-rotation', {
+    AboutFace.initialize();
+
+    game.settings.register(MODULE_ID, 'enable-rotation', {
         name: "about-face.options.enable-rotation.name",
         hint: "about-face.options.enable-rotation.hint",
         scope: "world",
         config: true,
         default: true,
-        type: Boolean
-    });
-
-    game.settings.register(mod, 'use-indicator', {
+        type: Boolean,
+        onChange: (value) => { 
+            if (!canvas.scene) return;
+            AboutFace.sceneEnabled = value;
+            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'sceneEnabled', AboutFace.sceneEnabled);            
+        }
+      });
+    
+      game.settings.register(MODULE_ID, 'use-indicator', {
         name: "about-face.options.enable-indicator.name",
         hint: "about-face.options.enable-indicator.hint",
-        scope: "world",
+        scope: "client",
         config: true,
-        default: "2",
-        type: String,
+        default: 2,
+        type: Number,
         choices: {
-            "0": "about-face.options.indicator.choices.0",
-            "1": "about-face.options.indicator.choices.1",
-            "2": "about-face.options.indicator.choices.2"
+            0: "about-face.options.indicator.choices.0",
+            1: "about-face.options.indicator.choices.1",
+            2: "about-face.options.indicator.choices.2"
+        },
+        onChange: (value) => { 
+            let state = Number(value);
+            if (state !== IndicatorStates.ALWAYS)
+                AboutFace.hideAllIndicators();
+            else if (AboutFace.sceneEnabled)
+                AboutFace.showAllIndicators();
+            AboutFace.indicatorState = state;
         }
-    });
-    game.settings.register(mod, 'indicator-sprite', {
-        name: "about-face.options.indicator-sprite.name",
-        hint: "about-face.options.indicator-sprite.hint",
-        scope: "world",
-        config: true,
-        default: "normal",
-        type: String,
-        choices: {
-            "normal": "about-face.options.indicator-sprite.choices.normal",
-            "large-triangle": "about-face.options.indicator-sprite.choices.large",
-        }
-    });
-
-    game.settings.register(mod, 'flip-or-rotate', {
-        name: "about-face.options.flip-or-rotate.name",
-        hint: "about-face.options.flip-or-rotate.hint",
-        scope: "world",
-        config: true,
-        default: "rotate",
-        type: String,
-        choices: {
-            "rotate": "about-face.options.flip-or-rotate.choices.rotate",
-            "flip-v": "about-face.options.flip-or-rotate.choices.flip-v",
-            "flip-h": "about-face.options.flip-or-rotate.choices.flip-h"
-        }
-    });
-
-    // convenience
-    AboutFace.refreshSettings();
-
+      });
 });
 
 
 /* -------------------------------------------- */
 
 export class AboutFace {
+
+    static initialize() {
+        AboutFace.sceneEnabled = true;
+        AboutFace.tokenIndicators = {};
+        AboutFace.indicatorState;
+    }
+    
     static async ready() {
         log(LogLevel.INFO, 'ready');        
         TokenIndicators = [];
@@ -97,9 +87,9 @@ export class AboutFace {
             let ti = await AboutFace.getIndicator(token);
 
             TokenIndicators.push(ti);
-            if (!token.getFlag(mod, modKey)) log(LogLevel.ERROR, 'ready: token getFlag problem', token.name);
+            if (!token.getFlag(MODULE_ID, modKey)) log(LogLevel.ERROR, 'ready: token getFlag problem', token.name);
 
-            token.indicator.rotate((token.getFlag(mod, modKey)).facing);
+            token.indicator.rotate((token.getFlag(MODULE_ID, modKey)).facing);
         }
 
 
@@ -108,7 +98,7 @@ export class AboutFace {
     static async getIndicator(token) {
         log(LogLevel.DEBUG, 'getIndicator', token);
         let ti = await TokenIndicator.init(token);
-        await ti.create(game.settings.get(mod, "indicator-sprite"));
+        await ti.create(game.settings.get(MODULE_ID, "indicator-sprite"));
         if (!useIndicator || useIndicator == "1") {
             if (ti.hasSprite()) {
                 ti.hide();
@@ -126,10 +116,10 @@ export class AboutFace {
             "y": token.data.y,
             "facing": rotation_value
         };
-        if (typeof token.getFlag(mod, modKey) !== 'undefined') {
-            await token.unsetFlag(mod, modKey, position);
+        if (typeof token.getFlag(MODULE_ID, modKey) !== 'undefined') {
+            await token.unsetFlag(MODULE_ID, modKey, position);
         }
-        await token.setFlag(mod, modKey, position);
+        await token.setFlag(MODULE_ID, modKey, position);
         return token;
     }
 
@@ -144,10 +134,10 @@ export class AboutFace {
         let tokenIndicators = [];
         activeTokens.forEach(token => {
             tokenIndicators.push((TokenIndicators.filter(ti => ti.token.id == token.id))[0]);
-            let pos = token.getFlag(mod, modKey);
+            let pos = token.getFlag(MODULE_ID, modKey);
             pos.facing = AboutFace.getRotationDegrees(null, null, direction);
-            token.unsetFlag(mod, modKey);
-            token.setFlag(mod, modKey, pos);
+            token.unsetFlag(MODULE_ID, modKey);
+            token.setFlag(MODULE_ID, modKey, pos);
 
         });
 
@@ -213,16 +203,16 @@ export class AboutFace {
         if (updateData.flags === undefined) {
             updateData.flags = {};
         }
-        if (token.getFlag(mod, modKey) === undefined) {
+        if (token.getFlag(MODULE_ID, modKey) === undefined) {
             pos = {
                 'x': token.x,
                 'y': token.y,
                 'facing': 0
             };
-            setProperty(updateData.flags, `${mod}.${modKey}`, pos);
+            setProperty(updateData.flags, `${MODULE_ID}.${modKey}`, pos);
         } else {
             // get old position data
-            pos = token.getFlag(mod, modKey);
+            pos = token.getFlag(MODULE_ID, modKey);
         }
 
         // calculate new position data
@@ -241,7 +231,7 @@ export class AboutFace {
 
 
         // exit if new direction is same as old
-        if ((dir == facing) && (game.settings.get(mod, 'flip-or-rotate') == "rotate")) return;
+        if ((dir == facing) && (game.settings.get(MODULE_ID, 'flip-or-rotate') == "rotate")) return;
 
         // update direction here, preventing rotate() from triggering stack issue
         // don't rotate because of user setting
@@ -286,10 +276,10 @@ export class AboutFace {
         //==================================================================
         // Token Flipping
         // token.width !== token.w lol
-        if (game.settings.get(mod, 'flip-or-rotate') !== "rotate") {
+        if (game.settings.get(MODULE_ID, 'flip-or-rotate') !== "rotate") {
 
             log('updateTokenEventHandler, pos:', pos.facing);
-            if (game.settings.get(mod, 'flip-or-rotate') == "flip-v") {
+            if (game.settings.get(MODULE_ID, 'flip-or-rotate') == "flip-v") {
                 if (pos.facing == 0) {
                     updateData.mirrorY = true;
                     // token.icon.scale.y = 1;
@@ -315,7 +305,7 @@ export class AboutFace {
             return;
 
         }
-        setProperty(updateData.flags, `${mod}.${modKey}`, pos);
+        setProperty(updateData.flags, `${MODULE_ID}.${modKey}`, pos);
         setProperty(updateData, 'rotation', dir);
         //canvas.sight.updateToken(token);
 
@@ -406,29 +396,11 @@ export class AboutFace {
         AboutFace.refreshSettings();
     }
 
-    static refreshSettings() {
-        enableRotation = game.settings.get(mod, "enable-rotation");
-        useIndicator = game.settings.get(mod, "use-indicator");
-        useIndicator = (useIndicator == "1" || useIndicator == "2") ? useIndicator : false;
-        switch (useIndicator) {
-            case "0":
-            case "1":
-                AboutFace.hideAllIndicators();
-                break;
-            case "2":
-                AboutFace.showAllIndicators();
-                break;
-            default:
-                break;
-        }
-        // console.log(useIndicator);
-    }
-
     static async createTokenHandler(scene, token) {
  
         let t = canvas.tokens.placeables.find(tokenPlaceable => tokenPlaceable.id === token._id);
         let ti = await TokenIndicator.init(t);
-        ti.create(game.settings.get(mod, "indicator-sprite"));
+        ti.create(game.settings.get(MODULE_ID, "indicator-sprite"));
         if (!useIndicator || useIndicator == "1") {
             ti.hide();
         }
@@ -438,7 +410,7 @@ export class AboutFace {
             'facing': token.rotation
         };        
         TokenIndicators.push(ti);
-        t.setFlag(mod,modKey,pos);
+        t.setFlag(MODULE_ID,modKey,pos);
     }
 
 }
