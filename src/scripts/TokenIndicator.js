@@ -1,31 +1,60 @@
-import {
-    SpriteID
-} from './sprite-id.js';
-
+import { SpriteID } from './SpriteID.js';
 import * as Helpers from './helpers.js';
+import { log, LogLevel } from './logging.js';
+
+const MODULE_ID = 'about-face';
+const IndicatorStates = {
+    OFF: 0,
+    HOVER: 1,
+    ALWAYS: 2,
+};
 
 /**
  * Used to handle the indicators for direction for tokens
  */
 export class TokenIndicator {
 
-    constructor(token, sprite = false) {
+    constructor(token, sprite = {}) {
         this.token = token;
         this.sprite = sprite;
-        this.owner = token.owner;
-
-        this.c = new PIXI.Container();
-        token.indicator = this;
+        this.c = new PIXI.Container();        
     }
 
     /* -------------------------------------------- */
 
     /**
-     * Creates a new instance of the class with the token
-     * @param {Token} token  -- the token getting the indicator
+     * Create the indicator using the instance's indicator sprite
+     * If one hasn't been specified/set, use the default
      */
-    static init(token) {
-        return (new TokenIndicator(token));
+    async create(sprite = {}) {
+        log(LogLevel.DEBUG, 'TokenIndicator create()');
+
+        if (!sprite) {
+            this.sprite = await this.generateDefaultIndicator();
+
+            // this.sprite = this.generateSpaceIndicator('',0x000000);
+            // this.sprite = this.generateStarIndicator();
+        } else {
+            if (sprite == "large-triangle") {
+                this.sprite = await this.generateTriangleIndicator('large', 0xEAFF00, 0x000000);
+            } else {
+                this.sprite = await this.generateDefaultIndicator();
+            }
+        }
+
+        this.sprite.zIndex = -1;
+        this.sprite.position.x = this.token.w / 2;
+        this.sprite.position.y = this.token.h / 2;
+        this.sprite.anchor.set(.5);
+        this.sprite.angle = this.token.data.rotation;
+
+        this.c.addChild(this.sprite);
+        this.token.addChild(this.c);
+
+        if (game.settings.get(MODULE_ID, 'use-indicator') !== IndicatorStates.ALWAYS)
+            this.sprite.visible = false;
+
+        return this;
     }
 
     /* -------------------------------------------- */
@@ -35,6 +64,9 @@ export class TokenIndicator {
      * @param {int|float} deg  -- rotate the sprite the specified amount
      */
     rotate(deg) {
+        log(LogLevel.DEBUG, 'TokenIndicator rotate()');
+        // token.update does not care about ._moving
+        if (game.user.isGM) this.token.update({ rotation: deg });
         if (!this.sprite) {
             return false;
         }
@@ -69,7 +101,6 @@ export class TokenIndicator {
         if (this.sprite) {
             this.sprite.visible = false;
         }
-
     }
 
     hasSprite() {
@@ -83,10 +114,9 @@ export class TokenIndicator {
     async generateDefaultIndicator() {
 
         let indicator_color = colorStringToHex("FF0000");
-
         if (this.token.actor) {
             if (this.token.actor.hasPlayerOwner) {
-                let user = await (Helpers.getTokenOwner(this.token));
+                let user = await Helpers.getTokenOwner(this.token);
                 if (user.length > 0) {
                     indicator_color = colorStringToHex(user[0].data.color);
                 }
@@ -94,9 +124,7 @@ export class TokenIndicator {
         }
 
         let triangle = this.generateTriangleIndicator("normal", indicator_color, 0x000000);
-
         return triangle;
-        //indicator_color = colorStringToHex(game.user.color);
     }
 
     /**
@@ -182,41 +210,5 @@ export class TokenIndicator {
 
         let texture = canvas.app.renderer.generateTexture(i);
         return new SpriteID(texture, this.token.id);
-
     }
-
-
-    /* -------------------------------------------- */
-
-    /**
-     * Create the indicator using the instance's indicator sprite
-     * If one hasn't been specified/set, use the default
-     */
-    async create(sprite = "") {
-        if (!this.sprite && sprite == "") {
-            this.sprite = await this.generateDefaultIndicator();
-
-            // this.sprite = this.generateSpaceIndicator('',0x000000);
-            // this.sprite = this.generateStarIndicator();
-        } else if (sprite != "") {
-            if (sprite == "large-triangle") {
-                this.sprite = await this.generateTriangleIndicator('large', 0xEAFF00, 0x000000);
-            } else {
-                this.sprite = await this.generateDefaultIndicator();
-            }
-        }
-
-        this.sprite.zIndex = -1;
-        this.sprite.position.x = this.token.w / 2;
-        this.sprite.position.y = this.token.h / 2;
-        this.sprite.anchor.set(.5);
-        this.sprite.angle = this.token.angle;
-
-        this.c.addChild(this.sprite);
-        this.token.addChild(this.c);
-
-        return true;
-
-    }
-
 }

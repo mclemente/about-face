@@ -7,8 +7,8 @@ export var LogLevel;
 (function (LogLevel) {
     LogLevel[LogLevel["ERROR"] = 0] = "ERROR";
     LogLevel[LogLevel["INFO"] = 1] = "INFO";
-    LogLevel[LogLevel["DEBUG"] = 2] = "DEBUG";
-    LogLevel[LogLevel["WARN"] = 3] = "WARN";
+    LogLevel[LogLevel["WARN"] = 2] = "WARN";
+    LogLevel[LogLevel["DEBUG"] = 3] = "DEBUG";
     LogLevel[LogLevel["ALL"] = 4] = "ALL";
 })(LogLevel || (LogLevel = {}));
 /**
