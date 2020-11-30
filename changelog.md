@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## [2.0.0]
+### MAJOR UPDATE
+- Clients and GM now in sync.
+- Can be disabled per scene (GM only)
+- Can be disabled per token by toggling 'lock rotation' (GM only)
+- Visiblity of indicator can be changed by all clients.
+
+### TECHINCAL CHANGES
+- Move stuff from preUpdate to update because token.indicator is not available in former. 
+- Now updateTokenHandler deals with updates for all clients: GM sees changes, sets flags -> all clients act on those flags. 
+- AboutFace.tokenIndicators holds all token indicators on the scene. disabled tokens not included. 
+- Move other vars inside the AboutFace Class.
+- TokenIndicator should deal with rotating the token too. 
+- If we just watch for rotation changes in hooks we don't need to have our own keybindings.
+- Change handler for settings is on the registersettings definition, no need for refresh settings.
+- Lots of Refactoring. 
+- Removed lots of redundant code. It is in the history if we need it again.
+- We only need to save the token rotation in a flag as we can determine the change each round from comparing `updateData` to the Token data.
+- Save the `sceneDisabled` flag on each scene.
+- Hacky workaround to get that to appear in the main settings window: GM checks for changes of the `sceneDisabled` flag and then updates the game setting `rotation-enabled` to keep them in sync.
+
 ## [1.7.0]
 ### BUGFIXES 
 - Fix ActorIsPC Deprecated bug #38
