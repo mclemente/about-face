@@ -79,7 +79,7 @@ export class AboutFace {
         log(LogLevel.INFO, 'canvasReadyHandler');        
 
         for (let [i, token] of canvas.tokens.placeables.entries()) {
-            if (!(token instanceof Token) || !token.actor) {
+            if (!(token instanceof Token) || !token.actor || token.data.lockRotation) {
                 continue;
             }
             log(LogLevel.INFO, 'creating TokenIndicator for:', token.name);
@@ -110,6 +110,19 @@ export class AboutFace {
         if (!AboutFace.sceneEnabled) return;
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
         log(LogLevel.DEBUG, 'updateTokenHandler', token.name);
+
+        if (updateData.lockRotation != null) {
+            if (updateData.lockRotation) {
+                AboutFace.tokenIndicators[token.id].hide();
+                delete AboutFace.tokenIndicators[token.id];
+            } else {
+                if (AboutFace.tokenIndicators[token.id]) log(LogLevel.WARN, 'updateTokenHandler lockRotation token is already in pool!');
+                else AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create();                 
+                if (AboutFace.indicatorState === IndicatorStates.ALWAYS)
+                    AboutFace.tokenIndicators[token.id].show();                
+            }
+            return;
+        }
 
         // the GM will observe all movement of tokens and set appropriate flags
         if (game.user.isGM && (updateData.x != null || updateData.y != null || updateData.rotation != null)) {
@@ -180,7 +193,8 @@ export class AboutFace {
 
     static async createTokenHandler(scene, token) {        
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
-        log(LogLevel.INFO, 'createTokenHandler, creating TokenIndicator for:', token.name);
+        if (token.data.lockRotation) return;
+        log(LogLevel.INFO, 'createTokenHandler, creating TokenIndicator for:', token.name);        
         AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create();
     }
     
