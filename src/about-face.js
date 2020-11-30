@@ -12,7 +12,7 @@ import { getRotationDegrees } from './scripts/helpers.js'
 const MODULE_ID = 'about-face';
 
 CONFIG.debug.hooks = false;
-CONFIG[MODULE_ID] = {logLevel:1};
+CONFIG[MODULE_ID] = {logLevel:2};
 
 const IndicatorStates = {
     OFF: 0,
