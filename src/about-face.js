@@ -11,7 +11,7 @@ import { log, LogLevel } from './scripts/logging.js'
 import { getRotationDegrees } from './scripts/helpers.js'
 
 CONFIG.debug.hooks = false;
-CONFIG[MODULE_ID] = {logLevel:1};
+CONFIG[MODULE_ID] = {logLevel:2};
 
 const IndicatorStates = {
     OFF: 0,
@@ -22,7 +22,7 @@ const IndicatorStates = {
 /* -------------------------------------------- */
 
 Hooks.once("init", () => {
-    log(LogLevel.INFO, 'initialising...')
+    log(LogLevel.INFO, 'initialising...');
 
     AboutFace.initialize();
 
@@ -36,11 +36,7 @@ Hooks.once("init", () => {
         onChange: (value) => { 
             if (!canvas.scene) return;
             AboutFace.sceneEnabled = value;
-            canvas.scene.setFlag(MODULE_ID, 'scene-enabled', AboutFace.sceneEnabled);
-            if (!AboutFace.sceneEnabled)
-                AboutFace.hideAllIndicators();
-            else if (AboutFace.indicatorState === IndicatorStates.ALWAYS)
-                AboutFace.showAllIndicators();
+            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'sceneEnabled', AboutFace.sceneEnabled);            
         }
       });
     
@@ -106,20 +102,20 @@ export class AboutFace {
         AboutFace.indicatorState;
     }
     
-    static async ready() {
-        log(LogLevel.INFO, 'ready');        
+    static async canvasReadyHandler() {
+        log(LogLevel.INFO, 'canvasReadyHandler');        
 
         for (let [i, token] of canvas.tokens.placeables.entries()) {
             if (!(token instanceof Token) || !token.actor) {
                 continue;
             }
-            log(LogLevel.DEBUG, 'ready: token ',token.name);
+            log(LogLevel.INFO, 'creating TokenIndicator for:', token.name);
             AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create();
         }
 
         AboutFace.indicatorState = game.settings.get(MODULE_ID, 'use-indicator');        
-        AboutFace.sceneEnabled = canvas.scene.getFlag(MODULE_ID, 'scene-enabled') != null 
-            ? canvas.scene.getFlag(MODULE_ID, 'scene-enabled') 
+        AboutFace.sceneEnabled = canvas.scene.getFlag(MODULE_ID, 'sceneEnabled') != null 
+            ? canvas.scene.getFlag(MODULE_ID, 'sceneEnabled') 
             : true;
 
         if (game.user.isGM) game.settings.set(MODULE_ID, 'enable-rotation', AboutFace.sceneEnabled);    
@@ -136,16 +132,16 @@ export class AboutFace {
      * @param {*} options 
      * @param {*} userId 
      */
-    static async updateTokenEventHandler(scene, token, updateData, options, userId) {
+    static async updateTokenHandler(scene, token, updateData, options, userId) {
         if (!AboutFace.sceneEnabled) return;
-        log(LogLevel.DEBUG, 'updateTokenEventHandler', token);
+        token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
+        log(LogLevel.DEBUG, 'updateTokenHandler', token.name);
 
         // the GM will observe all movement of tokens and set appropriate flags
         if (game.user.isGM && (updateData.x != null || updateData.y != null || updateData.rotation != null)) {
-            log(LogLevel.DEBUG, 'updateTokenEventHandler', token);
-
-            token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
+            
             if (updateData.rotation != null) return await token.setFlag(MODULE_ID, 'direction', updateData.rotation);
+            
             // check for movement
             const lastPos = new PIXI.Point(AboutFace.tokenIndicators[token.id].token.x, AboutFace.tokenIndicators[token.id].token.y);
             // calculate new position data
@@ -159,16 +155,14 @@ export class AboutFace {
 
         if (updateData.flags == null || updateData.flags[MODULE_ID]?.direction == null) return;
 
-        if (token === undefined) return;
-        token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
-
         AboutFace.tokenIndicators[token.id].rotate(updateData.flags[MODULE_ID]?.direction);
     }
 
-    static hoverTokenEventHandler(token, isHovering) {
-        if (!AboutFace.sceneEnabled || AboutFace.indicatorState !== IndicatorStates.HOVER) return;
+    static hoverTokenHandler(token, isHovering) {
+        if (!AboutFace.sceneEnabled || AboutFace.indicatorState !== IndicatorStates.HOVER) return;        
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
-    
+        log(LogLevel.DEBUG, 'hoverTokenHandler', token.name);
+
         if (!token.owner) return;
 
         if (isHovering)
@@ -177,9 +171,30 @@ export class AboutFace {
             AboutFace.tokenIndicators[token.id].hide();
     }
 
+  /**
+   * Handler called when scene data updated. Draws splats from scene data flags.
+   * @category GMandPC
+   * @function
+   * @param scene - reference to the current scene
+   * @param changes - changes
+   */
+  static updateSceneHandler(scene, updateData) {
+        // if (!AboutFace.sceneEnabled || AboutFace.indicatorState !== IndicatorStates.HOVER) return;        
+        
+        if (updateData.flags == null || updateData.flags[MODULE_ID]?.sceneEnabled == null) return;        
+        
+        log(LogLevel.DEBUG, 'updateSceneHandler', scene);
+
+        AboutFace.sceneEnabled = updateData.flags[MODULE_ID]?.sceneEnabled;
+        if (!AboutFace.sceneEnabled)
+            AboutFace.hideAllIndicators();
+        else if (AboutFace.indicatorState === IndicatorStates.ALWAYS)
+            AboutFace.showAllIndicators();
+    }
+
     static showAllIndicators() {
         if (canvas == null) return;
-
+        log(LogLevel.DEBUG, 'showAllIndicators');
         for (const id in AboutFace.tokenIndicators) {
             AboutFace.tokenIndicators[id].show();
         }
@@ -187,24 +202,27 @@ export class AboutFace {
 
     static hideAllIndicators() {
         if (canvas == null) return;
-
+        log(LogLevel.DEBUG, 'hideAllIndicators');
         for (const id in AboutFace.tokenIndicators) {
             AboutFace.tokenIndicators[id].hide();
         }
     }
 
-    static async createTokenHandler(scene, token) {
+    static async createTokenHandler(scene, token) {        
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
+        log(LogLevel.INFO, 'createTokenHandler, creating TokenIndicator for:', token.name);
         AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create();
     }
     
-    static async deleteTokenHandler(scene, token) {        
+    static async deleteTokenHandler(scene, token) {       
+        log(LogLevel.INFO, 'deleteTokenHandler:', token._id); 
         delete AboutFace.tokenIndicators[token._id];
     }
 }
 
 Hooks.on("createToken", AboutFace.createTokenHandler);
 Hooks.on("deleteToken", AboutFace.deleteTokenHandler);
-Hooks.on("canvasReady", AboutFace.ready);
-Hooks.on("hoverToken", AboutFace.hoverTokenEventHandler);
-Hooks.on("updateToken",  AboutFace.updateTokenEventHandler);
+Hooks.on("canvasReady", AboutFace.canvasReadyHandler);
+Hooks.on("hoverToken", AboutFace.hoverTokenHandler);
+Hooks.on("updateToken",  AboutFace.updateTokenHandler);
+Hooks.on("updateScene",  AboutFace.updateSceneHandler);
