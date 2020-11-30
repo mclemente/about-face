@@ -1,0 +1,20 @@
+{
+    "about-face.options.individual-token-text": "¿Mostrar indicador para este token?",
+    "about-face.options.enable-rotation.name": "Activar la rotación de About Face en esta Escena",
+    "about-face.options.enable-rotation.hint": "Rota los tokens cuando se mueven (excepto si tiene la rotación bloqueada). Si está desactivado, se puede seguir rotando el toquen manualmente",
+    "about-face.options.enable-indicator.name": "Activar los indicadores de orientación de token",
+    "about-face.options.enable-indicator.hint": "Agrega un indicador de orientación a los token",
+    "about-face.options.indicator.choices.0": "No mostrar nunca",
+    "about-face.options.indicator.choices.1": "Al pasar por encima",
+    "about-face.options.indicator.choices.2": "Siempre",
+    "about-face.options.flip-or-rotate.name": "Voletar o rotar el token",
+    "about-face.options.flip-or-rotate.hint": "En vez de rotar el token, voltearlo",
+    "about-face.options.flip-or-rotate.choices.rotate": "Rotar",
+    "about-face.options.flip-or-rotate.choices.flip-v": "Voltear verticalmente",
+    "about-face.options.flip-or-rotate.choices.flip-h": "Voltear horizontalmente",
+    
+    "about-face.options.indicator-sprite.name": "Tamaño del indicador",
+    "about-face.options.indicator-sprite.hint": "Cambiar el tamaño del indicador (requiere recargar)",
+    "about-face.options.indicator-sprite.choices.normal": "Normal",
+    "about-face.options.indicator-sprite.choices.large": "Grande"
+}
