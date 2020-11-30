@@ -34,8 +34,10 @@ Hooks.once("init", () => {
         default: true,
         type: Boolean,
         onChange: (value) => { 
-            AboutFace.disabled = !value;
-            if (AboutFace.disabled)
+            if (!canvas.scene) return;
+            AboutFace.sceneEnabled = value;
+            canvas.scene.setFlag(MODULE_ID, 'scene-enabled', AboutFace.sceneEnabled);
+            if (!AboutFace.sceneEnabled)
                 AboutFace.hideAllIndicators();
             else if (AboutFace.indicatorState === IndicatorStates.ALWAYS)
                 AboutFace.showAllIndicators();
@@ -45,7 +47,7 @@ Hooks.once("init", () => {
       game.settings.register(MODULE_ID, 'use-indicator', {
         name: "about-face.options.enable-indicator.name",
         hint: "about-face.options.enable-indicator.hint",
-        scope: "world",
+        scope: "client",
         config: true,
         default: 2,
         type: Number,
@@ -56,9 +58,9 @@ Hooks.once("init", () => {
         },
         onChange: (value) => { 
             let state = Number(value);
-            if (AboutFace.indicatorState === IndicatorStates.ALWAYS)
+            if (state !== IndicatorStates.ALWAYS)
                 AboutFace.hideAllIndicators();
-            if (state === IndicatorStates.ALWAYS && !AboutFace.disabled)
+            else if (AboutFace.sceneEnabled)
                 AboutFace.showAllIndicators();
             AboutFace.indicatorState = state;
         }
@@ -99,7 +101,7 @@ Hooks.once("init", () => {
 export class AboutFace {
 
     static initialize() {
-        AboutFace.disabled = false;
+        AboutFace.sceneEnabled = true;
         AboutFace.tokenIndicators = {};
         AboutFace.indicatorState;
     }
@@ -107,9 +109,6 @@ export class AboutFace {
     static async ready() {
         log(LogLevel.INFO, 'ready');        
 
-        AboutFace.disabled = game.settings.get(MODULE_ID, 'enable-rotation');
-        AboutFace.indicatorState = game.settings.get(MODULE_ID, 'use-indicator');
-           
         for (let [i, token] of canvas.tokens.placeables.entries()) {
             if (!(token instanceof Token) || !token.actor) {
                 continue;
@@ -117,6 +116,13 @@ export class AboutFace {
             log(LogLevel.DEBUG, 'ready: token ',token.name);
             AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create();
         }
+
+        AboutFace.indicatorState = game.settings.get(MODULE_ID, 'use-indicator');        
+        AboutFace.sceneEnabled = canvas.scene.getFlag(MODULE_ID, 'scene-enabled') != null 
+            ? canvas.scene.getFlag(MODULE_ID, 'scene-enabled') 
+            : true;
+
+        if (game.user.isGM) game.settings.set(MODULE_ID, 'enable-rotation', AboutFace.sceneEnabled);    
     }
 
 
@@ -131,7 +137,7 @@ export class AboutFace {
      * @param {*} userId 
      */
     static async updateTokenEventHandler(scene, token, updateData, options, userId) {
-        if (AboutFace.disabled) return;
+        if (!AboutFace.sceneEnabled) return;
         log(LogLevel.DEBUG, 'updateTokenEventHandler', token);
 
         // the GM will observe all movement of tokens and set appropriate flags
@@ -139,7 +145,7 @@ export class AboutFace {
             log(LogLevel.DEBUG, 'updateTokenEventHandler', token);
 
             token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
-            if (updateData.rotation != null) return token.setFlag(MODULE_ID, 'direction', updateData.rotation);
+            if (updateData.rotation != null) return await token.setFlag(MODULE_ID, 'direction', updateData.rotation);
             // check for movement
             const lastPos = new PIXI.Point(AboutFace.tokenIndicators[token.id].token.x, AboutFace.tokenIndicators[token.id].token.y);
             // calculate new position data
@@ -148,7 +154,7 @@ export class AboutFace {
             if (dX === 0 && dY === 0 && facing === 0) return;
             let dir = getRotationDegrees(dX, dY);
     
-            return token.setFlag(MODULE_ID, 'direction', dir);
+            return await token.setFlag(MODULE_ID, 'direction', dir);
         }
 
         if (updateData.flags == null || updateData.flags[MODULE_ID]?.direction == null) return;
@@ -160,7 +166,7 @@ export class AboutFace {
     }
 
     static hoverTokenEventHandler(token, isHovering) {
-        if (AboutFace.disabled || AboutFace.indicatorState !== IndicatorStates.HOVER) return;
+        if (!AboutFace.sceneEnabled || AboutFace.indicatorState !== IndicatorStates.HOVER) return;
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
     
         if (!token.owner) return;
@@ -188,13 +194,17 @@ export class AboutFace {
     }
 
     static async createTokenHandler(scene, token) {
-        if (!game.user.isGM) return;
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
         AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create();
+    }
+    
+    static async deleteTokenHandler(scene, token) {        
+        delete AboutFace.tokenIndicators[token._id];
     }
 }
 
 Hooks.on("createToken", AboutFace.createTokenHandler);
+Hooks.on("deleteToken", AboutFace.deleteTokenHandler);
 Hooks.on("canvasReady", AboutFace.ready);
 Hooks.on("hoverToken", AboutFace.hoverTokenEventHandler);
 Hooks.on("updateToken",  AboutFace.updateTokenEventHandler);

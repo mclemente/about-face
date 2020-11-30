@@ -1,6 +1,6 @@
 {
     "about-face.options.individual-token-text": "¿Mostrar indicador para este token?",
-    "about-face.options.enable-rotation.name": "Activar la rotación de About Face",
+    "about-face.options.enable-rotation.name": "Activar la rotación de About Face en esta Escena",
     "about-face.options.enable-rotation.hint": "Rota los tokens cuando se mueven (excepto si tiene la rotación bloqueada). Si está desactivado, se puede seguir rotando el toquen manualmente",
     "about-face.options.enable-indicator.name": "Activar los indicadores de orientación de token",
     "about-face.options.enable-indicator.hint": "Agrega un indicador de orientación a los token",
