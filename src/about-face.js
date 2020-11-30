@@ -73,7 +73,7 @@ export class AboutFace {
         AboutFace.tokenIndicators = {};
         AboutFace.indicatorState;
     }
-    
+
     static async ready() {
         log(LogLevel.INFO, 'ready');        
         TokenIndicators = [];
@@ -93,64 +93,6 @@ export class AboutFace {
         }
 
 
-    }
-
-    static async getIndicator(token) {
-        log(LogLevel.DEBUG, 'getIndicator', token);
-        let ti = await TokenIndicator.init(token);
-        await ti.create(game.settings.get(MODULE_ID, "indicator-sprite"));
-        if (!useIndicator || useIndicator == "1") {
-            if (ti.hasSprite()) {
-                ti.hide();
-            }
-        }
-        return ti;
-    }
-
-    /* -------------------------------------------- */
-
-    static async setRotationFlags(token, rotation_value) {
-        log(LogLevel.DEBUG, 'setRotationFlags', token);
-        let position = {
-            "x": token.data.x,
-            "y": token.data.y,
-            "facing": rotation_value
-        };
-        if (typeof token.getFlag(MODULE_ID, modKey) !== 'undefined') {
-            await token.unsetFlag(MODULE_ID, modKey, position);
-        }
-        await token.setFlag(MODULE_ID, modKey, position);
-        return token;
-    }
-
-    /**
-     * Rotation function primarily used by our key event handlers
-     */
-    static async rotate(direction) {
-        log(LogLevel.DEBUG,'rotate', direction);
-        if (!useIndicator) {
-            return;
-        }
-        let tokenIndicators = [];
-        activeTokens.forEach(token => {
-            tokenIndicators.push((TokenIndicators.filter(ti => ti.token.id == token.id))[0]);
-            let pos = token.getFlag(MODULE_ID, modKey);
-            pos.facing = AboutFace.getRotationDegrees(null, null, direction);
-            token.unsetFlag(MODULE_ID, modKey);
-            token.setFlag(MODULE_ID, modKey, pos);
-
-        });
-
-        tokenIndicators.forEach(ti => {
-            let dir = AboutFace.getRotationDegrees(null, null, direction);
-            if (!ti) return; // addresses a weird issue where a token might be removed.
-
-            token_rotation = ti.rotate(dir);
-
-            // ti.token.update({
-            //     rotation: dir
-            // });
-        });
     }
 
     /* -------------------------------------------- */
@@ -378,24 +320,6 @@ export class AboutFace {
         }
     }
 
-
-    static controlTokenEventHandler(token, opt) {
-        if (opt) {
-            activeTokens.push(token);
-        } else {
-            const index = activeTokens.indexOf(token);
-            if (index > -1) {
-                activeTokens.splice(index, 1);
-            }
-
-            // AboutFace.setRotationFlags(token, 0);
-        }
-    }
-
-    static closeSettingsConfigEventHandler(settingsConfig, obj) {
-        AboutFace.refreshSettings();
-    }
-
     static async createTokenHandler(scene, token) {
  
         let t = canvas.tokens.placeables.find(tokenPlaceable => tokenPlaceable.id === token._id);
@@ -414,60 +338,6 @@ export class AboutFace {
     }
 
 }
-
-
-//===================================================
-// Handle key events, specifically holding shift
-//===================================================
-var activeTokens = [];
-$(document).keydown(function (event) {
-
-    // detect which token trying to move
-
-    if (event.shiftKey) {
-        switch (event.which) {
-            case 65: // a
-            case 37: // left arrow
-                AboutFace.rotate('left');
-                break;
-            case 87: // w
-            case 38: // up arrow
-                AboutFace.rotate('up');
-                break;
-            case 68: // d
-            case 39: // right arrow
-                AboutFace.rotate('right');
-                break;
-            case 83: // s
-            case 40: // down arrow
-                AboutFace.rotate('down');
-                break;
-            default:
-                break;
-        }
-    }
-
-});
-
-var map = {}; // You could also use an array
-onkeydown = onkeyup = function (e) {
-    e = e || event; // to deal with IE
-    map[e.keyCode] = e.type == 'keydown';
-
-    if (e.shiftKey) {
-        if ((map[87] && map[65]) || (map[38] && map[37])) {
-            AboutFace.rotate('up-left');
-        } else if ((map[87] && map[68]) || (map[38] && map[39])) {
-            AboutFace.rotate('up-right');
-        } else if ((map[83] && map[65]) || (map[40] && map[37])) {
-            AboutFace.rotate('down-left');
-        } else if ((map[83] && map[68]) || (map[40] && map[39])) {
-            AboutFace.rotate('down-right');
-        }
-
-    }
-}
-
 
 Hooks.on("createToken", AboutFace.createTokenHandler);
 Hooks.on("canvasReady", AboutFace.ready);
