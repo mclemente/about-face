@@ -22,29 +22,25 @@ export async function getTokenOwner(token, includeGM=false) {
     return ret;
 }
 
-export async function getTokenByTokenID(id) {
-    return canvas.tokens.placeables.find( x => {return x.id === id});
-}
-export async function getTokenByTokenName(name) {
-    // return game.scenes.active.data.tokens.find( x => {return x._name === name});
-    return canvas.tokens.placeables.find( x => { return x.id == id});
-}
+/**
+ * returns the degrees to rotate a token
+ * @param {int} dX     the value of x2 - x1
+ * @param {int} dY     the value of y2 - y1
+ * @return int
+ **/
+export function getRotationDegrees(dX = null, dY = null, dir = null) {
+    var rotation;
+    if ((dX == 0 && dY < 0) || dir == "up") rotation = 180; // up
+    else if ((dX == 0 && dY > 0) || dir == "down") rotation = 0; // down
+    else if ((dX > 0 && dY == 0) || dir == "right") rotation = 270; // to the right
+    else if ((dX > 0 && dY < 0) || dir == "up-right") rotation = 225; // up to the right
+    else if ((dX > 0 && dY > 0) || dir == "down-right") rotation = 315; // down to the right
+    else if ((dX < 0 && dY == 0) || dir == "left") rotation = 90; // to the left
+    else if ((dX < 0 && dY > 0) || dir == "down-left") rotation = 45; // down to the left
+    else if ((dX < 0 && dY < 0) || dir == "up-left") rotation = 135 // up to the left
+    let token_rotation = rotation || 0;
 
+    // i messed with every version of atan, atan2 I could come up with; inverted Y makes it tough
+    return token_rotation;
 
-export function getInput(prompt) {
-    return new Promise(resolve => {
-        new Dialog({
-            title: prompt,
-            content: '<div align="center"><input id="dialog_box" style="width:375px"></input></div>',
-            buttons: {
-                ok: {
-                    label: "OK",
-                    callback: () => {
-                        resolve(document.getElementById("dialog_box").value)
-                    }
-                }
-            },
-            default:"ok"
-        }).render(true);
-    });
 }
