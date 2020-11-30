@@ -1,5 +1,6 @@
-import { SpriteID } from './sprite-id.js';
+import { SpriteID } from './SpriteID.js';
 import * as Helpers from './helpers.js';
+import { log, LogLevel } from './logging.js';
 
 const MODULE_ID = 'about-face';
 const IndicatorStates = {
@@ -16,7 +17,6 @@ export class TokenIndicator {
     constructor(token, sprite = {}) {
         this.token = token;
         this.sprite = sprite;
-        this.owner = token.owner;
         this.c = new PIXI.Container();        
     }
 
@@ -27,6 +27,8 @@ export class TokenIndicator {
      * If one hasn't been specified/set, use the default
      */
     async create(sprite = {}) {
+        log(LogLevel.DEBUG, 'TokenIndicator create()');
+
         if (!sprite) {
             this.sprite = await this.generateDefaultIndicator();
 
@@ -62,6 +64,7 @@ export class TokenIndicator {
      * @param {int|float} deg  -- rotate the sprite the specified amount
      */
     rotate(deg) {
+        log(LogLevel.DEBUG, 'TokenIndicator rotate()');
         if (game.user.isGM) this.token.update({ rotation: deg });
         if (!this.sprite) {
             return false;

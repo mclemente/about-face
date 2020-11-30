@@ -6,7 +6,7 @@
  */
 const MODULE_ID = 'about-face';
 
-import { TokenIndicator } from './scripts/token-indicator.js';
+import { TokenIndicator } from './scripts/TokenIndicator.js';
 import { log, LogLevel } from './scripts/logging.js'
 import { getRotationDegrees } from './scripts/helpers.js'
 
