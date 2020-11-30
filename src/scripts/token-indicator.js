@@ -62,7 +62,7 @@ export class TokenIndicator {
      * @param {int|float} deg  -- rotate the sprite the specified amount
      */
     rotate(deg) {
-        this.token.rotate(deg);
+        if (game.user.isGM) this.token.update({ rotation: deg });
         if (!this.sprite) {
             return false;
         }
