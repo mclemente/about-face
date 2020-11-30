@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [1.7.0]
+### BUGFIXES 
+- Fix ActorIsPC Deprecated bug #38
+- Fix bug when token is created and not moved before update
+
 ## [1.6.10] 
 ### FEATURES
 - Added logging module in `/scripts`, convert `console.log` to `log(LogLevel.INFO,...`

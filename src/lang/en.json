@@ -1,6 +1,6 @@
 {
     "about-face.options.individual-token-text": "Show indicator for this token?",
-    "about-face.options.enable-rotation.name": "Enable About Face Rotation",
+    "about-face.options.enable-rotation.name": "Enable About Face on this scene",
     "about-face.options.enable-rotation.hint": "Rotates tokens when moving them (except when locked). If disabled, can still hold shift to rotate in place",
     "about-face.options.enable-indicator.name": "Enable token indicators",
     "about-face.options.enable-indicator.hint": "Adds an indicator for direction to tokens",

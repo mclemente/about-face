@@ -65,6 +65,7 @@ export class TokenIndicator {
      */
     rotate(deg) {
         log(LogLevel.DEBUG, 'TokenIndicator rotate()');
+        // token.update does not care about ._moving
         if (game.user.isGM) this.token.update({ rotation: deg });
         if (!this.sprite) {
             return false;

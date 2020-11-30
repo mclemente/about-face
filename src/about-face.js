@@ -2,9 +2,8 @@
  * About Face -- A Token Rotator
  *      Rotates tokens based on the direction the token is moved
  * 
- * version 1.6.5                  by Eadorin
+ * version 2.0.0                by Eadorin
  */
-
 
 import { TokenIndicator } from './scripts/TokenIndicator.js';
 import { log, LogLevel } from './scripts/logging.js'
@@ -99,7 +98,8 @@ export class AboutFace {
     /* -------------------------------------------- */
 
     /**
-     * Gets the new rotational value and rotates the token
+     * GM checks for movement and sets flags, then all users update based on those flags.
+     * Therefore, runs twice per turn.
      * @param {Scene} scene         - the current scene
      * @param {object} token        - data of the clicked token
      * @param {object} updateData   - the data that was actually updated by the move
@@ -145,18 +145,14 @@ export class AboutFace {
             AboutFace.tokenIndicators[token.id].hide();
     }
 
-  /**
-   * Handler called when scene data updated. Draws splats from scene data flags.
-   * @category GMandPC
-   * @function
-   * @param scene - reference to the current scene
-   * @param changes - changes
-   */
-  static updateSceneHandler(scene, updateData) {
-        // if (!AboutFace.sceneEnabled || AboutFace.indicatorState !== IndicatorStates.HOVER) return;        
-        
-        if (updateData.flags == null || updateData.flags[MODULE_ID]?.sceneEnabled == null) return;        
-        
+    /**
+     * Handler called when scene data updated.      
+     * @function
+     * @param scene - reference to the current scene
+     * @param changes - changes
+     */
+    static updateSceneHandler(scene, updateData) {
+        if (updateData.flags == null || updateData.flags[MODULE_ID]?.sceneEnabled == null) return;             
         log(LogLevel.DEBUG, 'updateSceneHandler', scene);
 
         AboutFace.sceneEnabled = updateData.flags[MODULE_ID]?.sceneEnabled;
