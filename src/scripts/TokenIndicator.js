@@ -1,6 +1,6 @@
 import {
     SpriteID
-} from './sprite-id.js';
+} from './SpriteID.js';
 
 import * as Helpers from './helpers.js';
 

@@ -9,7 +9,7 @@ const modKey = 'position';
 const modDisplayName = "About Face";
 import {
     TokenIndicator
-} from './scripts/token-indicator.js';
+} from './scripts/TokenIndicator.js';
 import {log, LogLevel } from './scripts/logging.js'
 
 CONFIG.debug.hooks = false;
