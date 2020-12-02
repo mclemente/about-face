@@ -124,6 +124,8 @@ export class AboutFace {
             return;
         }
 
+        if (!AboutFace.tokenIndicators[token.id]) return;
+
         // the GM will observe all movement of tokens and set appropriate flags
         if (game.user.isGM && (updateData.x != null || updateData.y != null || updateData.rotation != null)) {
             
