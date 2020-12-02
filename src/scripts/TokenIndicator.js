@@ -118,7 +118,9 @@ export class TokenIndicator {
             if (this.token.actor.hasPlayerOwner) {
                 let user = await Helpers.getTokenOwner(this.token);
                 if (user.length > 0) {
-                    indicator_color = colorStringToHex(user[0].data.color);
+                    if (user[0] != null && user[0].data.color != null) { //Bandage by Z-Machine
+                        indicator_color = colorStringToHex(user[0].data.color);
+                    }
                 }
             }
         }
