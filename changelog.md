@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [2.0.1]
+### BUGFIXES 
+- Patched user[0] can be null when generating color indicator
+- Fixed updating disabled token bug.
+
 ## [2.0.0]
 ### MAJOR UPDATE
 - Clients and GM now in sync.
