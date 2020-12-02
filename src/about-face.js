@@ -204,6 +204,26 @@ export class AboutFace {
         log(LogLevel.INFO, 'deleteTokenHandler:', token._id); 
         delete AboutFace.tokenIndicators[token._id];
     }
+
+    /**
+   * Handler called when token configuration window is opened. Injects custom form html and deals
+   * with updating token.
+   * @category GMOnly
+   * @function
+   * @async
+   * @param {TokenConfig} tokenConfig
+   * @param {JQuery} html
+   */
+  static async renderTokenConfigHandler(tokenConfig, html) {
+    log(LogLevel.INFO, 'renderTokenConfig');
+    
+    const imageTab = html.find('.tab[data-tab="position"]');
+    const checked = tokenConfig.object.getFlag(MODULE_ID, 'indicatorDisabled') ? 'checked' : '';
+
+    let checkboxHTML = `<div class="form-group"><label>Disable Direction Indicator:</label><input type="checkbox" name="flags.about-face.indicatorDisabled" data-dtype="Boolean" ${checked}></div>`;
+
+    imageTab.append(checkboxHTML);
+  }
 }
 
 Hooks.on("createToken", AboutFace.createTokenHandler);
@@ -212,3 +232,4 @@ Hooks.on("canvasReady", AboutFace.canvasReadyHandler);
 Hooks.on("hoverToken", AboutFace.hoverTokenHandler);
 Hooks.on("updateToken",  AboutFace.updateTokenHandler);
 Hooks.on("updateScene",  AboutFace.updateSceneHandler);
+Hooks.on('renderTokenConfig', AboutFace.renderTokenConfigHandler);
