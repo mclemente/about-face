@@ -14,7 +14,7 @@ const MODULE_ID = 'about-face';
 CONFIG.debug.hooks = false;
 CONFIG[MODULE_ID] = {logLevel:2};
 
-const IndicatorStates = {
+const IndicatorMode = {
     OFF: 0,
     HOVER: 1,
     ALWAYS: 2,
@@ -55,7 +55,7 @@ Hooks.once("init", () => {
         },
         onChange: (value) => { 
             let state = Number(value);
-            if (state !== IndicatorStates.ALWAYS)
+            if (state !== IndicatorMode.ALWAYS)
                 AboutFace.hideAllIndicators();
             else if (AboutFace.sceneEnabled)
                 AboutFace.showAllIndicators();
@@ -79,7 +79,7 @@ export class AboutFace {
         log(LogLevel.INFO, 'canvasReadyHandler');        
 
         for (let [i, token] of canvas.tokens.placeables.entries()) {
-            if (!(token instanceof Token) || !token.actor || token.data.lockRotation) {
+            if (!(token instanceof Token) || !token.actor) {
                 continue;
             }
             log(LogLevel.INFO, 'creating TokenIndicator for:', token.name);
@@ -111,20 +111,15 @@ export class AboutFace {
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
         log(LogLevel.DEBUG, 'updateTokenHandler', token.name);
 
-        if (updateData.lockRotation != null) {
-            if (updateData.lockRotation) {
-                AboutFace.tokenIndicators[token.id].hide();
-                delete AboutFace.tokenIndicators[token.id];
-            } else {
-                if (AboutFace.tokenIndicators[token.id]) log(LogLevel.WARN, 'updateTokenHandler lockRotation token is already in pool!');
-                else AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create();                 
-                if (AboutFace.indicatorState === IndicatorStates.ALWAYS)
-                    AboutFace.tokenIndicators[token.id].show();                
-            }
+        if (!AboutFace.tokenIndicators[token.id]) {
+            log(LogLevel.ERROR, 'updateTokenHandler cant find tokenIndicator in pool!');
             return;
         }
 
-        if (!AboutFace.tokenIndicators[token.id]) return;
+        if (updateData.flags != null && updateData.flags[MODULE_ID]?.indicatorDisabled != null) {
+            if (updateData.flags[MODULE_ID].indicatorDisabled) AboutFace.tokenIndicators[token.id].hide();
+            else if (AboutFace.indicatorState === IndicatorMode.ALWAYS) AboutFace.tokenIndicators[token.id].show();
+        }
 
         // the GM will observe all movement of tokens and set appropriate flags
         if (game.user.isGM && (updateData.x != null || updateData.y != null || updateData.rotation != null)) {
@@ -148,7 +143,7 @@ export class AboutFace {
     }
 
     static hoverTokenHandler(token, isHovering) {
-        if (!AboutFace.sceneEnabled || AboutFace.indicatorState !== IndicatorStates.HOVER) return;        
+        if (!AboutFace.sceneEnabled || AboutFace.indicatorState !== IndicatorMode.HOVER) return;        
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
         log(LogLevel.DEBUG, 'hoverTokenHandler', token.name);
 
@@ -173,7 +168,7 @@ export class AboutFace {
         AboutFace.sceneEnabled = updateData.flags[MODULE_ID]?.sceneEnabled;
         if (!AboutFace.sceneEnabled)
             AboutFace.hideAllIndicators();
-        else if (AboutFace.indicatorState === IndicatorStates.ALWAYS)
+        else if (AboutFace.indicatorState === IndicatorMode.ALWAYS)
             AboutFace.showAllIndicators();
     }
 
@@ -195,7 +190,6 @@ export class AboutFace {
 
     static async createTokenHandler(scene, token) {        
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
-        if (token.data.lockRotation) return;
         log(LogLevel.INFO, 'createTokenHandler, creating TokenIndicator for:', token.name);        
         AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create();
     }
