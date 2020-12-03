@@ -3,7 +3,7 @@ import * as Helpers from './helpers.js';
 import { log, LogLevel } from './logging.js';
 
 const MODULE_ID = 'about-face';
-const IndicatorStates = {
+const IndicatorMode = {
     OFF: 0,
     HOVER: 1,
     ALWAYS: 2,
@@ -17,7 +17,7 @@ export class TokenIndicator {
     constructor(token, sprite = {}) {
         this.token = token;
         this.sprite = sprite;
-        this.c = new PIXI.Container();        
+        this.c = new PIXI.Container();  
     }
 
     /* -------------------------------------------- */
@@ -51,7 +51,7 @@ export class TokenIndicator {
         this.c.addChild(this.sprite);
         this.token.addChild(this.c);
 
-        if (game.settings.get(MODULE_ID, 'use-indicator') !== IndicatorStates.ALWAYS)
+        if (game.settings.get(MODULE_ID, 'use-indicator') !== IndicatorMode.ALWAYS || this.token.getFlag(MODULE_ID, 'indicatorDisabled'))
             this.sprite.visible = false;
 
         return this;
@@ -66,8 +66,8 @@ export class TokenIndicator {
     rotate(deg) {
         log(LogLevel.DEBUG, 'TokenIndicator rotate()');
         // token.update does not care about ._moving
-        if (game.user.isGM) this.token.update({ rotation: deg });
-        if (!this.sprite) {
+        if (game.user.isGM && !this.token.data.lockRotation) this.token.update({ rotation: deg });
+        if (!this.sprite || this.token.getFlag(MODULE_ID, 'indicatorDisabled')) {
             return false;
         }
         this.sprite.angle = deg;
@@ -89,7 +89,8 @@ export class TokenIndicator {
      * show the instance
      */
     show() {
-        this.sprite.visible = true;
+        if (!this.token.getFlag(MODULE_ID, 'indicatorDisabled'))
+            this.sprite.visible = true;
     }
 
     /* -------------------------------------------- */
