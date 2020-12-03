@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [2.0.2]
+### FEATURES
+- Separate 'Lock Rotation' and 'Disable Direction Indicator' settings in Token config.
+- Updated compatible core version to 0.7.7
+
 ## [2.0.1]
 ### BUGFIXES 
 - Patched user[0] can be null when generating color indicator
