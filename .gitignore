@@ -3,5 +3,9 @@ _notes.*
 .jshintrc
 node_modules
 dist
+<<<<<<< HEAD
 .vscode
 foundryconfig.json
+=======
+notes
+>>>>>>> origin/master
