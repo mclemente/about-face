@@ -124,22 +124,30 @@ export class AboutFace {
         // the GM will observe all movement of tokens and set appropriate flags
         if (game.user.isGM && (updateData.x != null || updateData.y != null || updateData.rotation != null)) {
             
-            if (updateData.rotation != null) return await token.setFlag(MODULE_ID, 'direction', updateData.rotation);
+            if (updateData.rotation != null) return await AboutFace.setTokenFlag(token, 'direction', updateData.rotation);            
             
             // check for movement
             const lastPos = new PIXI.Point(AboutFace.tokenIndicators[token.id].token.x, AboutFace.tokenIndicators[token.id].token.y);
             // calculate new position data
             let dX = (updateData.x != null) ? updateData.x - lastPos.x : 0; // new X
             let dY = (updateData.y != null) ? updateData.y - lastPos.y : 0; // new Y
-            if (dX === 0 && dY === 0 && facing === 0) return;
+            if (dX === 0 && dY === 0) return;
             let dir = getRotationDegrees(dX, dY);
     
-            return await token.setFlag(MODULE_ID, 'direction', dir);
+            return await AboutFace.setTokenFlag(token, 'direction', dir);            
         }
 
         if (updateData.flags == null || updateData.flags[MODULE_ID]?.direction == null) return;
 
         AboutFace.tokenIndicators[token.id].rotate(updateData.flags[MODULE_ID]?.direction);
+    }
+
+    static async setTokenFlag(token, flag, value) {
+        if (token.data.flags != null && token.data.flags['multilevel-tokens']?.stoken != null) {
+            return await token.update({[`flags.${MODULE_ID}.${flag}`]: value}, { 'mlt_bypass': true });
+        }
+        else
+        return await token.setFlag(MODULE_ID, flag, value);
     }
 
     static hoverTokenHandler(token, isHovering) {
