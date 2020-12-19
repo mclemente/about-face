@@ -2,7 +2,7 @@
  * About Face -- A Token Rotator
  *      Rotates tokens based on the direction the token is moved
  * 
- * version 2.0.0                by Eadorin
+ * by Eadorin, edzillion
  */
 
 import { TokenIndicator } from './scripts/TokenIndicator.js';
