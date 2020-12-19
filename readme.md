@@ -13,7 +13,7 @@ Two options are available in the game settings module config. Otherwise, with ev
 - Hold SHIFT and using your W,A,S,D or &#8593;,&#8592;,&#8595;,&#8594; you can change the direction your token is facing without moving
 
 ### Disable for a specific Token
-![Token Config Screenshot](https://github.com/League-of-Foundry-Developers/about-face/raw/master/screenshot.png)
+![Token Config Screenshot](https://raw.githubusercontent.com/League-of-Foundry-Developers/about-face/master/screenshot.PNG)
 
 
 ## Known Issues / Limitations
