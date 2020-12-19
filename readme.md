@@ -15,7 +15,7 @@ Two options are available in the game settings module config. Otherwise, with ev
 
 ## Known Issues / Limitations
 - Assumes the token default facing direction is "down". Other artwork may respond differently.
-- This has only been tested with square grids (not hexes) and uses 45 degree snapping for tokens.
+- ~~This has only been tested with square grids (not hexes) and uses 45 degree snapping for tokens.~~
 - Tokens don't change directions immediately (takes a movement for updateToken to start firing)
 - Have experienced an issue where locking a token makes it unusable until refresh
 - Direction indicators are created using the other players' colors. Because of the way drawing works, players will need to refresh after connecting in order to see all the colors *BUG
