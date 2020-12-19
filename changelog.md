@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [2.0.3]
+### RELEASE 
+- Per-token disable by checking 'Disable Direction Indicator' in Token config.
+- Module settings are now on a per-client basis, each user can decide have their own config.
+- Works on Hex scenes.
+- Can disable module on a per-scene basis. 
+- Dragging sets direction properly.
+- Lots of minor bug fixes due to improved implementation.
+
 ## [2.0.2]
 ### FEATURES
 - Separate 'Lock Rotation' and 'Disable Direction Indicator' settings in Token config.
