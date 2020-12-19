@@ -9,13 +9,6 @@ const IndicatorMode = {
     ALWAYS: 2,
 };
 
-const MODULE_ID = 'about-face';
-const IndicatorStates = {
-    OFF: 0,
-    HOVER: 1,
-    ALWAYS: 2,
-};
-
 /**
  * Used to handle the indicators for direction for tokens
  */
