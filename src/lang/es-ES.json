@@ -16,5 +16,6 @@
     "about-face.options.indicator-sprite.name": "Tamaño del indicador",
     "about-face.options.indicator-sprite.hint": "Cambiar el tamaño del indicador (requiere recargar)",
     "about-face.options.indicator-sprite.choices.normal": "Normal",
-    "about-face.options.indicator-sprite.choices.large": "Grande"
+    "about-face.options.indicator-sprite.choices.large": "Grande",
+    "about-face.options.indicator-sprite.choices.hex" : "Hex Indicator (Only works on Hex Columns)"
 }
