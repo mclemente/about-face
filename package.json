@@ -3,7 +3,7 @@
 	"name": "about-face",
 	"version": "2.0.3",
 	"description": "Rotates Tokens and provide indicators for direction based on movement",
-	"author": "edzillion",
+	"author": "eadorin, edzillion",
 	"license": "GNU GPLv3.0 & 'Commons Clause' License Condition v1.0",
 	"devDependencies": {
 		"@types/async": "^3.2.3",
