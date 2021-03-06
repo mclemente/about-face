@@ -62,6 +62,32 @@ Hooks.once("init", () => {
             AboutFace.indicatorState = state;
         }
       });
+      
+      
+
+      game.settings.register(MODULE_ID, 'sprite-type', {
+        name: "about-face.options.indicator-sprite.name",
+        hint: "about-face.options.indicator-sprite.hint",
+        scope: "client",
+        config: true,
+        default: 0,
+        type: Number,
+        choices: {
+            0: "about-face.options.indicator-sprite.choices.normal",
+            1: "about-face.options.indicator-sprite.choices.large",
+            2: "about-face.options.indicator-sprite.choices.hex"
+        },
+        onChange: async (value) => { 
+            // we need to update the existing tokenIndicators with the new sprite type.            
+            for (const [key, indicator] of Object.entries(AboutFace.tokenIndicators)) {
+                let token = canvas.tokens.get(key);
+                log(LogLevel.INFO, 'game.settings onChange, updating TokenIndicator for:', token.name); 
+                indicator.wipe();       
+                await AboutFace.deleteTokenHandler(canvas.scene, token);
+                await AboutFace.createTokenHandler(canvas.scene, token);                            
+            }            
+        }
+      });
 });
 
 
@@ -83,7 +109,7 @@ export class AboutFace {
                 continue;
             }
             log(LogLevel.INFO, 'creating TokenIndicator for:', token.name);
-            AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create();
+            AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create(canvas.scene);
         }
 
         AboutFace.indicatorState = game.settings.get(MODULE_ID, 'use-indicator');        
@@ -124,7 +150,7 @@ export class AboutFace {
         // the GM will observe all movement of tokens and set appropriate flags
         if (game.user.isGM && (updateData.x != null || updateData.y != null || updateData.rotation != null)) {
             
-            if (updateData.rotation != null) return await token.setFlag(MODULE_ID, 'direction', updateData.rotation);
+            if (updateData.rotation != null) return await AboutFace.setTokenFlag(token, 'direction', updateData.rotation);            
             
             // check for movement
             const lastPos = new PIXI.Point(AboutFace.tokenIndicators[token.id].token.x, AboutFace.tokenIndicators[token.id].token.y);
@@ -132,14 +158,22 @@ export class AboutFace {
             let dX = (updateData.x != null) ? updateData.x - lastPos.x : 0; // new X
             let dY = (updateData.y != null) ? updateData.y - lastPos.y : 0; // new Y
             if (dX === 0 && dY === 0 && facing === 0) return;
-            let dir = getRotationDegrees(dX, dY);
+            let dir = getRotationDegrees(dX, dY, "", scene.data.gridType >= 4);   // Hex Columns);
     
-            return await token.setFlag(MODULE_ID, 'direction', dir);
+            return await AboutFace.setTokenFlag(token, 'direction', dir);            
         }
 
         if (updateData.flags == null || updateData.flags[MODULE_ID]?.direction == null) return;
 
         AboutFace.tokenIndicators[token.id].rotate(updateData.flags[MODULE_ID]?.direction);
+    }
+
+    static async setTokenFlag(token, flag, value) {
+        if (token.data.flags != null && token.data.flags['multilevel-tokens']?.stoken != null) {
+            return await token.update({[`flags.${MODULE_ID}.${flag}`]: value}, { 'mlt_bypass': true });
+        }
+        else
+        return await token.setFlag(MODULE_ID, flag, value);
     }
 
     static hoverTokenHandler(token, isHovering) {
@@ -191,7 +225,7 @@ export class AboutFace {
     static async createTokenHandler(scene, token) {        
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
         log(LogLevel.INFO, 'createTokenHandler, creating TokenIndicator for:', token.name);        
-        AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create();
+        AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create(scene);
     }
     
     static async deleteTokenHandler(scene, token) {       

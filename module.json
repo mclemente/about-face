@@ -1,0 +1,31 @@
+{
+	"name": "about-face",
+	"title": "About Face",
+	"description": "Rotates Tokens and provide indicators for direction based on movement",
+	"version": "2.0.3",
+	"author": "Eadorin (eadorin@gmail.com)",
+	"esmodules": ["about-face.js"],
+	"compatibleCoreVersion": "0.7.7",
+	"minimumCoreVersion": "0.6.0",
+	"manifest": "https://raw.githubusercontent.com/League-of-Foundry-Developers/about-face/master/src/module.json",
+	"download": "https://github.com/League-of-Foundry-Developers/about-face/releases/download/v2.0.3/about-face-v2.0.3.zip",
+	"url": "https://github.com/League-of-Foundry-Developers/about-face",
+	"changelog": "https://github.com/League-of-Foundry-Developers/about-face/blob/v2.0.3/changelog.md",
+	"languages": [
+		{
+			"lang": "en",
+			"name": "English",
+			"path": "lang/en.json"
+		},
+		{
+			"lang": "pt-BR",
+			"name": "Português (Brasil)",
+			"path": "lang/pt-BR.json"
+		},
+		{
+			"lang": "es",
+			"name": "Español",
+			"path": "lang/es.json"
+		}
+	]
+}

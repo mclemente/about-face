@@ -24,20 +24,23 @@ export async function getTokenOwner(token, includeGM=false) {
 
 /**
  * returns the degrees to rotate a token
+ * added support when using hex columns
  * @param {int} dX     the value of x2 - x1
  * @param {int} dY     the value of y2 - y1
  * @return int
  **/
-export function getRotationDegrees(dX = null, dY = null, dir = null) {
+export function getRotationDegrees(dX = null, dY = null, dir = null, isHexColumn = false) {
     var rotation;
+    let hexOffset = isHexColumn ? 15 : 0;
+    
     if ((dX == 0 && dY < 0) || dir == "up") rotation = 180; // up
     else if ((dX == 0 && dY > 0) || dir == "down") rotation = 0; // down
-    else if ((dX > 0 && dY == 0) || dir == "right") rotation = 270; // to the right
-    else if ((dX > 0 && dY < 0) || dir == "up-right") rotation = 225; // up to the right
-    else if ((dX > 0 && dY > 0) || dir == "down-right") rotation = 315; // down to the right
-    else if ((dX < 0 && dY == 0) || dir == "left") rotation = 90; // to the left
-    else if ((dX < 0 && dY > 0) || dir == "down-left") rotation = 45; // down to the left
-    else if ((dX < 0 && dY < 0) || dir == "up-left") rotation = 135 // up to the left
+    else if ((dX > 0 && dY == 0) || dir == "right") rotation = 270 - (hexOffset * 2); // to the right (hex columns can't go right/left)
+    else if ((dX > 0 && dY < 0) || dir == "up-right") rotation = 225 + hexOffset; // up to the right  
+    else if ((dX > 0 && dY > 0) || dir == "down-right") rotation = 315 - hexOffset; // down to the right   
+    else if ((dX < 0 && dY == 0) || dir == "left") rotation = 90 - (hexOffset * 2); // to the left      
+    else if ((dX < 0 && dY > 0) || dir == "down-left") rotation = 45 + hexOffset; // down to the left 
+    else if ((dX < 0 && dY < 0) || dir == "up-left") rotation = 135 - hexOffset; // up to the left
     let token_rotation = rotation || 0;
 
     // i messed with every version of atan, atan2 I could come up with; inverted Y makes it tough
