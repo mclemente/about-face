@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"name": "about-face",
-	"version": "2.0.3",
+	"version": "2.0.4",
 	"description": "Rotates Tokens and provide indicators for direction based on movement",
 	"author": "eadorin, edzillion",
 	"license": "GNU GPLv3.0 & 'Commons Clause' License Condition v1.0",

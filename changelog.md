@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [2.0.4]
+### FEATURES
+- New Token Indicator style 'Hex' to visually indicate the front faces (green), the side faces (blue), and the back face (red) thanks to [Chris Normand](https://github.com/crnormand)!
+- Updated compatible core version to 0.7.9
+
 ## [2.0.3]
 ### RELEASE 
 - Per-token disable by checking 'Disable Direction Indicator' in Token config.
