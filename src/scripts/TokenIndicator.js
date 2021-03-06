@@ -59,6 +59,13 @@ export class TokenIndicator {
         return this;
     }
 
+    /**
+     * Wipe the current indicator.      
+     */
+    async wipe() {
+        this.token.removeChild(this.c);
+    }
+
     /* -------------------------------------------- */
 
     /**

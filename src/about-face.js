@@ -77,6 +77,16 @@ Hooks.once("init", () => {
             1: "about-face.options.indicator-sprite.choices.large",
             2: "about-face.options.indicator-sprite.choices.hex"
         },
+        onChange: async (value) => { 
+            // we need to update the existing tokenIndicators with the new sprite type.            
+            for (const [key, indicator] of Object.entries(AboutFace.tokenIndicators)) {
+                let token = canvas.tokens.get(key);
+                log(LogLevel.INFO, 'game.settings onChange, updating TokenIndicator for:', token.name); 
+                indicator.wipe();       
+                await AboutFace.deleteTokenHandler(canvas.scene, token);
+                await AboutFace.createTokenHandler(canvas.scene, token);                            
+            }            
+        }
       });
 });
 
