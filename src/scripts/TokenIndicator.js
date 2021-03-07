@@ -79,7 +79,7 @@ export class TokenIndicator {
         if (!this.sprite || this.token.getFlag(MODULE_ID, 'indicatorDisabled')) {
             return false;
         }
-        this.sprite.angle = deg;
+        this.sprite.angle = deg;        
         return true;
     }
 
@@ -170,7 +170,7 @@ export class TokenIndicator {
             .closePath()
             .endFill()
             .beginFill(0x000000, 0).lineStyle(0, 0x000000, 0)
-            .drawCircle(this.token.w / 2, this.token.w / 2, this.token.w * 2.5)
+            .drawCircle(this.token.w / 2, this.token.w / 2, this.token.w / 2 + modHeight)
             .endFill();
 
         let texture = canvas.app.renderer.generateTexture(i);
@@ -216,6 +216,12 @@ export class TokenIndicator {
         let green = 0x00ff00;
         let blue = 0x0000ff;
 
+        // to get an accurate radius of the token + indicator we need to deal with the fact
+        // that hex grids have tokens that are bigger than the grid.
+        const ratio = canvas.grid.size / this.token.width;
+        const radius = ((this.token.w / 2) * ratio) + modHeight ;
+
+
         i.beginFill(fillColor, .5).lineStyle(2, borderColor, 1)
             .moveTo(this.token.w / 2, this.token.h + modHeight)
             .lineTo(this.token.w / 2 - modWidth, this.token.h + modWidth)
@@ -237,7 +243,7 @@ export class TokenIndicator {
             .closePath()
 
             .beginFill(0x000000, 0).lineStyle(0, 0x000000, 0)
-            .drawCircle(this.token.w / 2, this.token.w / 2, this.token.w * 2.5)
+            .drawCircle(this.token.w / 2, this.token.w / 2, radius)
             .endFill();
         let texture = canvas.app.renderer.generateTexture(i);
         return new SpriteID(texture, this.token.id);
