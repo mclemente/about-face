@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [2.0.5]
+### BUGFIXES
+- Fixed compatibility bug with FXMaster https://github.com/eadorin/about-face/issues/59
+
 ## [2.0.4]
 ### FEATURES
 - New Token Indicator style 'Hex' to visually indicate the front faces (green), the side faces (blue), and the back face (red) thanks to [Chris Normand](https://github.com/crnormand)!
