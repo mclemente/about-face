@@ -1,6 +1,7 @@
 import { SpriteID } from './SpriteID.js';
 import * as Helpers from './helpers.js';
 import { log, LogLevel } from './logging.js';
+import { AboutFace } from '../about-face.js';
 
 const MODULE_ID = 'about-face';
 const IndicatorMode = {
@@ -17,7 +18,8 @@ export class TokenIndicator {
     constructor(token, sprite = {}) {
         this.token = token;
         this.sprite = sprite;
-        this.c = new PIXI.Container();  
+        this.c = new PIXI.Container(); 
+        if (AboutFace.portraitMode) token.update({lockRotation:true});
     }
 
     /* -------------------------------------------- */

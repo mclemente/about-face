@@ -27,9 +27,9 @@ Hooks.once("init", () => {
 
     AboutFace.initialize();
 
-    game.settings.register(MODULE_ID, 'enable-rotation', {
-        name: "about-face.options.enable-rotation.name",
-        hint: "about-face.options.enable-rotation.hint",
+    game.settings.register(MODULE_ID, 'enable-module', {
+        name: "about-face.options.enable-module.name",
+        hint: "about-face.options.enable-module.hint",
         scope: "world",
         config: true,
         default: true,
@@ -38,6 +38,20 @@ Hooks.once("init", () => {
             if (!canvas.scene) return;
             AboutFace.sceneEnabled = value;
             if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'sceneEnabled', AboutFace.sceneEnabled);            
+        }
+      });
+
+      game.settings.register(MODULE_ID, 'disable-rotation', {
+        name: "about-face.options.disable-rotation.name",
+        hint: "about-face.options.disable-rotation.hint",
+        scope: "world",
+        config: true,
+        default: false,
+        type: Boolean,
+        onChange: (value) => { 
+            if (!canvas.scene) return;
+            AboutFace.portraitMode = value;
+            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'portraitMode', AboutFace.portraitMode);            
         }
       });
     
@@ -97,6 +111,7 @@ export class AboutFace {
 
     static initialize() {
         AboutFace.sceneEnabled = true;
+        AboutFace.portraitMode = false;
         AboutFace.tokenIndicators = {};
         AboutFace.indicatorState;
     }
@@ -117,7 +132,7 @@ export class AboutFace {
             ? canvas.scene.getFlag(MODULE_ID, 'sceneEnabled') 
             : true;
 
-        if (game.user.isGM) game.settings.set(MODULE_ID, 'enable-rotation', AboutFace.sceneEnabled);    
+        if (game.user.isGM) game.settings.set(MODULE_ID, 'enable-module', AboutFace.sceneEnabled);    
     }
 
 
@@ -196,10 +211,22 @@ export class AboutFace {
      * @param changes - changes
      */
     static updateSceneHandler(scene, updateData) {
-        if (updateData.flags == null || updateData.flags[MODULE_ID]?.sceneEnabled == null) return;             
+        if (updateData.flags == null 
+            && updateData.flags[MODULE_ID]?.sceneEnabled == null 
+            && updateData.flags[MODULE_ID]?.portraitMode == null) 
+            return;             
         log(LogLevel.DEBUG, 'updateSceneHandler', scene);
 
         AboutFace.sceneEnabled = updateData.flags[MODULE_ID]?.sceneEnabled;
+
+        if (updateData.flags[MODULE_ID]?.portraitMode != null) {
+            AboutFace.portraitMode = updateData.flags[MODULE_ID].portraitMode;
+            const updates = Object.keys(AboutFace.tokenIndicators).map(id => {
+                return {_id:id, lockRotation:AboutFace.portraitMode};
+            });
+            canvas.tokens.updateMany(updates);
+        } 
+
         if (!AboutFace.sceneEnabled)
             AboutFace.hideAllIndicators();
         else if (AboutFace.indicatorState === IndicatorMode.ALWAYS)

@@ -1,7 +1,9 @@
 {
     "about-face.options.individual-token-text": "Exibir indicador para os tokens?",
-    "about-face.options.enable-rotation.name": "Habilitar a rotação do About Face en esta Escena",
-    "about-face.options.enable-rotation.hint": "Rotacionar tokens quando são movidos (exeto quando trancado). Se desativado, ainda é possivel segurar o Shift para rotacionar no eixo.",
+    "about-face.options.enable-module.name": "Habilitar a rotação do About Face en esta Escena",
+    "about-face.options.enable-module.hint": "Rotacionar tokens quando são movidos (exeto quando trancado). Se desativado, ainda é possivel segurar o Shift para rotacionar no eixo.",
+    "about-face.options.disable-rotation.name": "Disable rotation of tokens",
+    "about-face.options.disable-rotation.hint": "Direction indicators will still rotate as usual. (Useful for portrait tokens)",
     "about-face.options.enable-indicator.name": "Habilitar indicadores de token",
     "about-face.options.enable-indicator.hint": "Adiciona um indicador para a direção dos tokens",
     "about-face.options.indicator.choices.0": "Nunca Exibir",
