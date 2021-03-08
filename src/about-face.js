@@ -40,7 +40,7 @@ Hooks.once("init", () => {
         }
       });
     
-      game.settings.register(MODULE_ID, 'use-indicator', {
+      game.settings.register(MODULE_ID, 'indicator-state', {
         name: "about-face.options.enable-indicator.name",
         hint: "about-face.options.enable-indicator.hint",
         scope: "client",
@@ -54,20 +54,15 @@ Hooks.once("init", () => {
         },
         onChange: (value) => { 
             if (!canvas.scene) return;
-            let state = Number(value);
-            // if (state !== IndicatorMode.ALWAYS)
-            //     AboutFace.hideAllIndicators();
-            // else if (AboutFace.sceneEnabled)
-            //     AboutFace.showAllIndicators();
-            //AboutFace.indicatorState = state;
-            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'useIndicator', state);            
+            let state = Number(value);            
+            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'indicatorState', state);            
         }
       });            
 
       game.settings.register(MODULE_ID, 'sprite-type', {
         name: "about-face.options.indicator-sprite.name",
         hint: "about-face.options.indicator-sprite.hint",
-        scope: "client",
+        scope: "world",
         config: true,
         default: 0,
         type: Number,
@@ -136,17 +131,9 @@ export class AboutFace {
     static async canvasReadyHandler() {
         log(LogLevel.INFO, 'canvasReadyHandler');        
 
-        for (let [i, token] of canvas.tokens.placeables.entries()) {
-            if (!(token instanceof Token) || !token.actor) {
-                continue;
-            }
-            log(LogLevel.INFO, 'creating TokenIndicator for:', token.name);
-            AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create(canvas.scene);
-        }
-
         // get game settings
-        AboutFace.indicatorState = canvas.scene.getFlag(MODULE_ID, 'useIndicator') != null 
-            ? canvas.scene.getFlag(MODULE_ID, 'useIndicator') 
+        AboutFace.indicatorState = canvas.scene.getFlag(MODULE_ID, 'indicatorState') != null 
+            ? canvas.scene.getFlag(MODULE_ID, 'indicatorState') 
             : 2;       
         AboutFace.sceneEnabled = canvas.scene.getFlag(MODULE_ID, 'sceneEnabled') != null 
             ? canvas.scene.getFlag(MODULE_ID, 'sceneEnabled') 
@@ -163,7 +150,7 @@ export class AboutFace {
 
         // sync settings from scene.flags to game.settings
         if (game.user.isGM) {
-            await game.settings.set(MODULE_ID, 'use-indicator', AboutFace.indicatorState);
+            await game.settings.set(MODULE_ID, 'indicator-state', AboutFace.indicatorState);
             await game.settings.set(MODULE_ID, 'scene-enabled', AboutFace.sceneEnabled);
             await game.settings.set(MODULE_ID, 'portrait-mode', AboutFace.portraitMode); 
             await game.settings.set(MODULE_ID, 'sprite-type', AboutFace.spriteType); 
@@ -174,9 +161,16 @@ export class AboutFace {
             });
         }
 
-            
+        if (AboutFace.sceneEnabled) {
+            for (let [i, token] of canvas.tokens.placeables.entries()) {
+                if (!(token instanceof Token) || !token.actor) {
+                    continue;
+                }
+                log(LogLevel.INFO, 'creating TokenIndicator for:', token.name);
+                AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create(canvas.scene);
+            }
+        }  
     }
-
 
     /* -------------------------------------------- */
 
@@ -234,8 +228,7 @@ export class AboutFace {
                 direction = getRotationDegrees(dX, dY, "", scene.data.gridType >= 4); 
             }
             
-            return await AboutFace.setTokenFlag(token, 'direction', direction);  
-            
+            return await AboutFace.setTokenFlag(token, 'direction', direction);              
         }
     }
 
@@ -281,10 +274,12 @@ export class AboutFace {
             canvas.tokens.updateMany(updates);
         } 
 
-        if (!AboutFace.sceneEnabled)
-            AboutFace.hideAllIndicators();
-        else if (AboutFace.indicatorState === IndicatorMode.ALWAYS)
-            AboutFace.showAllIndicators();
+        if (updateData.flags[MODULE_ID].indicatorState != null) {
+            if (updateData.flags[MODULE_ID].indicatorState !== IndicatorMode.ALWAYS)
+                AboutFace.hideAllIndicators();            
+            else if (AboutFace.sceneEnabled)
+                AboutFace.showAllIndicators();
+        }         
     }
 
     static showAllIndicators() {
@@ -334,15 +329,13 @@ export class AboutFace {
         // 'flip-v': { 'Facing Down': 'down', 'Facing Up': 'up' }
     }
 
-    let flipDirection = game.settings.get(MODULE_ID, 'flip-direction');
-
     let data = {
         checked: tokenConfig.object.getFlag(MODULE_ID, 'indicatorDisabled') ? 'checked' : '',
         flipDirections: game.settings.settings.get('about-face.flip-direction').choices,
-        flipDirection: flipDirection,
-        facingDirections: facingOptions[flipDirection],
+        flipDirection: AboutFace.flipDirection,
+        facingDirections: facingOptions[AboutFace.flipDirection],
         //facingDirection: facingDirection,
-        portraitMode: game.settings.get(MODULE_ID, 'portrait-mode')
+        portraitMode: AboutFace.portraitMode
     };
 
     // let checkboxHTML = `

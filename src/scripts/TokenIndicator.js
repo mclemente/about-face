@@ -40,7 +40,7 @@ export class TokenIndicator {
             // this.sprite = this.generateStarIndicator();
         } else {
             // If a sprite is not defined, use the system settings.   Only allow the Hex sprite on Hex Column scenes (gridType 4 & 5).
-            let type =  game.settings.get(MODULE_ID, 'sprite-type');
+            let type =  AboutFace.spriteType;
             if (type == 2 && scene?.data.gridType >= 4) { // Hex Sprite and Hex Column scene
               this.sprite = this.generateHexFacingsIndicator(indicator_color);   
             } else {
@@ -57,7 +57,7 @@ export class TokenIndicator {
         this.c.addChild(this.sprite);
         this.token.addChild(this.c);
 
-        if (game.settings.get(MODULE_ID, 'use-indicator') !== IndicatorMode.ALWAYS || this.token.getFlag(MODULE_ID, 'indicatorDisabled'))
+        if (AboutFace.indicatorState !== IndicatorMode.ALWAYS || this.token.getFlag(MODULE_ID, 'indicatorDisabled'))
             this.sprite.visible = false;
 
         return this;
@@ -82,7 +82,7 @@ export class TokenIndicator {
         if (game.user.isGM) {
             if (AboutFace.portraitMode) {
 
-                let flipDirection = this.flipDirection || game.settings.get(MODULE_ID, 'flip-direction');
+                let flipDirection = this.flipDirection || AboutFace.flipDirection;
                 
                 if (flipDirection === "flip-v") {
                     if (this.facing === 'up') {
