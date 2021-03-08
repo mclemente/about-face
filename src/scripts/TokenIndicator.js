@@ -20,6 +20,8 @@ export class TokenIndicator {
         this.sprite = sprite;
         this.c = new PIXI.Container(); 
         if (AboutFace.portraitMode) token.update({lockRotation:true});
+        this.facing = 'right';
+        this.flipDirection = null;
     }
 
     /* -------------------------------------------- */
@@ -76,8 +78,47 @@ export class TokenIndicator {
      */
     rotate(deg) {
         log(LogLevel.DEBUG, 'TokenIndicator rotate()');
-        // token.update does not care about ._moving
-        if (game.user.isGM && !this.token.data.lockRotation) this.token.update({ rotation: deg });
+
+        if (game.user.isGM) {
+            if (AboutFace.portraitMode) {
+
+                let flipDirection = this.flipDirection || game.settings.get(MODULE_ID, 'flip-direction');
+                
+                if (flipDirection === "flip-v") {
+                    if (this.facing === 'up') {
+                        if (deg === 0) {
+                            this.token.update({mirrorY:true});                    
+                        } else if (deg === 180) {
+                            this.token.update({mirrorY:false});                    
+                        }
+                    }
+                    else if (this.facing === 'down') {
+                        if (deg === 0) {
+                            this.token.update({mirrorY:false});                    
+                        } else if (deg === 180) {
+                            this.token.update({mirrorY:true});                    
+                        }
+                    }
+                }
+                else if (flipDirection === "flip-h") {
+                    if (this.facing === 'right') {
+                        if (deg === 90) {
+                            this.token.update({mirrorX:true});                    
+                        } else if (deg === 270) {
+                            this.token.update({mirrorX:false});                    
+                        }   
+                    }
+                    else if (this.facing === 'left') {
+                        if (deg === 90) {
+                            this.token.update({mirrorX:false});                    
+                        } else if (deg === 270) {
+                            this.token.update({mirrorX:true});                    
+                        } 
+                    }            
+                }
+            }
+            else if (!this.token.data.lockRotation) this.token.update({ rotation: deg });
+        }        
         if (!this.sprite || this.token.getFlag(MODULE_ID, 'indicatorDisabled')) {
             return false;
         }
