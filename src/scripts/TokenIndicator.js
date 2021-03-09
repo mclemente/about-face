@@ -20,7 +20,7 @@ export class TokenIndicator {
         this.sprite = sprite;
         this.c = new PIXI.Container(); 
         if (AboutFace.portraitMode) token.update({lockRotation:true});
-        this.facing = 'right';
+        this.facing = token.getFlag(MODULE_ID, 'facing') || 'right';
         this.flipDirection = null;
     }
 
@@ -30,23 +30,23 @@ export class TokenIndicator {
      * Create the indicator using the instance's indicator sprite
      * If one hasn't been specified/set, use the default
      */
-    async create(scene, sprite = {}) {
+    async create(scene) {
         log(LogLevel.DEBUG, 'TokenIndicator create()');
         let indicator_color = await this.indicatorColor();
-        if (!sprite) {
-            this.sprite = await this.generateDefaultIndicator(indicator_color);
-
-            // this.sprite = this.generateSpaceIndicator('',0x000000);
-            // this.sprite = this.generateStarIndicator();
-        } else {
-            // If a sprite is not defined, use the system settings.   Only allow the Hex sprite on Hex Column scenes (gridType 4 & 5).
-            let type =  AboutFace.spriteType;
-            if (type == 2 && scene?.data.gridType >= 4) { // Hex Sprite and Hex Column scene
-              this.sprite = this.generateHexFacingsIndicator(indicator_color);   
-            } else {
-              this.sprite = this.generateTriangleIndicator((type == 1 ? "large" : "normal"), indicator_color, 0x000000);
+        if (AboutFace.spriteType === 0)
+            this.sprite = this.generateTriangleIndicator("normal", indicator_color, 0x000000);
+        else if (AboutFace.spriteType === 1)
+            this.sprite = this.generateTriangleIndicator("large", indicator_color, 0x000000);
+        if (AboutFace.spriteType === 2) {
+            // Only allow the Hex sprite on Hex Column scenes (gridType 4 & 5).
+            if (scene?.data.gridType >= 4) 
+                this.sprite = this.generateHexFacingsIndicator(indicator_color);  
+            else {
+                log(LogLevel.ERROR, 'TokenIndicator.create', 'hex indicator only works on hex scenes!');
+                ui.notifications.notify(`About Face: hex indicator only works on hex scenes!`, 'error');
+                return;
             }
-        }
+        }        
 
         this.sprite.zIndex = -1;
         this.sprite.position.x = this.token.w / 2;
@@ -59,6 +59,8 @@ export class TokenIndicator {
 
         if (AboutFace.indicatorState !== IndicatorMode.ALWAYS || this.token.getFlag(MODULE_ID, 'indicatorDisabled'))
             this.sprite.visible = false;
+
+        this.rotate();
 
         return this;
     }
@@ -74,10 +76,14 @@ export class TokenIndicator {
 
     /**
      * Rotates the sprite
-     * @param {int|float} deg  -- rotate the sprite the specified amount
+     * @param {int|float} deg  -- rotate the sprite the specified amount. 
+     * If deg is omitted it will rotate to the current direction.
+     * 
      */
     rotate(deg) {
         log(LogLevel.DEBUG, 'TokenIndicator rotate()');
+
+        if (deg == null) deg = this.token.getFlag(MODULE_ID, 'direction');
 
         if (game.user.isGM) {
             if (AboutFace.portraitMode) {
@@ -144,7 +150,7 @@ export class TokenIndicator {
         if (!this.token.getFlag(MODULE_ID, 'indicatorDisabled'))
             this.sprite.visible = true;
     }
-
+    
     /* -------------------------------------------- */
 
     /**
@@ -178,14 +184,6 @@ export class TokenIndicator {
             }
         }
         return indicator_color;
-    }
-
-    /**
-     * This is the default indicator & style. A small triangle
-     */
-    async generateDefaultIndicator(indicator_color) {
-        let triangle = this.generateTriangleIndicator("normal", indicator_color, 0x000000);
-        return triangle;
     }
 
     /**

@@ -73,15 +73,8 @@ Hooks.once("init", () => {
         },
         onChange: async (value) => { 
             if (!canvas.scene) return;
-            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'spriteType', value);  
-            // we need to update the existing tokenIndicators with the new sprite type.            
-            // for (const [key, indicator] of Object.entries(AboutFace.tokenIndicators)) {
-            //     let token = canvas.tokens.get(key);
-            //     log(LogLevel.INFO, 'game.settings onChange, updating TokenIndicator for:', token.name); 
-            //     indicator.wipe();       
-            //     await AboutFace.deleteTokenHandler(canvas.scene, token);
-            //     await AboutFace.createTokenHandler(canvas.scene, token);                            
-            // }            
+            value = Number(value);
+            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'spriteType', value);          
         }
       });
 
@@ -200,8 +193,10 @@ export class AboutFace {
         }
 
         // update facing
-        if (updateData.flags != null && updateData.flags[MODULE_ID]?.facing != null)
-            AboutFace.tokenIndicators[token.id].facing = updateData.flags[MODULE_ID]?.facing;
+        if (updateData.flags != null && updateData.flags[MODULE_ID]?.facing != null) {
+            AboutFace.tokenIndicators[token.id].facing = updateData.flags[MODULE_ID]?.facing;            
+            AboutFace.tokenIndicators[token.id].rotate();
+        }
 
         // update flip direction
         if (updateData.flags != null 
@@ -258,7 +253,7 @@ export class AboutFace {
      * @param scene - reference to the current scene
      * @param changes - changes
      */
-    static updateSceneHandler(scene, updateData) {
+    static async updateSceneHandler(scene, updateData) {
         if (updateData.flags == null || updateData.flags[MODULE_ID] == null) return;
         log(LogLevel.DEBUG, 'updateSceneHandler', scene);
 
@@ -279,7 +274,18 @@ export class AboutFace {
                 AboutFace.hideAllIndicators();            
             else if (AboutFace.sceneEnabled)
                 AboutFace.showAllIndicators();
-        }         
+        }   
+        
+        if (updateData.flags[MODULE_ID].spriteType != null) {
+            // we need to update the existing tokenIndicators with the new sprite type.            
+            for (const [key, indicator] of Object.entries(AboutFace.tokenIndicators)) {
+                let token = canvas.tokens.get(key);
+                log(LogLevel.INFO, 'updateSceneHandler, updating TokenIndicator for:', token.name); 
+                indicator.wipe();       
+                AboutFace.deleteTokenHandler(canvas.scene, token);
+                await AboutFace.createTokenHandler(canvas.scene, token);                            
+            }
+        }    
     }
 
     static showAllIndicators() {
@@ -304,7 +310,7 @@ export class AboutFace {
         AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create(scene);
     }
     
-    static async deleteTokenHandler(scene, token) {       
+    static deleteTokenHandler(scene, token) {       
         log(LogLevel.INFO, 'deleteTokenHandler:', token._id); 
         delete AboutFace.tokenIndicators[token._id];
     }
@@ -328,13 +334,15 @@ export class AboutFace {
         // 'flip-h': { 'Facing Right': 'right', 'Facing Left': 'left'},
         // 'flip-v': { 'Facing Down': 'down', 'Facing Up': 'up' }
     }
-
+    // const customBloodCheckBox = imageTab.find('#customBloodCheckBox');
+    //let checkText = ;
+    // log(LogLevel.INFO, {checkText});
     let data = {
-        checked: tokenConfig.object.getFlag(MODULE_ID, 'indicatorDisabled') ? 'checked' : '',
+        indicatorDisabled: tokenConfig.object.getFlag(MODULE_ID, 'indicatorDisabled') ? 'checked' : '',
         flipDirections: game.settings.settings.get('about-face.flip-direction').choices,
         flipDirection: AboutFace.flipDirection,
         facingDirections: facingOptions[AboutFace.flipDirection],
-        //facingDirection: facingDirection,
+        facingDirection: tokenConfig.object.getFlag(MODULE_ID, 'facing') || 'right',
         portraitMode: AboutFace.portraitMode
     };
 
@@ -369,6 +377,28 @@ export class AboutFace {
     });
     //tokenConfig.setPosition({ height: 'auto' });
   }
+
+      /**
+   * Handler called when token configuration window is opened. Injects custom form html and deals
+   * with updating token.
+   * @category GMOnly
+   * @function
+   * @async
+   * @param {TokenConfig} tokenConfig
+   * @param {JQuery} html
+   */
+  static async renderSettingsConfigHandler(tokenConfig, html) {    
+
+    // we need to disable the hex option if we are not on a hex scene
+    if (canvas.scene && canvas.scene.data.gridType < 4) {
+        const indicatorIconSelect = html.find('select[name="about-face.sprite-type"]');    
+        indicatorIconSelect.find('option').each(function() {
+            if($(this).val() == "2") {
+                $(this).attr("disabled", "disabled");
+            }
+        });
+    }
+  }
 }
 
 Hooks.on("createToken", AboutFace.createTokenHandler);
@@ -378,3 +408,5 @@ Hooks.on("hoverToken", AboutFace.hoverTokenHandler);
 Hooks.on("updateToken",  AboutFace.updateTokenHandler);
 Hooks.on("updateScene",  AboutFace.updateSceneHandler);
 Hooks.on('renderTokenConfig', AboutFace.renderTokenConfigHandler);
+Hooks.on('renderSettingsConfig', AboutFace.renderSettingsConfigHandler);
+ 
