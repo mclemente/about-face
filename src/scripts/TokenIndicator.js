@@ -19,9 +19,10 @@ export class TokenIndicator {
         this.token = token;
         this.sprite = sprite;
         this.c = new PIXI.Container(); 
-        if (AboutFace.portraitMode) token.update({lockRotation:true});
-        this.facing = token.getFlag(MODULE_ID, 'facing') || 'right';
-        this.flipDirection = null;
+        const flipOrRotate = token.getFlag(MODULE_ID, 'flipOrRotate') || AboutFace.flipOrRotate;
+        if (flipOrRotate !== 'rotate') token.update({lockRotation:true});
+        // facing = token.getFlag(MODULE_ID, 'facingDirection') || 'right';
+        // this.flipOrRotate = null;
     }
 
     /* -------------------------------------------- */
@@ -86,44 +87,180 @@ export class TokenIndicator {
         if (deg == null) deg = this.token.getFlag(MODULE_ID, 'direction');
 
         if (game.user.isGM) {
-            if (AboutFace.portraitMode) {
 
-                let flipDirection = this.flipDirection || AboutFace.flipDirection;
-                
-                if (flipDirection === "flip-v") {
-                    if (this.facing === 'up') {
-                        if (deg === 0) {
-                            this.token.update({mirrorY:true});                    
-                        } else if (deg === 180) {
-                            this.token.update({mirrorY:false});                    
-                        }
-                    }
-                    else if (this.facing === 'down') {
-                        if (deg === 0) {
-                            this.token.update({mirrorY:false});                    
-                        } else if (deg === 180) {
-                            this.token.update({mirrorY:true});                    
-                        }
-                    }
+            let flipOrRotate = this.token.getFlag(MODULE_ID, 'flipOrRotate') || AboutFace.flipOrRotate;
+
+            if (flipOrRotate === "rotate") {
+                if (!this.token.data.lockRotation) this.token.update({ rotation: deg });
+            }
+            else {
+            
+                let facingDirection = (this.token.getFlag(MODULE_ID, 'facingDirection')) 
+                // default facing direction depends on flip direction
+                if (!facingDirection) {
+                    if (flipOrRotate === 'flip-h') facingDirection = 'right';
+                    else if (flipOrRotate === 'flip-v') facingDirection = 'down';
                 }
-                else if (flipDirection === "flip-h") {
-                    if (this.facing === 'right') {
-                        if (deg === 90) {
-                            this.token.update({mirrorX:true});                    
-                        } else if (deg === 270) {
-                            this.token.update({mirrorX:false});                    
-                        }   
+
+                // todo: gridless angles (should be between angles instead)
+                const flipAngles = [
+                    {}, //gridless
+                    { //square
+                        'flip-v': {
+                            down: {
+                                mirror: 'mirrorY',
+                                0: true,
+                                180: false
+                            },
+                            up: {
+                                mirror: 'mirrorY',
+                                0: false,
+                                180: true
+                            }
+                        },
+                        'flip-h': {
+                            right: {
+                                mirror: 'mirrorX',
+                                90: true,
+                                270: false
+                            },
+                            left: {
+                                mirror: 'mirrorX',
+                                90: false,
+                                270: true
+                            }
+                        },
+                    }, 
+                    { //hex odd rows
+                        'flip-v': {
+                            down: {
+                                mirror: 'mirrorY',
+                                45: false,
+                                135: true,
+                                225: true,
+                                315: false,                              
+                            },
+                            up: {
+                                mirror: 'mirrorY',
+                                45: true,
+                                135: false,
+                                225: false,
+                                315: true,  
+                            }
+                        },
+                        'flip-h': {
+                            right: {
+                                mirror: 'mirrorX',
+                                90: true,
+                                270: false
+                            },
+                            left: {
+                                mirror: 'mirrorX',
+                                90: false,
+                                270: true
+                            }
+                        },
+                    },
+                    { //hex even rows
+                        'flip-v': {
+                            down: {
+                                mirror: 'mirrorY',
+                                45: false,
+                                135: true,
+                                225: true,
+                                315: false,                              
+                            },
+                            up: {
+                                mirror: 'mirrorY',
+                                45: true,
+                                135: false,
+                                225: false,
+                                315: true,  
+                            }
+                        },
+                        'flip-h': {
+                            right: {
+                                mirror: 'mirrorX',
+                                90: true,
+                                270: false
+                            },
+                            left: {
+                                mirror: 'mirrorX',
+                                90: false,
+                                270: true
+                            }
+                        },
+                    },
+                    { //hex odd cols
+                        'flip-v': {
+                            down: {
+                                mirror: 'mirrorY',
+                                0: false,
+                                180: true                                
+                            },
+                            up: {
+                                mirror: 'mirrorY',
+                                0: true,
+                                180: false
+                            }
+                        },
+                        'flip-h': {
+                            right: {
+                                mirror: 'mirrorX',
+                                60: true,
+                                120: true,
+                                240: false,
+                                300: false,
+                            },
+                            left: {
+                                mirror: 'mirrorX',
+                                60: false,
+                                120: false,
+                                240: true,
+                                300: true,
+                            }
+                        },
+                    }, 
+                    { // hex even cols
+                        'flip-v': {
+                            down: {
+                                mirror: 'mirrorY',
+                                0: false,
+                                180: true                                
+                            },
+                            up: {
+                                mirror: 'mirrorY',
+                                0: true,
+                                180: false
+                            }
+                        },
+                        'flip-h': {
+                            right: {
+                                mirror: 'mirrorX',
+                                60: true,
+                                120: true,
+                                240: false,
+                                300: false,
+                            },
+                            left: {
+                                mirror: 'mirrorX',
+                                60: false,
+                                120: false,
+                                240: true,
+                                300: true,
+                            }
+                        },
+                    } 
+                ];
+                let angles = flipAngles[canvas.grid.type][flipOrRotate][facingDirection];
+                if (angles[deg] != null) {
+                    const update = {
+                        [angles.mirror]: angles[deg],
                     }
-                    else if (this.facing === 'left') {
-                        if (deg === 90) {
-                            this.token.update({mirrorX:false});                    
-                        } else if (deg === 270) {
-                            this.token.update({mirrorX:true});                    
-                        } 
-                    }            
+                    log(LogLevel.INFO, 'rotate', deg, angles.mirror, angles[deg]);
+                    this.token.update(update);
                 }
             }
-            else if (!this.token.data.lockRotation) this.token.update({ rotation: deg });
         }        
         if (!this.sprite || this.token.getFlag(MODULE_ID, 'indicatorDisabled')) {
             return false;
