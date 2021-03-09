@@ -95,12 +95,7 @@ export class TokenIndicator {
             }
             else {
             
-                let facingDirection = (this.token.getFlag(MODULE_ID, 'facingDirection')) 
-                // default facing direction depends on flip direction
-                if (!facingDirection) {
-                    if (flipOrRotate === 'flip-h') facingDirection = 'right';
-                    else if (flipOrRotate === 'flip-v') facingDirection = 'down';
-                }
+                let facingDirection = (this.token.getFlag(MODULE_ID, 'facingDirection')) || game.settings.get(MODULE_ID, 'flip-direction');
 
                 // todo: gridless angles (should be between angles instead)
                 const flipAngles = [

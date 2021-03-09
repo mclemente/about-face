@@ -7,7 +7,7 @@
 
 import { TokenIndicator } from './scripts/TokenIndicator.js';
 import { log, LogLevel } from './scripts/logging.js'
-import { getRotationDegrees } from './scripts/helpers.js'
+import { getRotationDegrees, replaceSelectChoices } from './scripts/helpers.js'
 
 const MODULE_ID = 'about-face';
 
@@ -95,6 +95,23 @@ Hooks.once("init", () => {
             if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'flipOrRotate', value);                     
         }
     });
+
+    game.settings.register(MODULE_ID, 'flip-direction', {
+        name: "about-face.options.flip-direction.name",
+        hint: "about-face.options.flip-direction.hint",
+        scope: "world",
+        config: true,
+        default: "right",
+        type: String,
+        choices: {
+            "right": "about-face.options.flip-direction.choices.right",
+            "left": "about-face.options.flip-direction.choices.left"            
+        },
+        onChange: (value) => { 
+            if (!canvas.scene) return;
+            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'flip-direction', value);                     
+        }
+    });
 });
 
 
@@ -107,6 +124,18 @@ export class AboutFace {
         AboutFace.tokenIndicators = {};
         AboutFace.indicatorState;
         AboutFace.flipOrRotate;
+
+        AboutFace.facingOptions = {
+            'rotate': {},
+            'flip-h': { 
+                'right':'about-face.options.flip-direction.choices.right', 
+                'left':'about-face.options.flip-direction.choices.left'
+            },
+            'flip-v': {
+                'down':'about-face.options.flip-direction.choices.down',
+                'up':'about-face.options.flip-direction.choices.up',
+            }
+        }
     }
     
     static async canvasReadyHandler() {
@@ -133,6 +162,7 @@ export class AboutFace {
             await game.settings.set(MODULE_ID, 'sprite-type', AboutFace.spriteType); 
             await game.settings.set(MODULE_ID, 'flip-or-rotate', AboutFace.flipOrRotate); 
 
+            // render the SettingsConfig if it is currently open to update changes
             Object.values(ui.windows).forEach(app => {
                 if (app instanceof SettingsConfig) app.render();
             });
@@ -313,24 +343,14 @@ export class AboutFace {
     log(LogLevel.INFO, 'renderTokenConfig');
     
     const posTab = html.find('.tab[data-tab="position"]');
-    const facingOptions = {
-        'rotate': {},
-        'flip-h': { 
-            'right':'about-face.options.flip-or-rotate.choices.right', 
-            'left':'about-face.options.flip-or-rotate.choices.left'
-        },
-        'flip-v': {
-            'down':'about-face.options.flip-or-rotate.choices.down',
-            'up':'about-face.options.flip-or-rotate.choices.up',
-        }
-    }
+
 
     const flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, 'flipOrRotate') || AboutFace.flipOrRotate;
     let data = {
         indicatorDisabled: tokenConfig.object.getFlag(MODULE_ID, 'indicatorDisabled') ? 'checked' : '',
         flipOrRotates: game.settings.settings.get('about-face.flip-or-rotate').choices,
         flipOrRotate: flipOrRotate,
-        facingDirections: facingOptions[flipOrRotate],
+        facingDirections: AboutFace.facingOptions[flipOrRotate],
         facingDirection: tokenConfig.object.getFlag(MODULE_ID, 'facingDirection') || 'right',
     };
 
@@ -338,19 +358,13 @@ export class AboutFace {
     posTab.append(insertHTML);
 
     const selectFlipOrRotate = posTab.find('.token-config-select-flip-or-rotate');
-    const selectFacingDirection = posTab.find('.token-config-select-facing-direction');
+    const selectFacingDirection = posTab.find('.token-config-select-flip-direction');
     const lockRotateCheckbox = document.getElementsByName("lockRotation")[0];
 
     selectFlipOrRotate.on('change', (event) => {
-        selectFacingDirection.empty();
-        const facingDirections = facingOptions[event.target.value];
-
-        for (const [key, value] of Object.entries(facingDirections)) {
-            selectFacingDirection.append($("<option></option>")
-                .attr("value", key).text(game.i18n.localize(value)));
-        }
+        const facingDirections = AboutFace.facingOptions[event.target.value];
+        replaceSelectChoices(selectFacingDirection, facingDirections);
         lockRotateCheckbox.checked = event.target.value !== 'rotate';
-
     });
     //tokenConfig.setPosition({ height: 'auto' });
   }
@@ -375,6 +389,15 @@ export class AboutFace {
             }
         });
     }
+
+    const flipOrRotateSelect = html.find('select[name="about-face.flip-or-rotate"]');
+    const flipDirectionSelect = html.find('select[name="about-face.flip-direction"]');
+    replaceSelectChoices(flipDirectionSelect, AboutFace.facingOptions[AboutFace.flipOrRotate]);  
+    
+    flipOrRotateSelect.on('change', (event) => {
+        const facingDirections = AboutFace.facingOptions[event.target.value];
+        replaceSelectChoices(flipDirectionSelect, facingDirections);    
+    });
   }
 }
 

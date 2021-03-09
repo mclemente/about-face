@@ -6,6 +6,14 @@ export function getKeyByValue(object, value) {
     return Object.keys(object).filter(key => object[key] === value);
 }
 
+export function replaceSelectChoices(select, choices) {
+    select.empty();
+    for (const [key, value] of Object.entries(choices)) {
+        select.append($("<option></option>")
+            .attr("value", key).text(game.i18n.localize(value)));
+    }
+}
+
 export async function getTokenOwner(token, includeGM=false) {
     let owners = getKeyByValue(token.actor.data.permission,3);
     let ret = [];
