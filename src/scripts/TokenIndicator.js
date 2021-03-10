@@ -1,5 +1,5 @@
 import { SpriteID } from './SpriteID.js';
-import * as Helpers from './helpers.js';
+import { getTokenOwner, isFirstActiveGM } from './helpers.js';
 import { log, LogLevel } from './logging.js';
 import { AboutFace } from '../about-face.js';
 import flipAngles from './flipAngles.js'
@@ -22,8 +22,6 @@ export class TokenIndicator {
         this.c = new PIXI.Container(); 
         const flipOrRotate = token.getFlag(MODULE_ID, 'flipOrRotate') || AboutFace.flipOrRotate;
         if (flipOrRotate !== 'rotate') token.update({lockRotation:true});
-        // facing = token.getFlag(MODULE_ID, 'facingDirection') || 'right';
-        // this.flipOrRotate = null;
     }
 
     /* -------------------------------------------- */
@@ -160,7 +158,7 @@ export class TokenIndicator {
         let indicator_color = colorStringToHex("FF0000");
         if (this.token.actor) {
             if (this.token.actor.hasPlayerOwner) {
-                let user = await Helpers.getTokenOwner(this.token);
+                let user = await getTokenOwner(this.token);
                 if (user.length > 0) {
                     if (user[0] != null && user[0].data.color != null) { //Bandage by Z-Machine
                         indicator_color = colorStringToHex(user[0].data.color);

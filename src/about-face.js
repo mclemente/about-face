@@ -7,7 +7,7 @@
 
 import { TokenIndicator } from './scripts/TokenIndicator.js';
 import { log, LogLevel } from './scripts/logging.js'
-import { getRotationDegrees, replaceSelectChoices } from './scripts/helpers.js'
+import { getRotationDegrees, replaceSelectChoices, isFirstActiveGM } from './scripts/helpers.js'
 
 const MODULE_ID = 'about-face';
 
@@ -110,7 +110,7 @@ Hooks.once("init", () => {
         },
         onChange: (value) => { 
             if (!canvas.scene) return;
-            if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'facing-direction', value);                     
+            if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'facingDirection', value);                     
         }
     });
 });
@@ -281,25 +281,27 @@ export class AboutFace {
             AboutFace[setting] = value;
         }
 
-        if (updateData.flags[MODULE_ID].flipOrRotate != null) {
-            AboutFace.flipOrRotate = updateData.flags[MODULE_ID].flipOrRotate;
-            const lockRotation = (AboutFace.flipOrRotate !== 'rotate');
-            const updates = Object.keys(AboutFace.tokenIndicators).map(id => {
-                return {_id:id, lockRotation:lockRotation};
-            });
-            canvas.tokens.updateMany(updates);
-        }
-        
-        if (updateData.flags[MODULE_ID].spriteType != null) {
-            // we need to update the existing tokenIndicators with the new sprite type.            
-            for (const [key, indicator] of Object.entries(AboutFace.tokenIndicators)) {
-                let token = canvas.tokens.get(key);
-                log(LogLevel.INFO, 'updateSceneHandler, updating TokenIndicator for:', token.name); 
-                indicator.wipe();       
-                AboutFace.deleteTokenHandler(canvas.scene, token);
-                await AboutFace.createTokenHandler(canvas.scene, token);                            
+        if (isFirstActiveGM()) {
+            if (updateData.flags[MODULE_ID].flipOrRotate != null) {
+                AboutFace.flipOrRotate = updateData.flags[MODULE_ID].flipOrRotate;
+                const lockRotation = (AboutFace.flipOrRotate !== 'rotate');
+                const updates = Object.keys(AboutFace.tokenIndicators).map(id => {
+                    return {_id:id, lockRotation:lockRotation};
+                });
+                canvas.tokens.updateMany(updates);
             }
-        }    
+            
+            if (updateData.flags[MODULE_ID].spriteType != null) {
+                // we need to update the existing tokenIndicators with the new sprite type.            
+                for (const [key, indicator] of Object.entries(AboutFace.tokenIndicators)) {
+                    let token = canvas.tokens.get(key);
+                    log(LogLevel.INFO, 'updateSceneHandler, updating TokenIndicator for:', token.name); 
+                    indicator.wipe();       
+                    AboutFace.deleteTokenHandler(canvas.scene, token);
+                    await AboutFace.createTokenHandler(canvas.scene, token);                            
+                }
+            }    
+        }
     }
 
     static showAllIndicators() {
