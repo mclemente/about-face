@@ -1,0 +1,20 @@
+<div class="form-group">
+  <label>Disable Direction Indicator: </label>
+  <input type="checkbox" name="flags.about-face.indicatorDisabled" data-dtype="Boolean" {{indicatorDisabled}}>
+</div>
+<div class="form-group">
+  <label>Flip Or Rotate</label>  
+  <div class="form-fields">    
+      <select name="flags.about-face.flipOrRotate" class="token-config-select-flip-or-rotate" data-dtype="String"/>
+        {{ selectOptions flipOrRotates selected=flipOrRotate localize=true }}
+      </select>
+  </div>  
+</div>
+<div class="form-group">
+  <label>Facing Direction</label>  
+  <div class="form-fields">    
+      <select name="flags.about-face.facingDirection" class="token-config-select-facing-direction" data-dtype="String"/>
+        {{ selectOptions facingDirections selected=facingDirection localize=true}}
+      </select>
+  </div>  
+</div>

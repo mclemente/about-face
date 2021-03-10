@@ -1,5 +1,14 @@
 # CHANGELOG
 
+
+## [2.0.6]
+### FEATURES
+- Flipping
+- 
+
+### BUGFIXES
+
+
 ## [2.0.5]
 ### BUGFIXES
 - Fixed compatibility bug with FXMaster https://github.com/eadorin/about-face/issues/59

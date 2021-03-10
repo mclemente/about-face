@@ -6,6 +6,14 @@ export function getKeyByValue(object, value) {
     return Object.keys(object).filter(key => object[key] === value);
 }
 
+export function replaceSelectChoices(select, choices) {
+    select.empty();
+    for (const [key, value] of Object.entries(choices)) {
+        select.append($("<option></option>")
+            .attr("value", key).text(game.i18n.localize(value)));
+    }
+}
+
 export async function getTokenOwner(token, includeGM=false) {
     let owners = getKeyByValue(token.actor.data.permission,3);
     let ret = [];
@@ -21,6 +29,20 @@ export async function getTokenOwner(token, includeGM=false) {
     }
     return ret;
 }
+
+/**
+ * Checks user to see if the current user is the first registered GM.
+ * @category helpers
+ * @function
+ * @returns {Boolean} - whether the user is the first GM
+ */
+export const isFirstActiveGM = () => {
+    const firstGm = game.users.find((u) => u.isGM && u.active);
+    if (firstGm && game.user === firstGm) {
+      return true;
+    }
+    return false;
+  };
 
 /**
  * returns the degrees to rotate a token

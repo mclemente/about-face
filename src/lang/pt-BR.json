@@ -1,7 +1,7 @@
 {
     "about-face.options.individual-token-text": "Exibir indicador para os tokens?",
-    "about-face.options.enable-rotation.name": "Habilitar a rotação do About Face en esta Escena",
-    "about-face.options.enable-rotation.hint": "Rotacionar tokens quando são movidos (exeto quando trancado). Se desativado, ainda é possivel segurar o Shift para rotacionar no eixo.",
+    "about-face.options.scene-enabled.name": "Habilitar a rotação do About Face en esta Escena",
+    "about-face.options.scene-enabled.hint": "Rotacionar tokens quando são movidos (exeto quando trancado). Se desativado, ainda é possivel segurar o Shift para rotacionar no eixo.",    
     "about-face.options.enable-indicator.name": "Habilitar indicadores de token",
     "about-face.options.enable-indicator.hint": "Adiciona um indicador para a direção dos tokens",
     "about-face.options.indicator.choices.0": "Nunca Exibir",
@@ -12,7 +12,12 @@
     "about-face.options.flip-or-rotate.choices.rotate" : "Rotacionar",
     "about-face.options.flip-or-rotate.choices.flip-v" : "Espelhar na Vertical",
     "about-face.options.flip-or-rotate.choices.flip-h" : "Espelhar na Horizontal",
-    
+    "about-face.options.facing-direction.name" : "Flip Direction",
+    "about-face.options.facing-direction.hint" : "The default direction the token is facing",
+    "about-face.options.facing-direction.choices.right" : "Facing Right",
+    "about-face.options.facing-direction.choices.left" : "Facing Left",
+    "about-face.options.facing-direction.choices.down" : "Facing Forward",
+    "about-face.options.facing-direction.choices.up" : "Facing Back",
     "about-face.options.indicator-sprite.name" : "Icone Indicador",
     "about-face.options.indicator-sprite.hint" : "Mudar o icone indicador (requer reinicialização)",
     "about-face.options.indicator-sprite.choices.normal" : "Indicador Normal",
