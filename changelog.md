@@ -1,13 +1,14 @@
 # CHANGELOG
 
-
-## [2.0.6]
+## [2.1.0]
 ### FEATURES
-- Flipping
-- 
+- Flipping Feature has been readded. Can flip horizontal / vertical. Works on hex scenes now too.
+- Settings Overhaul. GM can set defaults on a per-scene basis and override on individual tokens.
+- Token Facing. Can set default facing direction for sprite flipping for a scene & override on tokens.
 
 ### BUGFIXES
-
+- Fixed tokenIndicators pool not being reset between scenes
+- Fixed rotation not set on sprite creation bug
 
 ## [2.0.5]
 ### BUGFIXES
