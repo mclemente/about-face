@@ -96,20 +96,20 @@ Hooks.once("init", () => {
         }
     });
 
-    game.settings.register(MODULE_ID, 'flip-direction', {
-        name: "about-face.options.flip-direction.name",
-        hint: "about-face.options.flip-direction.hint",
+    game.settings.register(MODULE_ID, 'facing-direction', {
+        name: "about-face.options.facing-direction.name",
+        hint: "about-face.options.facing-direction.hint",
         scope: "world",
         config: true,
         default: "right",
         type: String,
         choices: {
-            "right": "about-face.options.flip-direction.choices.right",
-            "left": "about-face.options.flip-direction.choices.left"            
+            "right": "about-face.options.facing-direction.choices.right",
+            "left": "about-face.options.facing-direction.choices.left"            
         },
         onChange: (value) => { 
             if (!canvas.scene) return;
-            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'flip-direction', value);                     
+            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'facing-direction', value);                     
         }
     });
 });
@@ -128,12 +128,12 @@ export class AboutFace {
         AboutFace.facingOptions = {
             'rotate': {},
             'flip-h': { 
-                'right':'about-face.options.flip-direction.choices.right', 
-                'left':'about-face.options.flip-direction.choices.left'
+                'right':'about-face.options.facing-direction.choices.right', 
+                'left':'about-face.options.facing-direction.choices.left'
             },
             'flip-v': {
-                'down':'about-face.options.flip-direction.choices.down',
-                'up':'about-face.options.flip-direction.choices.up',
+                'down':'about-face.options.facing-direction.choices.down',
+                'up':'about-face.options.facing-direction.choices.up',
             }
         }
     }
@@ -209,8 +209,14 @@ export class AboutFace {
         }
 
         // update facingDirection
-        if (updateData.flags != null && updateData.flags[MODULE_ID]?.facingDirection != null)            
-            AboutFace.tokenIndicators[token.id].rotate();        
+        if (updateData.flags != null && updateData.flags[MODULE_ID]?.facingDirection != null){
+            if (AboutFace.tokenIndicators[token.id].token.sprite == null
+                || AboutFace.tokenIndicators[token.id].token.sprite.transform == null)
+                debugger;
+            else
+                AboutFace.tokenIndicators[token.id].rotate();        
+        }
+            
 
         // update flip or rotate
         if (updateData.flags != null && updateData.flags[MODULE_ID]?.flipOrRotate != null) {
@@ -351,14 +357,14 @@ export class AboutFace {
         flipOrRotates: game.settings.settings.get('about-face.flip-or-rotate').choices,
         flipOrRotate: flipOrRotate,
         facingDirections: AboutFace.facingOptions[flipOrRotate],
-        facingDirection: tokenConfig.object.getFlag(MODULE_ID, 'facingDirection') || 'right',
+        facingDirection: tokenConfig.object.getFlag(MODULE_ID, 'facingDirection'),
     };
 
     const insertHTML = await renderTemplate('modules/' + MODULE_ID + '/templates/token-config.html', data);
     posTab.append(insertHTML);
 
     const selectFlipOrRotate = posTab.find('.token-config-select-flip-or-rotate');
-    const selectFacingDirection = posTab.find('.token-config-select-flip-direction');
+    const selectFacingDirection = posTab.find('.token-config-select-facing-direction');
     const lockRotateCheckbox = document.getElementsByName("lockRotation")[0];
 
     selectFlipOrRotate.on('change', (event) => {
@@ -391,7 +397,7 @@ export class AboutFace {
     }
 
     const flipOrRotateSelect = html.find('select[name="about-face.flip-or-rotate"]');
-    const flipDirectionSelect = html.find('select[name="about-face.flip-direction"]');
+    const flipDirectionSelect = html.find('select[name="about-face.facing-direction"]');
     replaceSelectChoices(flipDirectionSelect, AboutFace.facingOptions[AboutFace.flipOrRotate]);  
     
     flipOrRotateSelect.on('change', (event) => {

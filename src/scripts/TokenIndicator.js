@@ -2,6 +2,7 @@ import { SpriteID } from './SpriteID.js';
 import * as Helpers from './helpers.js';
 import { log, LogLevel } from './logging.js';
 import { AboutFace } from '../about-face.js';
+import flipAngles from './flipAngles.js'
 
 const MODULE_ID = 'about-face';
 const IndicatorMode = {
@@ -61,7 +62,7 @@ export class TokenIndicator {
         if (AboutFace.indicatorState !== IndicatorMode.ALWAYS || this.token.getFlag(MODULE_ID, 'indicatorDisabled'))
             this.sprite.visible = false;
 
-        this.rotate();
+        this.rotate(this.token.data.rotation);
 
         return this;
     }
@@ -84,7 +85,7 @@ export class TokenIndicator {
     rotate(deg) {
         log(LogLevel.DEBUG, 'TokenIndicator rotate()');
 
-        if (deg == null) deg = this.token.getFlag(MODULE_ID, 'direction');
+        if (deg == null) deg = this.token.getFlag(MODULE_ID, 'direction') || 0;
 
         if (game.user.isGM) {
 
@@ -95,158 +96,10 @@ export class TokenIndicator {
             }
             else {
             
-                let facingDirection = (this.token.getFlag(MODULE_ID, 'facingDirection')) || game.settings.get(MODULE_ID, 'flip-direction');
+                let facingDirection = (this.token.getFlag(MODULE_ID, 'facingDirection')) || game.settings.get(MODULE_ID, 'facing-direction');
 
                 // todo: gridless angles (should be between angles instead)
-                const flipAngles = [
-                    {}, //gridless
-                    { //square
-                        'flip-v': {
-                            down: {
-                                mirror: 'mirrorY',
-                                0: true,
-                                180: false
-                            },
-                            up: {
-                                mirror: 'mirrorY',
-                                0: false,
-                                180: true
-                            }
-                        },
-                        'flip-h': {
-                            right: {
-                                mirror: 'mirrorX',
-                                90: true,
-                                270: false
-                            },
-                            left: {
-                                mirror: 'mirrorX',
-                                90: false,
-                                270: true
-                            }
-                        },
-                    }, 
-                    { //hex odd rows
-                        'flip-v': {
-                            down: {
-                                mirror: 'mirrorY',
-                                45: false,
-                                135: true,
-                                225: true,
-                                315: false,                              
-                            },
-                            up: {
-                                mirror: 'mirrorY',
-                                45: true,
-                                135: false,
-                                225: false,
-                                315: true,  
-                            }
-                        },
-                        'flip-h': {
-                            right: {
-                                mirror: 'mirrorX',
-                                90: true,
-                                270: false
-                            },
-                            left: {
-                                mirror: 'mirrorX',
-                                90: false,
-                                270: true
-                            }
-                        },
-                    },
-                    { //hex even rows
-                        'flip-v': {
-                            down: {
-                                mirror: 'mirrorY',
-                                45: false,
-                                135: true,
-                                225: true,
-                                315: false,                              
-                            },
-                            up: {
-                                mirror: 'mirrorY',
-                                45: true,
-                                135: false,
-                                225: false,
-                                315: true,  
-                            }
-                        },
-                        'flip-h': {
-                            right: {
-                                mirror: 'mirrorX',
-                                90: true,
-                                270: false
-                            },
-                            left: {
-                                mirror: 'mirrorX',
-                                90: false,
-                                270: true
-                            }
-                        },
-                    },
-                    { //hex odd cols
-                        'flip-v': {
-                            down: {
-                                mirror: 'mirrorY',
-                                0: false,
-                                180: true                                
-                            },
-                            up: {
-                                mirror: 'mirrorY',
-                                0: true,
-                                180: false
-                            }
-                        },
-                        'flip-h': {
-                            right: {
-                                mirror: 'mirrorX',
-                                60: true,
-                                120: true,
-                                240: false,
-                                300: false,
-                            },
-                            left: {
-                                mirror: 'mirrorX',
-                                60: false,
-                                120: false,
-                                240: true,
-                                300: true,
-                            }
-                        },
-                    }, 
-                    { // hex even cols
-                        'flip-v': {
-                            down: {
-                                mirror: 'mirrorY',
-                                0: false,
-                                180: true                                
-                            },
-                            up: {
-                                mirror: 'mirrorY',
-                                0: true,
-                                180: false
-                            }
-                        },
-                        'flip-h': {
-                            right: {
-                                mirror: 'mirrorX',
-                                60: true,
-                                120: true,
-                                240: false,
-                                300: false,
-                            },
-                            left: {
-                                mirror: 'mirrorX',
-                                60: false,
-                                120: false,
-                                240: true,
-                                300: true,
-                            }
-                        },
-                    } 
-                ];
+                
                 let angles = flipAngles[canvas.grid.type][flipOrRotate][facingDirection];
                 if (angles[deg] != null) {
                     const update = {
