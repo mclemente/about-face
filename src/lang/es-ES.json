@@ -12,7 +12,12 @@
     "about-face.options.flip-or-rotate.choices.rotate": "Rotar",
     "about-face.options.flip-or-rotate.choices.flip-v": "Voltear verticalmente",
     "about-face.options.flip-or-rotate.choices.flip-h": "Voltear horizontalmente",
-    
+    "about-face.options.flip-direction.name" : "Flip Direction",
+    "about-face.options.flip-direction.hint" : "The default direction the token is facing",
+    "about-face.options.flip-direction.choices.right" : "Facing Right",
+    "about-face.options.flip-direction.choices.left" : "Facing Left",
+    "about-face.options.flip-direction.choices.down" : "Facing Down",
+    "about-face.options.flip-direction.choices.up" : "Facing Up",
     "about-face.options.indicator-sprite.name": "Tamaño del indicador",
     "about-face.options.indicator-sprite.hint": "Cambiar el tamaño del indicador (requiere recargar)",
     "about-face.options.indicator-sprite.choices.normal": "Normal",
