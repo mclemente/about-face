@@ -36,7 +36,7 @@ Hooks.once("init", () => {
         type: Boolean,
         onChange: (value) => { 
             if (!canvas.scene) return;
-            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'sceneEnabled', value);            
+            if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'sceneEnabled', value);            
         }
       });
     
@@ -52,10 +52,11 @@ Hooks.once("init", () => {
             1: "about-face.options.indicator.choices.1",
             2: "about-face.options.indicator.choices.2"
         },
-        onChange: (value) => { 
-            if (!canvas.scene) return;
-            let state = Number(value);            
-            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'indicatorState', state);            
+        onChange: (value) => {
+            if (Number(value) !== IndicatorMode.ALWAYS)
+                AboutFace.hideAllIndicators();            
+            else if (AboutFace.sceneEnabled)
+                AboutFace.showAllIndicators();
         }
       });            
 
@@ -74,7 +75,7 @@ Hooks.once("init", () => {
         onChange: async (value) => { 
             if (!canvas.scene) return;
             value = Number(value);
-            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'spriteType', value);          
+            if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'spriteType', value);          
         }
       });
 
@@ -92,7 +93,7 @@ Hooks.once("init", () => {
         },
         onChange: (value) => { 
             if (!canvas.scene) return;
-            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'flipOrRotate', value);                     
+            if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'flipOrRotate', value);                     
         }
     });
 
@@ -109,7 +110,7 @@ Hooks.once("init", () => {
         },
         onChange: (value) => { 
             if (!canvas.scene) return;
-            if (game.user.isGM) canvas.scene.setFlag(MODULE_ID, 'facing-direction', value);                     
+            if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'facing-direction', value);                     
         }
     });
 });
@@ -121,8 +122,7 @@ export class AboutFace {
 
     static initialize() {
         AboutFace.sceneEnabled = true;
-        AboutFace.tokenIndicators = {};
-        AboutFace.indicatorState;
+        AboutFace.tokenIndicators = {};        
         AboutFace.flipOrRotate;
 
         AboutFace.facingOptions = {
@@ -141,10 +141,7 @@ export class AboutFace {
     static async canvasReadyHandler() {
         log(LogLevel.INFO, 'canvasReadyHandler');        
 
-        // get game settings
-        AboutFace.indicatorState = canvas.scene.getFlag(MODULE_ID, 'indicatorState') != null 
-            ? canvas.scene.getFlag(MODULE_ID, 'indicatorState') 
-            : 2;       
+        // get game settings      
         AboutFace.sceneEnabled = canvas.scene.getFlag(MODULE_ID, 'sceneEnabled') != null 
             ? canvas.scene.getFlag(MODULE_ID, 'sceneEnabled') 
             : true;
@@ -154,13 +151,16 @@ export class AboutFace {
         AboutFace.flipOrRotate = canvas.scene.getFlag(MODULE_ID, 'flipOrRotate') != null 
             ? canvas.scene.getFlag(MODULE_ID, 'flipOrRotate') 
             : 'rotate';
+        AboutFace.facingDirection = canvas.scene.getFlag(MODULE_ID, 'facingDirection') != null 
+            ? canvas.scene.getFlag(MODULE_ID, 'facingDirection') 
+            : 'right';
 
         // sync settings from scene.flags to game.settings
-        if (game.user.isGM) {
-            await game.settings.set(MODULE_ID, 'indicator-state', AboutFace.indicatorState);
+        if (isFirstActiveGM()) {            
             await game.settings.set(MODULE_ID, 'scene-enabled', AboutFace.sceneEnabled);            
             await game.settings.set(MODULE_ID, 'sprite-type', AboutFace.spriteType); 
             await game.settings.set(MODULE_ID, 'flip-or-rotate', AboutFace.flipOrRotate); 
+            await game.settings.set(MODULE_ID, 'facing-direction', AboutFace.facingDirection); 
 
             // render the SettingsConfig if it is currently open to update changes
             Object.values(ui.windows).forEach(app => {
@@ -205,18 +205,17 @@ export class AboutFace {
         // update indicator state
         if (updateData.flags != null && updateData.flags[MODULE_ID]?.indicatorDisabled != null) {
             if (updateData.flags[MODULE_ID].indicatorDisabled) AboutFace.tokenIndicators[token.id].hide();
-            else if (AboutFace.indicatorState === IndicatorMode.ALWAYS) AboutFace.tokenIndicators[token.id].show();
+            else if (game.settings.get(MODULE_ID, 'indicator-state') === IndicatorMode.ALWAYS) AboutFace.tokenIndicators[token.id].show();
         }
 
         // update facingDirection
         if (updateData.flags != null && updateData.flags[MODULE_ID]?.facingDirection != null){
             if (AboutFace.tokenIndicators[token.id].token.sprite == null
                 || AboutFace.tokenIndicators[token.id].token.sprite.transform == null)
-                debugger;
+                log(LogLevel.WARN, 'updateTokenHandler: tokenIndicator missing sprite.transform!');
             else
                 AboutFace.tokenIndicators[token.id].rotate();        
-        }
-            
+        }            
 
         // update flip or rotate
         if (updateData.flags != null && updateData.flags[MODULE_ID]?.flipOrRotate != null) {
@@ -229,7 +228,7 @@ export class AboutFace {
             AboutFace.tokenIndicators[token.id].rotate(updateData.flags[MODULE_ID]?.direction);
 
         // the GM will observe all movement of tokens and set the direction flag
-        if (game.user.isGM && (updateData.x != null || updateData.y != null || updateData.rotation != null)) {
+        if (isFirstActiveGM() && (updateData.x != null || updateData.y != null || updateData.rotation != null)) {
             let direction;
             // if it's a rotation update then set the flag on the relevant token
             if (updateData.rotation != null) direction = updateData.rotation;
@@ -255,11 +254,12 @@ export class AboutFace {
     }
 
     static hoverTokenHandler(token, isHovering) {
-        if (!AboutFace.sceneEnabled || AboutFace.indicatorState !== IndicatorMode.HOVER) return;        
+        if (!AboutFace.sceneEnabled || game.settings.get(MODULE_ID, 'indicator-state') !== IndicatorMode.HOVER) return;        
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
         log(LogLevel.DEBUG, 'hoverTokenHandler', token.name);
 
-        if (!token.owner) return;
+        // todo: why would we want this?
+        // if (!token.owner) return;
 
         if (isHovering)
             AboutFace.tokenIndicators[token.id].show();
@@ -288,14 +288,7 @@ export class AboutFace {
                 return {_id:id, lockRotation:lockRotation};
             });
             canvas.tokens.updateMany(updates);
-        } 
-
-        if (updateData.flags[MODULE_ID].indicatorState != null) {
-            if (updateData.flags[MODULE_ID].indicatorState !== IndicatorMode.ALWAYS)
-                AboutFace.hideAllIndicators();            
-            else if (AboutFace.sceneEnabled)
-                AboutFace.showAllIndicators();
-        }   
+        }
         
         if (updateData.flags[MODULE_ID].spriteType != null) {
             // we need to update the existing tokenIndicators with the new sprite type.            

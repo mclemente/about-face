@@ -59,7 +59,7 @@ export class TokenIndicator {
         this.c.addChild(this.sprite);
         this.token.addChild(this.c);
 
-        if (AboutFace.indicatorState !== IndicatorMode.ALWAYS || this.token.getFlag(MODULE_ID, 'indicatorDisabled'))
+        if (game.settings.get(MODULE_ID, 'indicator-state') !== IndicatorMode.ALWAYS || this.token.getFlag(MODULE_ID, 'indicatorDisabled'))
             this.sprite.visible = false;
 
         this.rotate(this.token.data.rotation);
@@ -87,7 +87,7 @@ export class TokenIndicator {
 
         if (deg == null) deg = this.token.getFlag(MODULE_ID, 'direction') || 0;
 
-        if (game.user.isGM) {
+        if (isFirstActiveGM()) {
 
             let flipOrRotate = this.token.getFlag(MODULE_ID, 'flipOrRotate') || AboutFace.flipOrRotate;
 
@@ -96,7 +96,7 @@ export class TokenIndicator {
             }
             else {
             
-                let facingDirection = (this.token.getFlag(MODULE_ID, 'facingDirection')) || game.settings.get(MODULE_ID, 'facing-direction');
+                let facingDirection = (this.token.getFlag(MODULE_ID, 'facingDirection')) || AboutFace.facingDirection;
 
                 // todo: gridless angles (should be between angles instead)
                 

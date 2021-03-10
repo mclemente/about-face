@@ -31,6 +31,20 @@ export async function getTokenOwner(token, includeGM=false) {
 }
 
 /**
+ * Checks user to see if the current user is the first registered GM.
+ * @category helpers
+ * @function
+ * @returns {Boolean} - whether the user is the first GM
+ */
+export const isFirstActiveGM = () => {
+    const firstGm = game.users.find((u) => u.isGM && u.active);
+    if (firstGm && game.user === firstGm) {
+      return true;
+    }
+    return false;
+  };
+
+/**
  * returns the degrees to rotate a token
  * added support when using hex columns
  * @param {int} dX     the value of x2 - x1
