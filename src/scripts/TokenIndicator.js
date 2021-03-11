@@ -242,7 +242,8 @@ export class TokenIndicator {
 
         // to get an accurate radius of the token + indicator we need to deal with the fact
         // that hex grids have tokens that are bigger than the grid.
-        const ratio = canvas.grid.size / this.token.width;
+        // todo: now redundant, remove or fix
+        const ratio = canvas.grid.size / this.token.w;
         const radius = ((this.token.w / 2) * ratio) + modHeight ;
 
 
@@ -266,7 +267,7 @@ export class TokenIndicator {
             .lineTo(wi + w0, h0)
             .closePath()
 
-            .beginFill(0x000000, 0).lineStyle(0, 0x000000, 0)
+            .beginFill(0xFFFFFF, 0.5).lineStyle(0, 0x000000, 0)
             .drawCircle(this.token.w / 2, this.token.w / 2, radius)
             .endFill();
         let texture = canvas.app.renderer.generateTexture(i);
