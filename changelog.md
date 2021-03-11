@@ -1,5 +1,9 @@
 # CHANGELOG
 
+
+## [2.1.2]
+- Remove debug circles.
+
 ## [2.1.1]
 ### BUGFIXES
 - Fixed adding a new actor with default hex indicator crash
