@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [2.1.1]
+### BUGFIXES
+- Fixed adding a new actor with default hex indicator crash
+
 ## [2.1.0]
 ### FEATURES
 - Flipping Feature has been readded. Can flip horizontal / vertical. Works on hex scenes now too.
