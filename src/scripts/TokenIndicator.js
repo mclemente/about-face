@@ -267,7 +267,7 @@ export class TokenIndicator {
             .lineTo(wi + w0, h0)
             .closePath()
 
-            .beginFill(0xFFFFFF, 0.5).lineStyle(0, 0x000000, 0)
+            .beginFill(0x000000, 0).lineStyle(0, 0x000000, 0)
             .drawCircle(this.token.w / 2, this.token.w / 2, radius)
             .endFill();
         let texture = canvas.app.renderer.generateTexture(i);
