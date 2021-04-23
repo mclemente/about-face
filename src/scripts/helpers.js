@@ -43,6 +43,20 @@ export const isFirstActiveGM = () => {
     }
     return false;
   };
+  
+
+/**
+ * Checks to see if this update is from About Face or not. Will return true for core updates. Only
+ * foreign module flag updates should return false.
+ * @category helpers
+ * @function
+ * @returns {Boolean} - whether this is a BnG update
+ */
+ export const isAboutFaceUpdate = (changes) => {
+    const entries = Object.entries(changes);
+    if (entries.length === 2 && entries[0][0] === 'flags' && entries[0][1][MODULE_ID] == null) return false;
+    return true;
+  };
 
 /**
  * returns the degrees to rotate a token

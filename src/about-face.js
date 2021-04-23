@@ -7,7 +7,7 @@
 
 import { TokenIndicator } from './scripts/TokenIndicator.js';
 import { log, LogLevel } from './scripts/logging.js'
-import { getRotationDegrees, replaceSelectChoices, isFirstActiveGM } from './scripts/helpers.js'
+import { getRotationDegrees, replaceSelectChoices, isFirstActiveGM, isAboutFaceUpdate } from './scripts/helpers.js'
 
 const MODULE_ID = 'about-face';
 
@@ -193,7 +193,7 @@ export class AboutFace {
      * @param {*} userId 
      */
     static async updateTokenHandler(scene, token, updateData, options, userId) {
-        if (!AboutFace.sceneEnabled) return;
+        if (!AboutFace.sceneEnabled || !isAboutFaceUpdate()) return;
         token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
         log(LogLevel.DEBUG, 'updateTokenHandler', token.name);
 
