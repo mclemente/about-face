@@ -278,7 +278,6 @@ export class AboutFace {
      * @param changes - changes
      */
     static async updateSceneHandler(scene, updateData) {
-        console.log('updateSceneHandler')
         if (updateData.flags == null || updateData.flags[MODULE_ID] == null) return;
         log(LogLevel.DEBUG, 'updateSceneHandler', scene);
 
