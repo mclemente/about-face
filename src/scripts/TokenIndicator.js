@@ -20,8 +20,8 @@ export class TokenIndicator {
         this.token = token;
         this.sprite = sprite;
         this.c = new PIXI.Container(); 
-        const flipOrRotate = token.getFlag(MODULE_ID, 'flipOrRotate') || AboutFace.flipOrRotate;
-        if (flipOrRotate !== 'rotate') token.update({lockRotation:true});
+        const flipOrRotate = token.document.getFlag(MODULE_ID, 'flipOrRotate') || AboutFace.flipOrRotate;
+        if (flipOrRotate !== 'rotate') token.document.update({lockRotation:true});
     }
 
     /* -------------------------------------------- */
@@ -57,7 +57,7 @@ export class TokenIndicator {
         this.c.addChild(this.sprite);
         this.token.addChild(this.c);
 
-        if (game.settings.get(MODULE_ID, 'indicator-state') !== IndicatorMode.ALWAYS || this.token.getFlag(MODULE_ID, 'indicatorDisabled'))
+        if (game.settings.get(MODULE_ID, 'indicator-state') !== IndicatorMode.ALWAYS || this.token.document.getFlag(MODULE_ID, 'indicatorDisabled'))
             this.sprite.visible = false;
 
         this.rotate(this.token.data.rotation);
@@ -83,18 +83,18 @@ export class TokenIndicator {
     rotate(deg) {
         log(LogLevel.DEBUG, 'TokenIndicator rotate()');
 
-        if (deg == null) deg = this.token.getFlag(MODULE_ID, 'direction') || 0;
+        if (deg == null) deg = this.token.document.getFlag(MODULE_ID, 'direction') || 0;
 
         if (isFirstActiveGM()) {
 
-            let flipOrRotate = this.token.getFlag(MODULE_ID, 'flipOrRotate') || AboutFace.flipOrRotate;
+            let flipOrRotate = this.token.document.getFlag(MODULE_ID, 'flipOrRotate') || AboutFace.flipOrRotate;
 
             if (flipOrRotate === "rotate") {
-                if (!this.token.data.lockRotation) this.token.update({ rotation: deg });
+                if (!this.token.data.lockRotation) this.token.document.update({ rotation: deg });
             }
             else {
             
-                let facingDirection = (this.token.getFlag(MODULE_ID, 'facingDirection')) || AboutFace.facingDirection;
+                let facingDirection = (this.token.document.getFlag(MODULE_ID, 'facingDirection')) || AboutFace.facingDirection;
 
                 // todo: gridless angles (should be between angles instead)
                 
@@ -104,11 +104,11 @@ export class TokenIndicator {
                         [angles.mirror]: angles[deg],
                     }
                     log(LogLevel.INFO, 'rotate', deg, angles.mirror, angles[deg]);
-                    this.token.update(update);
+                    this.token.document.update(update);
                 }
             }
-        }        
-        if (!this.sprite || this.token.getFlag(MODULE_ID, 'indicatorDisabled')) {
+        }
+        if (!this.sprite || this.token.document.getFlag(MODULE_ID, 'indicatorDisabled')) {
             return false;
         }
         this.sprite.angle = deg;        
@@ -130,7 +130,7 @@ export class TokenIndicator {
      * show the instance
      */
     show() {
-        if (!this.token.getFlag(MODULE_ID, 'indicatorDisabled'))
+        if (!this.token.document.getFlag(MODULE_ID, 'indicatorDisabled'))
             this.sprite.visible = true;
     }
     

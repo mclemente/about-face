@@ -192,9 +192,13 @@ export class AboutFace {
      * @param {*} options 
      * @param {*} userId 
      */
-    static async updateTokenHandler(scene, token, updateData, options, userId) {
-        if (!AboutFace.sceneEnabled || !isAboutFaceUpdate()) return;
-        token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
+    static async updateTokenHandler(token, updateData, options, userId) {
+        const scene = token.object.scene;
+        if (!AboutFace.sceneEnabled) return;
+        token = (token instanceof Token) ? token : canvas.tokens.get(token.id);
+        if (!token.children.includes(AboutFace.tokenIndicators[token.id].c)) {
+            AboutFace.createTokenHandler(scene, token)
+        }
         log(LogLevel.DEBUG, 'updateTokenHandler', token.name);
 
         if (!AboutFace.tokenIndicators[token.id]) {
@@ -219,8 +223,8 @@ export class AboutFace {
 
         // update flip or rotate
         if (updateData.flags != null && updateData.flags[MODULE_ID]?.flipOrRotate != null) {
-            if (updateData.flags[MODULE_ID].flipOrRotate === 'flip-h') await token.update({mirrorY:false});
-            if (updateData.flags[MODULE_ID].flipOrRotate === 'flip-v') await token.update({mirrorX:false});        
+            if (updateData.flags[MODULE_ID].flipOrRotate === 'flip-h') await token.document.update({mirrorY:false});
+            if (updateData.flags[MODULE_ID].flipOrRotate === 'flip-v') await token.document.update({mirrorX:false});        
         }
 
         // update direction
@@ -248,14 +252,14 @@ export class AboutFace {
 
     static async setTokenFlag(token, flag, value) {
         if (token.data.flags != null && token.data.flags['multilevel-tokens']?.stoken != null) {
-            return await token.update({[`flags.${MODULE_ID}.${flag}`]: value}, { 'mlt_bypass': true });
+            return await token.document.update({[`flags.${MODULE_ID}.${flag}`]: value}, { 'mlt_bypass': true });
         }
-        else return await token.setFlag(MODULE_ID, flag, value);
+        else return await token.document.setFlag(MODULE_ID, flag, value);
     }
 
     static hoverTokenHandler(token, isHovering) {
         if (!AboutFace.sceneEnabled || game.settings.get(MODULE_ID, 'indicator-state') !== IndicatorMode.HOVER) return;        
-        token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
+        token = (token instanceof Token) ? token : canvas.tokens.get(token.id);
         log(LogLevel.DEBUG, 'hoverTokenHandler', token.name);
 
         // todo: why would we want this?
@@ -274,6 +278,7 @@ export class AboutFace {
      * @param changes - changes
      */
     static async updateSceneHandler(scene, updateData) {
+        console.log('updateSceneHandler')
         if (updateData.flags == null || updateData.flags[MODULE_ID] == null) return;
         log(LogLevel.DEBUG, 'updateSceneHandler', scene);
 
@@ -321,14 +326,14 @@ export class AboutFace {
     }
 
     static async createTokenHandler(scene, token) {        
-        token = (token instanceof Token) ? token : canvas.tokens.get(token._id);
+        token = (token instanceof Token) ? token : canvas.tokens.get(token.id);
         log(LogLevel.INFO, 'createTokenHandler, creating TokenIndicator for:', token.name);        
         AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create(scene);
     }
     
     static deleteTokenHandler(scene, token) {       
-        log(LogLevel.INFO, 'deleteTokenHandler:', token._id); 
-        delete AboutFace.tokenIndicators[token._id];
+        log(LogLevel.INFO, 'deleteTokenHandler:', token.id); 
+        delete AboutFace.tokenIndicators[token.id];
     }
 
     /**
@@ -404,7 +409,7 @@ export class AboutFace {
 
 Hooks.on("createToken", AboutFace.createTokenHandler);
 Hooks.on("deleteToken", AboutFace.deleteTokenHandler);
-Hooks.on("canvasReady", AboutFace.canvasReadyHandler);
+Hooks.on("ready", AboutFace.canvasReadyHandler);
 Hooks.on("hoverToken", AboutFace.hoverTokenHandler);
 Hooks.on("updateToken",  AboutFace.updateTokenHandler);
 Hooks.on("updateScene",  AboutFace.updateSceneHandler);
