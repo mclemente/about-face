@@ -196,8 +196,9 @@ export class AboutFace {
         const scene = token.object.scene;
         if (!AboutFace.sceneEnabled) return;
         token = (token instanceof Token) ? token : canvas.tokens.get(token.id);
-        if (!token.children.includes(AboutFace.tokenIndicators[token.id].c)) {
-            AboutFace.createTokenHandler(scene, token)
+        const indicatorContainer = AboutFace.tokenIndicators[token.id].c // a PIXI container of the direction indicator
+        if (!token.children.includes(indicatorContainer)) { // a token should have the container of the indicator as a child
+            AboutFace.createTokenHandler(scene, token) // if the token doesn't have it as a child, create a new one
         }
         log(LogLevel.DEBUG, 'updateTokenHandler', token.name);
 
