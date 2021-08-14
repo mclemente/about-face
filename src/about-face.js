@@ -1,6 +1,6 @@
 /**
  * About Face -- A Token Rotator
- *	  Rotates tokens based on the direction the token is moved
+ * Rotates tokens based on the direction the token is moved
  * 
  * by Eadorin, edzillion
  */
@@ -38,9 +38,9 @@ Hooks.once("init", () => {
 			if (!canvas.scene) return;
 			if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'sceneEnabled', value);			
 		}
-	  });
+	});
 	
-	  game.settings.register(MODULE_ID, 'indicator-state', {
+	game.settings.register(MODULE_ID, 'indicator-state', {
 		name: "about-face.options.enable-indicator.name",
 		hint: "about-face.options.enable-indicator.hint",
 		scope: "client",
@@ -58,9 +58,9 @@ Hooks.once("init", () => {
 			else if (AboutFace.sceneEnabled)
 				AboutFace.showAllIndicators();
 		}
-	  });			
+	});
 
-	  game.settings.register(MODULE_ID, 'sprite-type', {
+	game.settings.register(MODULE_ID, 'sprite-type', {
 		name: "about-face.options.indicator-sprite.name",
 		hint: "about-face.options.indicator-sprite.hint",
 		scope: "world",
@@ -75,9 +75,9 @@ Hooks.once("init", () => {
 		onChange: async (value) => { 
 			if (!canvas.scene) return;
 			value = Number(value);
-			if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'spriteType', value);		  
+			if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'spriteType', value);
 		}
-	  });
+	});
 
 	game.settings.register(MODULE_ID, 'flip-or-rotate', {
 		name: "about-face.options.flip-or-rotate.name",
@@ -93,7 +93,7 @@ Hooks.once("init", () => {
 		},
 		onChange: (value) => { 
 			if (!canvas.scene) return;
-			if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'flipOrRotate', value);					 
+			if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'flipOrRotate', value);
 		}
 	});
 
@@ -110,7 +110,7 @@ Hooks.once("init", () => {
 		},
 		onChange: (value) => { 
 			if (!canvas.scene) return;
-			if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'facingDirection', value);					 
+			if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, 'facingDirection', value);
 		}
 	});
 });
@@ -141,7 +141,7 @@ export class AboutFace {
 	static async canvasReadyHandler() {
 		log(LogLevel.INFO, 'canvasReadyHandler');		
 
-		// get game settings	  
+		// get game settings
 		AboutFace.sceneEnabled = canvas.scene.getFlag(MODULE_ID, 'sceneEnabled') != null 
 			? canvas.scene.getFlag(MODULE_ID, 'sceneEnabled') 
 			: true;
@@ -247,7 +247,7 @@ export class AboutFace {
 				direction = getRotationDegrees(dX, dY, "", scene.data.gridType >= 4); 
 			}
 			
-			return await AboutFace.setTokenFlag(token, 'direction', direction);			  
+			return await AboutFace.setTokenFlag(token, 'direction', direction);
 		}
 	}
 
@@ -273,7 +273,7 @@ export class AboutFace {
 	}
 
 	/**
-	 * Handler called when scene data updated.	  
+	 * Handler called when scene data updated.
 	 * @function
 	 * @param scene - reference to the current scene
 	 * @param changes - changes
@@ -301,7 +301,7 @@ export class AboutFace {
 				for (const [key, indicator] of Object.entries(AboutFace.tokenIndicators)) {
 					let token = canvas.tokens.get(key);
 					log(LogLevel.INFO, 'updateSceneHandler, updating TokenIndicator for:', token.name); 
-					indicator.wipe();	   
+					indicator.wipe();
 					AboutFace.deleteTokenHandler(canvas.scene, token);
 					await AboutFace.createTokenHandler(canvas.scene, token);							
 				}
@@ -331,7 +331,7 @@ export class AboutFace {
 		AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create(scene);
 	}
 	
-	static deleteTokenHandler(scene, token) {	   
+	static deleteTokenHandler(scene, token) {
 		log(LogLevel.INFO, 'deleteTokenHandler:', token.id); 
 		delete AboutFace.tokenIndicators[token.id];
 	}
@@ -375,7 +375,7 @@ export class AboutFace {
 	//tokenConfig.setPosition({ height: 'auto' });
   }
 
-	  /**
+	/**
    * Handler called when token configuration window is opened. Injects custom form html and deals
    * with updating token.
    * @category GMOnly
