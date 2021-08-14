@@ -37,7 +37,7 @@ export class TokenIndicator {
 			this.sprite = this.generateTriangleIndicator("normal", indicator_color, 0x000000);
 		else if (AboutFace.spriteType === 1)
 			this.sprite = this.generateTriangleIndicator("large", indicator_color, 0x000000);
-		if (AboutFace.spriteType === 2) {
+		else if (AboutFace.spriteType === 2) {
 			// Only allow the Hex sprite on Hex Column scenes (gridType 4 & 5).
 			if (scene?.data.gridType >= 4) 
 				this.sprite = this.generateHexFacingsIndicator(indicator_color);  
@@ -107,7 +107,7 @@ export class TokenIndicator {
 					this.token.document.update(update);
 				}
 			}
-		}
+		}		
 		if (!this.sprite || this.token.document.getFlag(MODULE_ID, 'indicatorDisabled')) {
 			return false;
 		}

@@ -7,7 +7,7 @@
 
 import { TokenIndicator } from './scripts/TokenIndicator.js';
 import { log, LogLevel } from './scripts/logging.js'
-import { getRotationDegrees, replaceSelectChoices, isFirstActiveGM, isAboutFaceUpdate } from './scripts/helpers.js'
+import { getRotationDegrees, replaceSelectChoices, isFirstActiveGM } from './scripts/helpers.js'
 
 const MODULE_ID = 'about-face';
 
@@ -196,10 +196,10 @@ export class AboutFace {
 		const scene = token.object.scene;
 		if (!AboutFace.sceneEnabled) return;
 		token = (token instanceof Token) ? token : canvas.tokens.get(token.id);
-		const indicatorContainer = AboutFace.tokenIndicators[token.id].c // a PIXI container of the direction indicator
-		if (!token.children.includes(indicatorContainer)) { // a token should have the container of the indicator as a child
-			AboutFace.createTokenHandler(scene, token) // if the token doesn't have it as a child, create a new one
-		}
+        const indicatorContainer = AboutFace.tokenIndicators[token.id].c // a PIXI container of the direction indicator
+        if (!token.children.includes(indicatorContainer)) { // a token should have the container of the indicator as a child
+            AboutFace.createTokenHandler(token) // if the token doesn't have it as a child, create a new one
+        }
 		log(LogLevel.DEBUG, 'updateTokenHandler', token.name);
 
 		if (!AboutFace.tokenIndicators[token.id]) {
@@ -302,8 +302,8 @@ export class AboutFace {
 					let token = canvas.tokens.get(key);
 					log(LogLevel.INFO, 'updateSceneHandler, updating TokenIndicator for:', token.name); 
 					indicator.wipe();
-					AboutFace.deleteTokenHandler(canvas.scene, token);
-					await AboutFace.createTokenHandler(canvas.scene, token);							
+					AboutFace.deleteTokenHandler(token);
+					await AboutFace.createTokenHandler(token);
 				}
 			}	
 		}
@@ -325,13 +325,13 @@ export class AboutFace {
 		}
 	}
 
-	static async createTokenHandler(scene, token) {		
+	static async createTokenHandler(token, options, userId) {		
 		token = (token instanceof Token) ? token : canvas.tokens.get(token.id);
-		log(LogLevel.INFO, 'createTokenHandler, creating TokenIndicator for:', token.name);		
-		AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create(scene);
+		log(LogLevel.INFO, 'createTokenHandler, creating TokenIndicator for:', token.name);
+		AboutFace.tokenIndicators[token.id] = await new TokenIndicator(token).create(token.object?.scene || canvas.scene);
 	}
 	
-	static deleteTokenHandler(scene, token) {
+	static deleteTokenHandler(token, options, userId) {	 
 		log(LogLevel.INFO, 'deleteTokenHandler:', token.id); 
 		delete AboutFace.tokenIndicators[token.id];
 	}
@@ -345,35 +345,35 @@ export class AboutFace {
    * @param {TokenConfig} tokenConfig
    * @param {JQuery} html
    */
-  static async renderTokenConfigHandler(tokenConfig, html) {
-	log(LogLevel.INFO, 'renderTokenConfig');
-	
-	const posTab = html.find('.tab[data-tab="position"]');
+	static async renderTokenConfigHandler(tokenConfig, html) {
+		log(LogLevel.INFO, 'renderTokenConfig');
+		
+		const posTab = html.find('.tab[data-tab="position"]');
 
 
-	const flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, 'flipOrRotate') || AboutFace.flipOrRotate;
-	let data = {
-		indicatorDisabled: tokenConfig.object.getFlag(MODULE_ID, 'indicatorDisabled') ? 'checked' : '',
-		flipOrRotates: game.settings.settings.get('about-face.flip-or-rotate').choices,
-		flipOrRotate: flipOrRotate,
-		facingDirections: AboutFace.facingOptions[flipOrRotate],
-		facingDirection: tokenConfig.object.getFlag(MODULE_ID, 'facingDirection'),
-	};
+		const flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, 'flipOrRotate') || AboutFace.flipOrRotate;
+		let data = {
+			indicatorDisabled: tokenConfig.object.getFlag(MODULE_ID, 'indicatorDisabled') ? 'checked' : '',
+			flipOrRotates: game.settings.settings.get('about-face.flip-or-rotate').choices,
+			flipOrRotate: flipOrRotate,
+			facingDirections: AboutFace.facingOptions[flipOrRotate],
+			facingDirection: tokenConfig.object.getFlag(MODULE_ID, 'facingDirection'),
+		};
 
-	const insertHTML = await renderTemplate('modules/' + MODULE_ID + '/templates/token-config.html', data);
-	posTab.append(insertHTML);
+		const insertHTML = await renderTemplate('modules/' + MODULE_ID + '/templates/token-config.html', data);
+		posTab.append(insertHTML);
 
-	const selectFlipOrRotate = posTab.find('.token-config-select-flip-or-rotate');
-	const selectFacingDirection = posTab.find('.token-config-select-facing-direction');
-	const lockRotateCheckbox = document.getElementsByName("lockRotation")[0];
+		const selectFlipOrRotate = posTab.find('.token-config-select-flip-or-rotate');
+		const selectFacingDirection = posTab.find('.token-config-select-facing-direction');
+		const lockRotateCheckbox = document.getElementsByName("lockRotation")[0];
 
-	selectFlipOrRotate.on('change', (event) => {
-		const facingDirections = AboutFace.facingOptions[event.target.value];
-		replaceSelectChoices(selectFacingDirection, facingDirections);
-		lockRotateCheckbox.checked = event.target.value !== 'rotate';
-	});
-	//tokenConfig.setPosition({ height: 'auto' });
-  }
+		selectFlipOrRotate.on('change', (event) => {
+			const facingDirections = AboutFace.facingOptions[event.target.value];
+			replaceSelectChoices(selectFacingDirection, facingDirections);
+			lockRotateCheckbox.checked = event.target.value !== 'rotate';
+		});
+		//tokenConfig.setPosition({ height: 'auto' });
+	}
 
 	/**
    * Handler called when token configuration window is opened. Injects custom form html and deals
@@ -384,27 +384,27 @@ export class AboutFace {
    * @param {TokenConfig} tokenConfig
    * @param {JQuery} html
    */
-  static async renderSettingsConfigHandler(tokenConfig, html) {	
+	static async renderSettingsConfigHandler(tokenConfig, html) {	
 
-	// we need to disable the hex option if we are not on a hex scene
-	if (canvas.scene && canvas.scene.data.gridType < 4) {
-		const indicatorIconSelect = html.find('select[name="about-face.sprite-type"]');	
-		indicatorIconSelect.find('option').each(function() {
-			if($(this).val() == "2") {
-				$(this).attr("disabled", "disabled");
-			}
+		// we need to disable the hex option if we are not on a hex scene
+		if (canvas.scene && canvas.scene.data.gridType < 4) {
+			const indicatorIconSelect = html.find('select[name="about-face.sprite-type"]');	
+			indicatorIconSelect.find('option').each(function() {
+				if($(this).val() == "2") {
+					$(this).attr("disabled", "disabled");
+				}
+			});
+		}
+
+		const flipOrRotateSelect = html.find('select[name="about-face.flip-or-rotate"]');
+		const flipDirectionSelect = html.find('select[name="about-face.facing-direction"]');
+		replaceSelectChoices(flipDirectionSelect, AboutFace.facingOptions[AboutFace.flipOrRotate]);  
+		
+		flipOrRotateSelect.on('change', (event) => {
+			const facingDirections = AboutFace.facingOptions[event.target.value];
+			replaceSelectChoices(flipDirectionSelect, facingDirections);	
 		});
 	}
-
-	const flipOrRotateSelect = html.find('select[name="about-face.flip-or-rotate"]');
-	const flipDirectionSelect = html.find('select[name="about-face.facing-direction"]');
-	replaceSelectChoices(flipDirectionSelect, AboutFace.facingOptions[AboutFace.flipOrRotate]);  
-	
-	flipOrRotateSelect.on('change', (event) => {
-		const facingDirections = AboutFace.facingOptions[event.target.value];
-		replaceSelectChoices(flipDirectionSelect, facingDirections);	
-	});
-  }
 }
 
 Hooks.on("createToken", AboutFace.createTokenHandler);
@@ -415,4 +415,3 @@ Hooks.on("updateToken",  AboutFace.updateTokenHandler);
 Hooks.on("updateScene",  AboutFace.updateSceneHandler);
 Hooks.on('renderTokenConfig', AboutFace.renderTokenConfigHandler);
 Hooks.on('renderSettingsConfig', AboutFace.renderSettingsConfigHandler);
- 
