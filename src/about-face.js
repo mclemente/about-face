@@ -360,7 +360,7 @@ export class AboutFace {
 			facingDirection: tokenConfig.object.getFlag(MODULE_ID, 'facingDirection'),
 		};
 
-		const insertHTML = await renderTemplate('modules/' + MODULE_ID + '/templates/token-config.html', data);
+		const insertHTML = await renderTemplate('modules/' + MODULE_ID + 'src/templates/token-config.html', data);
 		posTab.append(insertHTML);
 
 		const selectFlipOrRotate = posTab.find('.token-config-select-flip-or-rotate');
