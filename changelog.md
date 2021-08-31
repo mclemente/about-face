@@ -1,5 +1,6 @@
 # CHANGELOG
 
+This file is here just for history. Check the [Releases](/releases) for recent updates.
 
 ## [2.1.2]
 - Remove debug circles.

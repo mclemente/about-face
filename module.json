@@ -2,30 +2,30 @@
 	"name": "about-face",
 	"title": "About Face",
 	"description": "Rotates Tokens and provide indicators for direction based on movement",
-	"version": "2.0.3",
-	"author": "Eadorin (eadorin@gmail.com)",
-	"esmodules": ["src/about-face.js"],
-	"compatibleCoreVersion": "0.8.8",
-	"minimumCoreVersion": "0.8.8",
-	"manifest": "https://github.com/League-of-Foundry-Developers/about-face/releases/latest/download/module.json",
-	"download": "https://github.com/League-of-Foundry-Developers/about-face/releases/latest/download/module.zip",
-	"url": "https://github.com/League-of-Foundry-Developers/about-face",
-	"changelog": "https://github.com/League-of-Foundry-Developers/about-face/blob/master/changelog.md",
+	"version": "2.2.0",
+	"author": "Matheus Clemente (mclemente#5524)",
+	"esmodules": ["about-face.js"],
+	"compatibleCoreVersion": "0.8.9",
+	"minimumCoreVersion": "0.8.9",
+	"manifest": "https://github.com/mclemente/about-face/releases/latest/download/module.json",
+	"download": "https://github.com/mclemente/about-face/releases/latest/download/module.zip",
+	"url": "https://github.com/mclemente/about-face",
+	"changelog": "https://github.com/mclemente/about-face/releases",
 	"languages": [
 		{
 			"lang": "en",
 			"name": "English",
-			"path": "src/lang/en.json"
+			"path": "lang/en.json"
 		},
 		{
 			"lang": "pt-BR",
 			"name": "Português (Brasil)",
-			"path": "src/lang/pt-BR.json"
+			"path": "lang/pt-BR.json"
 		},
 		{
 			"lang": "es",
 			"name": "Español",
-			"path": "src/lang/es.json"
+			"path": "lang/es.json"
 		}
 	]
 }
