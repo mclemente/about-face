@@ -1,3 +1,8 @@
+![GitHub release](https://img.shields.io/github/release-date/mclemente/about-face)
+![all versions](https://img.shields.io/github/downloads/mclemente/about-face/total) 
+![the latest version](https://img.shields.io/github/downloads/mclemente/about-face/latest/total) 
+![Forge installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fabout-face)
+
 # About Face -- FoundryVTT Module
 About Face is a module for FoundryVTT that changes a token's direction based on movement. It also provides optional "facing" indicators for tokens.
 
@@ -18,14 +23,8 @@ Two options are available in the game settings module config. Otherwise, with ev
 - If a token is not facing down just edit the rotation in Token Config > Image.
 
 ## Troubleshooting
-- Refresh Foundry VTT webpage
-
 #### How do I keep certain tokens from spinning?
 - You can lock tokens by either double-clicking and selecting the token icon from the hud or accessing from the character sheet. The option you're looking for is "Lock Rotation" under the "Position" tab.
-
-## Upcoming Features
-- Different / Configurable indicators
-- Dynamic color-adjusting indicators based on the scene/tile
 
 ## Credit
 Eadorin & edzillion, for the original [About Face](https://github.com/League-of-Foundry-Developers/about-face).
