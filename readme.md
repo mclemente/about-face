@@ -6,7 +6,7 @@
 # About Face -- FoundryVTT Module
 About Face is a module for FoundryVTT that changes a token's direction based on movement. It also provides optional "facing" indicators for tokens.
 
-![Example](https://github.com/League-of-Foundry-Developers/about-face/raw/master/AboutFace-Demo.gif)
+![Example](https://github.com/mclemente/about-face/raw/master/AboutFace-Demo.gif)
 
 ## Installation
 Simply use the install module screen within the FoundryVTT setup
@@ -17,7 +17,7 @@ Two options are available in the game settings module config. Otherwise, with ev
 - Hold SHIFT and using your W,A,S,D or &#8593;,&#8592;,&#8595;,&#8594; you can change the direction your token is facing without moving
 
 ### Disable for a specific Token
-![Token Config Screenshot](https://raw.githubusercontent.com/League-of-Foundry-Developers/about-face/master/screenshot.PNG)
+![Token Config Screenshot](https://raw.githubusercontent.com/mclemente/about-face/master/screenshot.PNG)
 
 ## Known Issues / Limitations
 - If a token is not facing down just edit the rotation in Token Config > Image.
