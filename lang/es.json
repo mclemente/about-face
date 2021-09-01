@@ -1,6 +1,6 @@
 {
     "I18N.LANGUAGE": "Español",
-    "I18N.MAINTAINERS": "@Viriato139ac#0342",
+    "I18N.MAINTAINERS": "@Viriato139ac#0342, @Honzo#5012",
   
     "about-face.options.individual-token-text": "¿Mostrar indicador en este icono?",
     "about-face.options.scene-enabled.name": "Activar la rotación de About Face",
@@ -15,15 +15,15 @@
     "about-face.options.flip-or-rotate.choices.rotate": "Rotar",
     "about-face.options.flip-or-rotate.choices.flip-v": "Dar la vuelta verticalmente",
     "about-face.options.flip-or-rotate.choices.flip-h": "Dar la vuelta horizontalmente",
-    "about-face.options.facing-direction.name" : "Flip Direction",
-    "about-face.options.facing-direction.hint" : "The default direction the token is facing",
-    "about-face.options.facing-direction.choices.right" : "Facing Right",
-    "about-face.options.facing-direction.choices.left" : "Facing Left",
-    "about-face.options.facing-direction.choices.down" : "Facing Forward",
-    "about-face.options.facing-direction.choices.up" : "Facing Back",
+    "about-face.options.facing-direction.name" : "Cambiar la dirección",
+    "about-face.options.facing-direction.hint" : "La dirección por defecto que el icono encara",
+    "about-face.options.facing-direction.choices.right" : "Mirando a la derecha",
+    "about-face.options.facing-direction.choices.left" : "Mirando a la izquierda",
+    "about-face.options.facing-direction.choices.down" : "Mirando hacia delante",
+    "about-face.options.facing-direction.choices.up" : "Mirando a hacia atrás",
     "about-face.options.indicator-sprite.name": "Tamaño del indicador",
     "about-face.options.indicator-sprite.hint": "Cambia el tamaño del indicador (requiere recargar el programa)",
     "about-face.options.indicator-sprite.choices.normal": "Normal",
     "about-face.options.indicator-sprite.choices.large": "Grande",
-    "about-face.options.indicator-sprite.choices.hex" : "Hex Indicator (Only works on Hex Columns)"
+    "about-face.options.indicator-sprite.choices.hex" : "Indicador hexagonal (Solo funciona en columnas hexagonales)"
 }
