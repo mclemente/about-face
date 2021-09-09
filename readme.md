@@ -21,6 +21,7 @@ Two options are available in the game settings module config. Otherwise, with ev
 
 ## Known Issues / Limitations
 - If a token is not facing down just edit the rotation in Token Config > Image.
+- The token moves past its destination with the Drag Ruler module. This is due to a race condition between the modules. In the meantime, I suggest you disable Drag Ruler or use Auto-Rotate module instead of About Face.
 
 ## Troubleshooting
 #### How do I keep certain tokens from spinning?
