@@ -2,7 +2,7 @@
 	"name": "about-face",
 	"title": "About Face",
 	"description": "Rotates Tokens and provide indicators for direction based on movement",
-	"version": "2.2.0",
+	"version": "3.0.0",
 	"author": "Matheus Clemente (mclemente#5524)",
 	"esmodules": ["about-face.js"],
 	"compatibleCoreVersion": "0.8.9",
