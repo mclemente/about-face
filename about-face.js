@@ -5,10 +5,7 @@
  * by Eadorin, edzillion
  */
 
-import { replaceSelectChoices } from "./scripts/helpers.js";
-
 const MODULE_ID = "about-face";
-CONFIG[MODULE_ID] = { logLevel: 2 };
 
 const IndicatorMode = {
 	OFF: 0,
@@ -16,27 +13,21 @@ const IndicatorMode = {
 	ALWAYS: 2,
 };
 
-const facingOptions = {
-	rotate: {},
-	"flip-h": {
-		right: "about-face.options.facing-direction.choices.right",
-		left: "about-face.options.facing-direction.choices.left",
-	},
-	"flip-v": {
-		down: "about-face.options.facing-direction.choices.down",
-		up: "about-face.options.facing-direction.choices.up",
-	},
-};
-
 Hooks.on("preUpdateToken", (token, updates) => {
-	if ("rotation" in updates) {
+	const flipOrRotate = game.settings.get(MODULE_ID, "flip-or-rotate");
+	if (flipOrRotate == "rotate" && "rotation" in updates && !token.data.lockRotation) {
 		var dir = updates.rotation + 90;
 	} else if ("x" in updates || "y" in updates) {
 		//get previews and new positions
 		const prevPos = { x: token.data.x, y: token.data.y };
 		const newPos = { x: updates.x ?? token.data.x, y: updates.y ?? token.data.y };
 		//get the direction in degrees of the movement
-		var dir = (Math.atan2(newPos.y - prevPos.y, newPos.x - prevPos.x) * 180) / Math.PI;
+		let diffY = newPos.y - prevPos.y;
+		let diffX = newPos.x - prevPos.x;
+		if (flipOrRotate == "flip-h") diffY = 0;
+		else if (flipOrRotate == "flip-v") diffX = 0;
+		if (!(diffY || diffX)) return;
+		var dir = (Math.atan2(diffY, diffX) * 180) / Math.PI;
 	} else return;
 	//store the direction in the token data
 	if (!updates.flags) updates.flags = {};
@@ -112,8 +103,6 @@ function drawArrow(graphics) {
 		.endFill();
 }
 
-/* -------------------------------------------- */
-
 function registerSettings() {
 	// game.settings.register(MODULE_ID, "scene-enabled", {
 	// 	name: "about-face.options.scene-enabled.name",
@@ -164,43 +153,20 @@ function registerSettings() {
 	// 	},
 	// });
 
-	// game.settings.register(MODULE_ID, "flip-or-rotate", {
-	// 	name: "about-face.options.flip-or-rotate.name",
-	// 	hint: "about-face.options.flip-or-rotate.hint",
-	// 	scope: "world",
-	// 	config: true,
-	// 	default: "flip-h",
-	// 	type: String,
-	// 	choices: {
-	// 		rotate: "about-face.options.flip-or-rotate.choices.rotate",
-	// 		"flip-h": "about-face.options.flip-or-rotate.choices.flip-h",
-	// 		"flip-v": "about-face.options.flip-or-rotate.choices.flip-v",
-	// 	},
-	// 	onChange: (value) => {
-	// 		if (!canvas.scene) return;
-	// 		if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, "flipOrRotate", value);
-	// 	},
-	// });
-
-	// game.settings.register(MODULE_ID, "facing-direction", {
-	// 	name: "about-face.options.facing-direction.name",
-	// 	hint: "about-face.options.facing-direction.hint",
-	// 	scope: "world",
-	// 	config: true,
-	// 	default: "right",
-	// 	type: String,
-	// 	choices: {
-	// 		right: "about-face.options.facing-direction.choices.right",
-	// 		left: "about-face.options.facing-direction.choices.left",
-	// 	},
-	// 	onChange: (value) => {
-	// 		if (!canvas.scene) return;
-	// 		if (isFirstActiveGM()) canvas.scene.setFlag(MODULE_ID, "facingDirection", value);
-	// 	},
-	// });
+	game.settings.register(MODULE_ID, "flip-or-rotate", {
+		name: "about-face.options.flip-or-rotate.name",
+		hint: "about-face.options.flip-or-rotate.hint",
+		scope: "world",
+		config: true,
+		default: "flip-h",
+		type: String,
+		choices: {
+			rotate: "about-face.options.flip-or-rotate.choices.rotate",
+			"flip-h": "about-face.options.flip-or-rotate.choices.flip-h",
+			"flip-v": "about-face.options.flip-or-rotate.choices.flip-v",
+		},
+	});
 }
-
-/* -------------------------------------------- */
 
 /**
  * Handler called when token configuration window is opened. Injects custom form html and deals
@@ -214,45 +180,15 @@ function registerSettings() {
 async function renderTokenConfigHandler(tokenConfig, html) {
 	const posTab = html.find('.tab[data-tab="position"]');
 
-	// const flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "rotate";
+	const flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "rotate";
 	let data = {
 		indicatorDisabled: tokenConfig.object.getFlag(MODULE_ID, "indicatorDisabled") ? "checked" : "",
-		// flipOrRotates: game.settings.settings.get("about-face.flip-or-rotate").choices,
-		// flipOrRotate: flipOrRotate,
-		// facingDirections: facingOptions[flipOrRotate],
-		// facingDirection: tokenConfig.object.getFlag(MODULE_ID, "facingDirection"),
+		flipOrRotates: game.settings.settings.get("about-face.flip-or-rotate").choices,
+		flipOrRotate: flipOrRotate,
 	};
 
 	const insertHTML = await renderTemplate("modules/" + MODULE_ID + "/templates/token-config.html", data);
 	posTab.append(insertHTML);
-
-	// const selectFlipOrRotate = posTab.find(".token-config-select-flip-or-rotate");
-	// const selectFacingDirection = posTab.find(".token-config-select-facing-direction");
-	// const lockRotateCheckbox = document.getElementsByName("lockRotation")[0];
-
-	// selectFlipOrRotate.on("change", (event) => {
-	// 	replaceSelectChoices(selectFacingDirection, facingOptions[event.target.value]);
-	// 	lockRotateCheckbox.checked = event.target.value !== "rotate";
-	// });
-}
-
-/**
- * Handler called when token configuration window is opened. Injects custom form html and deals
- * with updating token.
- * @category GMOnly
- * @function
- * @async
- * @param {TokenConfig} tokenConfig
- * @param {JQuery} html
- */
-async function renderSettingsConfigHandler(tokenConfig, html) {
-	const flipOrRotateSelect = html.find('select[name="about-face.flip-or-rotate"]');
-	const flipDirectionSelect = html.find('select[name="about-face.facing-direction"]');
-	replaceSelectChoices(flipDirectionSelect, facingOptions[game.settings.get(MODULE_ID, "flip-or-rotate")]);
-
-	flipOrRotateSelect.on("change", (event) => {
-		replaceSelectChoices(flipDirectionSelect, facingOptions[event.target.value]);
-	});
 }
 
 function toggleAllIndicators(state) {
@@ -272,4 +208,3 @@ function toggleAllIndicators(state) {
 // Hooks.on("updateToken", AboutFace.updateTokenHandler);
 // Hooks.on("updateScene", AboutFace.updateSceneHandler);
 Hooks.on("renderTokenConfig", renderTokenConfigHandler);
-// Hooks.on("renderSettingsConfig", renderSettingsConfigHandler);
