@@ -7,7 +7,7 @@
 
 About Face is a module for FoundryVTT that changes a token's direction based on movement. It also provides optional "facing" indicators for tokens.
 
-![Example](https://github.com/mclemente/about-face/raw/master/AboutFace-Demo.gif)
+![Example](https://github.com/mclemente/about-face/raw/master/media/AboutFace-Demo.gif)
 
 ## Usage
 
@@ -18,7 +18,7 @@ Two options are available in the game settings module config. Otherwise, with ev
 
 ### Disable for a specific Token
 
-![Token Config Screenshot](https://raw.githubusercontent.com/mclemente/about-face/master/screenshot.PNG)
+![Token Config Screenshot](https://raw.githubusercontent.com/mclemente/about-face/master/media/screenshot.PNG)
 
 ## Known Issues / Limitations
 

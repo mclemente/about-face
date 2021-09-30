@@ -27,5 +27,11 @@
 			"name": "Español",
 			"path": "lang/es.json"
 		}
+	],
+	"dependencies": [
+		{
+			"name": "lib-wrapper",
+			"manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json"
+		}
 	]
 }

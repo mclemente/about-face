@@ -1,17 +1,24 @@
 {
 	"about-face": {
-		"options": {
-			"disable-indicator": "Disable Direction Indicator",
-			"individual-token-text": "Show indicator for this token?",
+		"sceneConfig": {
+			"hint": "Configure the About Face settings for this scene.",
 			"scene-enabled": {
 				"name": "Enable About Face on this scene",
 				"hint": "Rotates tokens when moving them (except when locked). If disabled, can still hold shift to rotate in place"
+			}
+		},
+		"options": {
+			"disable-indicator": "Disable Direction Indicator",
+			"individual-token-text": "Show indicator for this token?",
+			"enable-indicator": {
+				"name": "Enable token indicators",
+				"hint": "Adds an indicator for direction to tokens",
+				"choices": {
+					"0": "Never Show",
+					"1": "On Hover",
+					"2": "Always"
+				}
 			},
-			"enable-indicator.name": "Enable token indicators",
-			"enable-indicator.hint": "Adds an indicator for direction to tokens",
-			"indicator.choices.0": "Never Show",
-			"indicator.choices.1": "On Hover",
-			"indicator.choices.2": "Always",
 			"flip-or-rotate": {
 				"name": "Flip or Rotate the token",
 				"hint": "Instead of rotating the token, flip it",
