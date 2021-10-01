@@ -32,8 +32,9 @@ Two options are available in the game settings module config. Otherwise, with ev
 
 ## Credit
 
-Eadorin & edzillion, for the original [About Face](https://github.com/League-of-Foundry-Developers/about-face).
-Assistance from several Discord users, including @Forien and @Stan. Accepting translations for the few config options.
+Eadorin & edzillion, for the original [About Face](https://github.com/League-of-Foundry-Developers/about-face).  
+Assistance from several Discord users, including @Forien and @Stan. Accepting translations for the few config options.  
+Assistance from theripper93 for the 3.0 update.
 
 ## License
 
