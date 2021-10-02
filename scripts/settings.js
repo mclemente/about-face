@@ -5,6 +5,7 @@ export const IndicatorMode = {
 	ALWAYS: 2,
 };
 const facingOptions = {
+	global: {},
 	none: {},
 	rotate: {},
 	"flip-h": {
@@ -154,12 +155,16 @@ function replaceSelectChoices(select, choices) {
 export async function renderTokenConfigHandler(tokenConfig, html) {
 	const posTab = html.find('.tab[data-tab="position"]');
 
-	const flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "rotate";
+	const flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "global";
+	const flipOrRotates = {
+		global: "about-face.options.flip-or-rotate.choices.global",
+		...game.settings.settings.get("about-face.flip-or-rotate").choices,
+	};
 	let data = {
 		indicatorDisabled: tokenConfig.object.getFlag(MODULE_ID, "indicatorDisabled") ? "checked" : "",
-		flipOrRotates: game.settings.settings.get("about-face.flip-or-rotate").choices,
+		flipOrRotates: flipOrRotates,
 		flipOrRotate: flipOrRotate,
-		facingDirections: facingOptions[flipOrRotate],
+		facingDirections: facingOptions[flipOrRotate != "global" ? flipOrRotate : game.settings.get(MODULE_ID, "flip-or-rotate")],
 	};
 
 	const insertHTML = await renderTemplate("modules/" + MODULE_ID + "/templates/token-config.html", data);
@@ -167,12 +172,11 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 
 	const selectFlipOrRotate = posTab.find(".token-config-select-flip-or-rotate");
 	const selectFacingDirection = posTab.find(".token-config-select-facing-direction");
-	const lockRotateCheckbox = document.getElementsByName("lockRotation")[0];
 
 	selectFlipOrRotate.on("change", (event) => {
-		const facingDirections = facingOptions[event.target.value];
+		const flipOrRotate = event.target.value != "global" ? event.target.value : game.settings.get(MODULE_ID, "flip-or-rotate");
+		const facingDirections = facingOptions[flipOrRotate];
 		replaceSelectChoices(selectFacingDirection, facingDirections);
-		// lockRotateCheckbox.checked = event.target.value !== "rotate";
 	});
 }
 

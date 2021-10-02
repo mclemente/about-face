@@ -99,8 +99,8 @@ export function onPreCreateToken(document, data, options, userId) {
 
 export function onPreUpdateToken(token, updates) {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) return;
-	const flipOrRotate = game.settings.get(MODULE_ID, "flip-or-rotate");
-	const tokenFlipOrRotate = token.getFlag(MODULE_ID, "flipOrRotate");
+	const tokenFlipOrRotate = token.getFlag(MODULE_ID, "flipOrRotate") || "global";
+	const flipOrRotate = tokenFlipOrRotate != "global" ? tokenFlipOrRotate : game.settings.get(MODULE_ID, "flip-or-rotate");
 	if (flipOrRotate == "rotate" && "rotation" in updates) {
 		var dir = updates.rotation + 90;
 		//store the direction in the token data
@@ -117,9 +117,9 @@ export function onPreUpdateToken(token, updates) {
 		//store the direction in the token data
 		if (!updates.flags) updates.flags = {};
 		updates.flags[MODULE_ID] = { direction: dir };
-		if (flipOrRotate != "rotate" && tokenFlipOrRotate != "rotate") {
-			if (flipOrRotate == "flip-h" || tokenFlipOrRotate == "flip-h") diffY = 0;
-			else if (flipOrRotate == "flip-v" || tokenFlipOrRotate == "flip-v") diffX = 0;
+		if (flipOrRotate) {
+			if (flipOrRotate == "flip-h") diffY = 0;
+			else if (flipOrRotate == "flip-v") diffX = 0;
 			dir = (Math.atan2(diffY, diffX) * 180) / Math.PI;
 			if (!(diffY || diffX)) return;
 		}
