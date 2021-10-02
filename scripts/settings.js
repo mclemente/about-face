@@ -79,7 +79,7 @@ export function registerSettings() {
 
 	game.settings.register(MODULE_ID, "lockRotation", {
 		name: "TOKEN.PositionLock",
-		hint: "about-face.options.flip-or-rotate.hint",
+		hint: "about-face.options.lockRotation.hint",
 		scope: "world",
 		config: true,
 		default: false,

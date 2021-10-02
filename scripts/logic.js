@@ -92,8 +92,7 @@ export async function onCanvasReady() {
 }
 
 export function onPreCreateToken(document, data, options, userId) {
-	const lockRotation = game.settings.get(MODULE_ID, "lockRotation");
-	if (lockRotation) {
+	if (canvas.scene.getFlag(MODULE_ID, "lockRotation")) {
 		document.data.update({ lockRotation: true });
 	}
 }
