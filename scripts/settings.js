@@ -77,6 +77,15 @@ export function registerSettings() {
 		},
 	});
 
+	game.settings.register(MODULE_ID, "lockRotation", {
+		name: "TOKEN.PositionLock",
+		hint: "about-face.options.flip-or-rotate.hint",
+		scope: "world",
+		config: true,
+		default: false,
+		type: Boolean,
+	});
+
 	game.settings.register(MODULE_ID, "flip-or-rotate", {
 		name: "about-face.options.flip-or-rotate.name",
 		hint: "about-face.options.flip-or-rotate.hint",
@@ -85,7 +94,6 @@ export function registerSettings() {
 		default: "flip-h",
 		type: String,
 		choices: {
-			none: "TOKEN.PositionLock",
 			rotate: "about-face.options.flip-or-rotate.choices.rotate",
 			"flip-h": "about-face.options.flip-or-rotate.choices.flip-h",
 			"flip-v": "about-face.options.flip-or-rotate.choices.flip-v",

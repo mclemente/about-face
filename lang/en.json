@@ -10,6 +10,9 @@
 		"options": {
 			"disable-indicator": "Disable Direction Indicator",
 			"individual-token-text": "Show indicator for this token?",
+			"lockRotation": {
+				"hint": "Every token will be created with the Lock Rotation Token Configuration toggled on."
+			},
 			"enable-indicator": {
 				"name": "Enable token indicators",
 				"hint": "Adds an indicator for direction to tokens",

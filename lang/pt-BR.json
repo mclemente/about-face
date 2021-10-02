@@ -8,6 +8,7 @@
 	"about-face.options.enable-indicator.choices.0": "Nunca",
 	"about-face.options.enable-indicator.choices.1": "Ao passar o mouse por cima",
 	"about-face.options.enable-indicator.choices.2": "Sempre",
+	"about-face.options.lockRotation.hint": "Todo token será criado com a configuração de token Bloquear Rotação ativada",
 	"about-face.options.flip-or-rotate.name": "Espelhar ou rotacionar o token",
 	"about-face.options.flip-or-rotate.hint": "Espelhar o token em vez de rotacioná-lo",
 	"about-face.options.flip-or-rotate.choices.rotate": "Rotacionar",
