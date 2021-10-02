@@ -99,6 +99,10 @@ async function onCanvasReady() {
 	}
 }
 
+Hooks.once("init", () => {
+	libWrapper.register(MODULE_ID, "Token.prototype.refresh", drawAboutFaceIndicator);
+	registerSettings();
+});
 Hooks.on("preUpdateToken", (token, updates) => {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) return;
 	const flipOrRotate = game.settings.get(MODULE_ID, "flip-or-rotate");
@@ -119,6 +123,10 @@ Hooks.on("preUpdateToken", (token, updates) => {
 		//store the direction in the token data
 		if (!updates.flags) updates.flags = {};
 		updates.flags[MODULE_ID] = { direction: dir };
+		if (flipOrRotate == "none") {
+			updates.lockRotation = true;
+			return;
+		}
 		if (flipOrRotate != "rotate" && tokenFlipOrRotate != "rotate") {
 			if (flipOrRotate == "flip-h" || tokenFlipOrRotate == "flip-h") diffY = 0;
 			else if (flipOrRotate == "flip-v" || tokenFlipOrRotate == "flip-v") diffX = 0;
@@ -129,10 +137,7 @@ Hooks.on("preUpdateToken", (token, updates) => {
 	//update the rotation of the token
 	updates.rotation = dir - 90;
 });
-Hooks.once("init", () => {
-	libWrapper.register(MODULE_ID, "Token.prototype.refresh", drawAboutFaceIndicator);
-	registerSettings();
-});
+
 // Hooks.on("createToken", AboutFace.createTokenHandler);
 // Hooks.on("deleteToken", AboutFace.deleteTokenHandler);
 Hooks.on("canvasReady", onCanvasReady);

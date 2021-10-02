@@ -5,6 +5,7 @@ export const IndicatorMode = {
 	ALWAYS: 2,
 };
 const facingOptions = {
+	none: {},
 	rotate: {},
 	"flip-h": {
 		right: "about-face.options.facing-direction.choices.right",
@@ -84,6 +85,7 @@ export function registerSettings() {
 		default: "flip-h",
 		type: String,
 		choices: {
+			none: "TOKEN.PositionLock",
 			rotate: "about-face.options.flip-or-rotate.choices.rotate",
 			"flip-h": "about-face.options.flip-or-rotate.choices.flip-h",
 			"flip-v": "about-face.options.flip-or-rotate.choices.flip-v",

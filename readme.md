@@ -28,7 +28,7 @@ Two options are available in the game settings module config. Otherwise, with ev
 
 #### How do I keep certain tokens from spinning?
 
--   You can lock tokens by either double-clicking and selecting the token icon from the hud or accessing from the character sheet. The option you're looking for is "Lock Rotation" under the "Position" tab.
+-   You can lock tokens by either double-clicking and selecting the token icon from the hud or accessing from the character sheet. The option you're looking for is "Lock Rotation" under the "Position" tab. If you want this on a global level, change the `Flip or Rotate the token` setting to "Lock Rotation" and every token's rotation will be locked.
 
 ## Credit
 
