@@ -1,11 +1,17 @@
 {
 	"I18N.LANGUAGE": "Español",
 	"I18N.MAINTAINERS": "@Viriato139ac#0342, @Honzo#5012",
-
+	"about-face": {
+		"sceneConfig": {
+			"hint": "Configure the About Face settings for this scene.",
+			"scene-enabled": {
+				"name": "Activar la rotación de About Face",
+				"hint": "Rota los iconos al moverse (excepto si están bloqueados). Si se desactivada, se podrán seguir rotando los iconos manualmente."
+			}
+		}
+	},
 	"about-face.options.disable-indicator": "Dehabilitar Indicador de Dirección",
 	"about-face.options.individual-token-text": "¿Mostrar indicador en este icono?",
-	"about-face.options.scene-enabled.name": "Activar la rotación de About Face",
-	"about-face.options.scene-enabled.hint": "Rota los iconos al moverse (excepto si están bloqueados). Si se desactivada, se podrán seguir rotando los iconos manualmente",
 	"about-face.options.enable-indicator.name": "Activar el indicador de orientación del icono",
 	"about-face.options.enable-indicator.hint": "Añade un indicador de la orientación actual del icono",
 	"about-face.options.enable-indicator.choices.0": "No mostrar nunca",
@@ -14,6 +20,7 @@
 	"about-face.options.lockRotation.hint": "Cada icono se creará con la configuración de icono de Bloqueo de Rotación habilitada",
 	"about-face.options.flip-or-rotate.name": "Rotar o dar la vuelta",
 	"about-face.options.flip-or-rotate.hint": "En vez de rotar, da la vuelta al icono",
+	"about-face.options.flip-or-rotate.choices.global": "Global",
 	"about-face.options.flip-or-rotate.choices.rotate": "Rotar",
 	"about-face.options.flip-or-rotate.choices.flip-v": "Dar la vuelta verticalmente",
 	"about-face.options.flip-or-rotate.choices.flip-h": "Dar la vuelta horizontalmente",

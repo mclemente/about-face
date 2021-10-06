@@ -1,8 +1,15 @@
 {
+	"about-face": {
+		"sceneConfig": {
+			"hint": "Configurar o About Face nesta cena.",
+			"scene-enabled": {
+				"name": "Usar o About Face nesta cena",
+				"hint": "Rotaciona tokens quando são movidos (exceto quando trancado). Se desativado, ainda é possivel segurar o Shift para rotacionar no eixo."
+			}
+		}
+	},
 	"about-face.options.disable-indicator": "Desabilitar Indicador de Direção",
 	"about-face.options.individual-token-text": "Exibir indicador para os tokens?",
-	"about-face.options.scene-enabled.name": "Habilitar o About Face nesta cena",
-	"about-face.options.scene-enabled.hint": "Rotaciona tokens quando são movidos (exceto quando trancado). Se desativado, ainda é possivel segurar o Shift para rotacionar no eixo.",
 	"about-face.options.enable-indicator.name": "Habilitar indicadores de token",
 	"about-face.options.enable-indicator.hint": "Adiciona um indicador para a direção dos tokens",
 	"about-face.options.enable-indicator.choices.0": "Nunca",
@@ -11,6 +18,7 @@
 	"about-face.options.lockRotation.hint": "Todo token será criado com a configuração de token Bloquear Rotação ativada",
 	"about-face.options.flip-or-rotate.name": "Espelhar ou rotacionar o token",
 	"about-face.options.flip-or-rotate.hint": "Espelhar o token em vez de rotacioná-lo",
+	"about-face.options.flip-or-rotate.choices.global": "Global",
 	"about-face.options.flip-or-rotate.choices.rotate": "Rotacionar",
 	"about-face.options.flip-or-rotate.choices.flip-v": "Espelhar na Vertical",
 	"about-face.options.flip-or-rotate.choices.flip-h": "Espelhar na Horizontal",

@@ -137,9 +137,15 @@ export async function renderSettingsConfigHandler(tokenConfig, html) {
 }
 
 function replaceSelectChoices(select, choices) {
+	const facing = game.settings.get(MODULE_ID, "facing-direction");
 	select.empty();
 	for (const [key, value] of Object.entries(choices)) {
-		select.append($("<option></option>").attr("value", key).text(game.i18n.localize(value)));
+		select.append(
+			$("<option></option>")
+				.attr("value", key)
+				.attr("selected", facing == key)
+				.text(game.i18n.localize(value))
+		);
 	}
 }
 

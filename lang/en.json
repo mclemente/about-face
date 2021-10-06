@@ -26,6 +26,7 @@
 				"name": "Flip or Rotate the token",
 				"hint": "Instead of rotating the token, flip it",
 				"choices": {
+					"global": "Global",
 					"rotate": "Rotate",
 					"flip-h": "Flip Horizontal",
 					"flip-v": "Flip Vertical"
