@@ -1,3 +1,5 @@
+import { updateArrowColor } from "./logic.js";
+
 export const MODULE_ID = "about-face";
 export const IndicatorMode = {
 	OFF: 0,
@@ -18,15 +20,6 @@ const facingOptions = {
 	},
 };
 
-function changeIndicatorSize(value) {
-	if (canvas == null) return;
-	const tokens = getAllTokens();
-	for (const token of tokens) {
-		const scale = Math.max(token.data.width, token.data.height) * token.data.scale * [1, 1.5][value];
-		if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.scale.set(scale, scale);
-	}
-}
-
 function getAllTokens() {
 	const scenes = game.scenes
 		.filter((scene) => {
@@ -44,6 +37,26 @@ function getAllTokens() {
 }
 
 export function registerSettings() {
+	new window.Ardittristan.ColorSetting(MODULE_ID, "arrowColor", {
+		name: "about-face.options.arrowColor.name",
+		hint: "about-face.options.arrowColor.hint",
+		label: "about-face.options.arrowColor.colorPicker",
+		restricted: true,
+		defaultColor: "#000000ff",
+		scope: "world",
+		onChange: (value) => {
+			updateArrowColor(value);
+			if (canvas == null) return;
+			const tokens = getAllTokens();
+			for (const token of tokens) {
+				if (token.aboutFaceIndicator) {
+					token.aboutFaceIndicator.destroy();
+					token.refresh();
+				}
+			}
+		},
+	});
+
 	game.settings.register(MODULE_ID, "indicator-state", {
 		name: "about-face.options.enable-indicator.name",
 		hint: "about-face.options.enable-indicator.hint",
@@ -74,7 +87,12 @@ export function registerSettings() {
 			1: "about-face.options.indicator-sprite.choices.large",
 		},
 		onChange: (value) => {
-			changeIndicatorSize(value);
+			if (canvas == null) return;
+			const tokens = getAllTokens();
+			for (const token of tokens) {
+				const scale = Math.max(token.data.width, token.data.height) * token.data.scale * [1, 1.5][value];
+				if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.scale.set(scale, scale);
+			}
 		},
 	});
 

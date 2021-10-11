@@ -10,6 +10,11 @@
 		"options": {
 			"disable-indicator": "Disable Direction Indicator",
 			"individual-token-text": "Show indicator for this token?",
+			"arrowColor": {
+				"name": "Arrow Color",
+				"hint": "Select a color for the arrows (transparency is ignored).",
+				"colorPicker": "Color Picker"
+			},
 			"lockRotation": {
 				"hint": "Every token will be created with the Lock Rotation Token Configuration toggled on."
 			},

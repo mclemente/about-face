@@ -1,6 +1,8 @@
 import { IndicatorMode, MODULE_ID } from "./settings.js";
 import flipAngles from "./flipAngles.js";
 
+export let arrowColor;
+
 const IndicatorDirections = {
 	up: -90,
 	right: 0,
@@ -87,19 +89,8 @@ export function drawAboutFaceIndicator(wrapped, ...args) {
 }
 
 function drawArrow(graphics) {
-	graphics
-		.beginFill("", 0.5)
-		.lineStyle(2, "", 1) //Alternative: .lineStyle(1, 0xffffff, 1);
-		.moveTo(0, 0)
-		.lineTo(0, -10)
-		.lineTo(10, 0)
-		.lineTo(0, 10)
-		.lineTo(0, 0)
-		.closePath()
-		.endFill()
-		.beginFill(0x000000, 0)
-		.lineStyle(0, 0x000000, 0)
-		.endFill();
+	const color = `0x${arrowColor.substring(1, 7)}` || ``;
+	graphics.beginFill(color, 0.5).lineStyle(2, color, 1).moveTo(0, 0).lineTo(0, -10).lineTo(10, 0).lineTo(0, 10).lineTo(0, 0).closePath().endFill();
 }
 
 export async function onCanvasReady() {
@@ -166,4 +157,12 @@ function getMirror(tokenDocument, flipOrRotate, dir) {
 		return [angles.mirror, angles[dir]];
 	}
 	return [];
+}
+
+export function updateArrowColor(color) {
+	arrowColor = color;
+}
+
+export function updateSettings() {
+	arrowColor = game.settings.get(MODULE_ID, "arrowColor");
 }

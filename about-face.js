@@ -5,13 +5,14 @@
  * by Eadorin, edzillion
  */
 
-import { drawAboutFaceIndicator, onCanvasReady, onPreCreateToken, onPreUpdateToken } from "./scripts/logic.js";
+import { drawAboutFaceIndicator, onCanvasReady, onPreCreateToken, onPreUpdateToken, updateSettings } from "./scripts/logic.js";
 import { MODULE_ID, registerSettings, renderSettingsConfigHandler, renderTokenConfigHandler } from "./scripts/settings.js";
 import { renderSceneConfig, closeSceneConfig } from "./scripts/sceneConfig.js";
 
 Hooks.once("init", () => {
 	libWrapper.register(MODULE_ID, "Token.prototype.refresh", drawAboutFaceIndicator);
 	registerSettings();
+	updateSettings();
 });
 Hooks.on("preCreateToken", onPreCreateToken);
 Hooks.on("preUpdateToken", onPreUpdateToken);
