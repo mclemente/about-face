@@ -32,6 +32,10 @@
 		{
 			"name": "lib-wrapper",
 			"manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json"
+		},
+		{
+			"name": "colorsettings",
+			"manifest": "https://github.com/ardittristan/VTTColorSettings/releases/latest/download/module.json"
 		}
 	]
 }
