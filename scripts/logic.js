@@ -1,7 +1,7 @@
 import { IndicatorMode, MODULE_ID } from "./settings.js";
 import flipAngles from "./flipAngles.js";
 
-export let arrowColor;
+let indicatorColor, indicatorDistance;
 
 const IndicatorDirections = {
 	up: -90,
@@ -16,23 +16,6 @@ const TokenDirections = {
 	left: 270,
 };
 
-function getIndicatorDirection(token) {
-	return IndicatorDirections[getDirection(token)];
-}
-
-function getTokenDirection(token) {
-	return TokenDirections[getDirection(token)];
-}
-
-function getDirection(token) {
-	return token.document.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
-}
-
-function getFlipOrRotation(tokenDocument) {
-	const tokenFlipOrRotate = tokenDocument.getFlag(MODULE_ID, "flipOrRotate") || "global";
-	return tokenFlipOrRotate != "global" ? tokenFlipOrRotate : game.settings.get(MODULE_ID, "flip-or-rotate");
-}
-
 export function drawAboutFaceIndicator(wrapped, ...args) {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) {
 		wrapped(...args);
@@ -42,6 +25,10 @@ export function drawAboutFaceIndicator(wrapped, ...args) {
 		//get the rotation of the token
 		let dir = this.data.flags[MODULE_ID]?.direction ?? getIndicatorDirection(this) ?? 90;
 		const indicatorSize = [1, 1.5][game.settings.get(MODULE_ID, "sprite-type")];
+		//calc distance
+		const r = (Math.max(this.w, this.h) / 2) * indicatorDistance;
+		//calc scale
+		const scale = Math.max(this.data.width, this.data.height) * this.data.scale * indicatorSize;
 		if (!this.aboutFaceIndicator || this.aboutFaceIndicator._destroyed) {
 			const container = new PIXI.Container();
 			container.name = "aboutFaceIndicator";
@@ -54,11 +41,7 @@ export function drawAboutFaceIndicator(wrapped, ...args) {
 			drawArrow(graphics);
 			//place the arrow in the correct position
 			container.angle = dir;
-			//calc distance
-			const r = (Math.max(this.w, this.h) / 2) * Math.SQRT2;
 			graphics.x = r;
-			//calc scale
-			const scale = Math.max(this.data.width, this.data.height) * this.data.scale * indicatorSize;
 			graphics.scale.set(scale, scale);
 			//add the graphics to the container
 			container.addChild(graphics);
@@ -69,11 +52,7 @@ export function drawAboutFaceIndicator(wrapped, ...args) {
 		} else {
 			let container = this.aboutFaceIndicator;
 			let graphics = container.graphics;
-			//calc distance
-			const r = (Math.max(this.w, this.h) / 2) * Math.SQRT2;
 			graphics.x = r;
-			//calc scale
-			const scale = Math.max(this.data.width, this.data.height) * this.data.scale * indicatorSize;
 			graphics.scale.set(scale, scale);
 			//update the rotation of the arrow
 			container.angle = dir;
@@ -89,7 +68,7 @@ export function drawAboutFaceIndicator(wrapped, ...args) {
 }
 
 function drawArrow(graphics) {
-	const color = `0x${arrowColor.substring(1, 7)}` || ``;
+	const color = `0x${indicatorColor.substring(1, 7)}` || ``;
 	graphics.beginFill(color, 0.5).lineStyle(2, color, 1).moveTo(0, 0).lineTo(0, -10).lineTo(10, 0).lineTo(0, 10).lineTo(0, 0).closePath().endFill();
 }
 
@@ -146,6 +125,27 @@ export function onPreUpdateToken(token, updates) {
 	updates.rotation = dir - 90;
 }
 
+/////////////
+// HELPERS //
+/////////////
+
+function getIndicatorDirection(token) {
+	return IndicatorDirections[getDirection(token)];
+}
+
+function getTokenDirection(token) {
+	return TokenDirections[getDirection(token)];
+}
+
+function getDirection(token) {
+	return token.document.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
+}
+
+function getFlipOrRotation(tokenDocument) {
+	const tokenFlipOrRotate = tokenDocument.getFlag(MODULE_ID, "flipOrRotate") || "global";
+	return tokenFlipOrRotate != "global" ? tokenFlipOrRotate : game.settings.get(MODULE_ID, "flip-or-rotate");
+}
+
 function getMirror(tokenDocument, flipOrRotate, dir) {
 	if (dir == null) dir = tokenDocument.getFlag(MODULE_ID, "direction") || 0;
 	const facingDirection = tokenDocument.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
@@ -160,9 +160,14 @@ function getMirror(tokenDocument, flipOrRotate, dir) {
 }
 
 export function updateArrowColor(color) {
-	arrowColor = color;
+	indicatorColor = color;
+}
+
+export function updateArrowDistance(distance) {
+	indicatorDistance = distance;
 }
 
 export function updateSettings() {
-	arrowColor = game.settings.get(MODULE_ID, "arrowColor");
+	indicatorColor = game.settings.get(MODULE_ID, "arrowColor");
+	indicatorDistance = game.settings.get(MODULE_ID, "arrowDistance");
 }

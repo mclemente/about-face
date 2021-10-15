@@ -1,4 +1,4 @@
-import { updateArrowColor } from "./logic.js";
+import { updateArrowColor, updateArrowDistance } from "./logic.js";
 
 export const MODULE_ID = "about-face";
 export const IndicatorMode = {
@@ -51,6 +51,30 @@ export function registerSettings() {
 			for (const token of tokens) {
 				if (token.aboutFaceIndicator) {
 					token.aboutFaceIndicator.destroy();
+					token.refresh();
+				}
+			}
+		},
+	});
+
+	game.settings.register(MODULE_ID, "arrowDistance", {
+		name: "about-face.options.arrowDistance.name",
+		hint: "about-face.options.arrowDistance.hint",
+		scope: "world",
+		config: true,
+		default: 1.4,
+		type: Number,
+		range: {
+			min: 1.0,
+			max: 1.4,
+			step: 0.05,
+		},
+		onChange: (value) => {
+			updateArrowDistance(value);
+			if (canvas == null) return;
+			const tokens = getAllTokens();
+			for (const token of tokens) {
+				if (token.aboutFaceIndicator) {
 					token.refresh();
 				}
 			}

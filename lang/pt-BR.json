@@ -11,9 +11,13 @@
 			"disable-indicator": "Desabilitar Indicador de Direção",
 			"individual-token-text": "Exibir indicador para os tokens?",
 			"arrowColor": {
-				"name": "Cor da Flecha",
-				"hint": "Selecione uma cor para as flechas (transparência é ignorada).",
+				"name": "Cor do Indicador",
+				"hint": "Selecione uma cor para o indicador. A transparência é ignorada.",
 				"colorPicker": "Selecionador de Cores"
+			},
+			"arrowDistance": {
+				"name": "Distância do Indicador",
+				"hint": "Define o multiplicador da distância do indicador. Matemática: Maior Tamanho x (Multiplicador / 2)."
 			},
 			"enable-indicator.name": "Habilitar indicadores de token",
 			"enable-indicator.hint": "Adiciona um indicador para a direção dos tokens",
