@@ -129,16 +129,16 @@ export function onPreUpdateToken(token, updates) {
 // HELPERS //
 /////////////
 
+function getDirection(token) {
+	return token.document.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
+}
+
 function getIndicatorDirection(token) {
 	return IndicatorDirections[getDirection(token)];
 }
 
 function getTokenDirection(token) {
 	return TokenDirections[getDirection(token)];
-}
-
-function getDirection(token) {
-	return token.document.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
 }
 
 function getFlipOrRotation(tokenDocument) {
