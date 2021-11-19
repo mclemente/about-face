@@ -5,9 +5,9 @@
  * by Eadorin, edzillion
  */
 
+import { injectConfig } from "./scripts/injectConfig.js";
 import { drawAboutFaceIndicator, onCanvasReady, onPreCreateToken, onPreUpdateToken, updateSettings } from "./scripts/logic.js";
 import { MODULE_ID, registerSettings, renderSettingsConfigHandler, renderTokenConfigHandler } from "./scripts/settings.js";
-import { renderSceneConfig, closeSceneConfig } from "./scripts/sceneConfig.js";
 
 Hooks.once("init", () => {
 	libWrapper.register(MODULE_ID, "Token.prototype.refresh", drawAboutFaceIndicator);
@@ -17,16 +17,29 @@ Hooks.once("init", () => {
 Hooks.on("preCreateToken", onPreCreateToken);
 Hooks.on("preUpdateToken", onPreUpdateToken);
 
-// Hooks.on("createToken", AboutFace.createTokenHandler);
-// Hooks.on("deleteToken", AboutFace.deleteTokenHandler);
 Hooks.on("canvasReady", onCanvasReady);
 Hooks.on("renderSceneConfig", (app, html) => {
-	renderSceneConfig(app, html);
+	const data = {
+		moduleId: "about-face",
+		tab: {
+			name: "about-face",
+			label: "About Face",
+			icon: "fas fa-caret-down fa-fw",
+		},
+		sceneEnabled: {
+			type: "checkbox",
+			label: game.i18n.localize("about-face.sceneConfig.scene-enabled.name"),
+			notes: game.i18n.localize("about-face.sceneConfig.scene-enabled.hint"),
+			default: app.object.data?.flags?.[MODULE_ID]?.sceneEnabled ?? true,
+		},
+		lockRotation: {
+			type: "checkbox",
+			label: game.i18n.localize("about-face.options.lockRotation.name"),
+			notes: game.i18n.localize("about-face.options.lockRotation.hint"),
+			default: app.object.data?.flags?.[MODULE_ID]?.lockRotation ?? game.settings.get(MODULE_ID, "lockRotation"),
+		},
+	};
+	injectConfig.inject(app, html, data, app.object);
 });
-Hooks.on("closeSceneConfig", (app, html) => {
-	closeSceneConfig(app, html);
-});
-// Hooks.on("updateToken", AboutFace.updateTokenHandler);
-// Hooks.on("updateScene", AboutFace.updateSceneHandler);
 Hooks.on("renderTokenConfig", renderTokenConfigHandler);
 Hooks.on("renderSettingsConfig", renderSettingsConfigHandler);

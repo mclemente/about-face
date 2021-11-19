@@ -121,7 +121,7 @@ export function registerSettings() {
 	});
 
 	game.settings.register(MODULE_ID, "lockRotation", {
-		name: "TOKEN.PositionLock",
+		name: "about-face.options.lockRotation.name",
 		hint: "about-face.options.lockRotation.hint",
 		scope: "world",
 		config: true,

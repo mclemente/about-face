@@ -5,7 +5,7 @@
 		"sceneConfig": {
 			"hint": "Configure the About Face settings for this scene.",
 			"scene-enabled": {
-				"name": "Activar la rotación de About Face",
+				"name": "Activar la rotación",
 				"hint": "Rota los iconos al moverse (excepto si están bloqueados). Si se desactivada, se podrán seguir rotando los iconos manualmente."
 			}
 		},
@@ -26,7 +26,10 @@
 			"enable-indicator.choices.0": "No mostrar nunca",
 			"enable-indicator.choices.1": "Al pasar por encima",
 			"enable-indicator.choices.2": "Siempre",
-			"lockRotation.hint": "Cada icono se creará con la configuración de icono de Bloqueo de Rotación habilitada",
+			"lockRotation": {
+				"name": "Bloquear Rotación",
+				"hint": "Cada icono se creará con la configuración de icono de Bloqueo de Rotación habilitada"
+			},
 			"flip-or-rotate.name": "Rotar o dar la vuelta",
 			"flip-or-rotate.hint": "En vez de rotar, da la vuelta al icono",
 			"flip-or-rotate.choices.global": "Global",

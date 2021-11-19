@@ -3,7 +3,7 @@
 		"sceneConfig": {
 			"hint": "Configurar o About Face nesta cena.",
 			"scene-enabled": {
-				"name": "Usar o About Face nesta cena",
+				"name": "Ativar nesta cena",
 				"hint": "Rotaciona tokens quando são movidos (exceto quando trancado). Se desativado, ainda é possivel segurar o Shift para rotacionar no eixo."
 			}
 		},
@@ -24,7 +24,10 @@
 			"enable-indicator.choices.0": "Nunca",
 			"enable-indicator.choices.1": "Ao passar o mouse por cima",
 			"enable-indicator.choices.2": "Sempre",
-			"lockRotation.hint": "Todo token será criado com a configuração de token Bloquear Rotação ativada",
+			"lockRotation": {
+				"name": "Bloquear Rotação",
+				"hint": "Todo token será criado com a configuração de token Bloquear Rotação ativada"
+			},
 			"flip-or-rotate.name": "Espelhar ou rotacionar o token",
 			"flip-or-rotate.hint": "Espelhar o token em vez de rotacioná-lo",
 			"flip-or-rotate.choices.global": "Global",

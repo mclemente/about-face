@@ -3,7 +3,7 @@
 		"sceneConfig": {
 			"hint": "Configure the About Face settings for this scene.",
 			"scene-enabled": {
-				"name": "Enable About Face on this scene",
+				"name": "Enable on this scene",
 				"hint": "Rotates tokens when moving them (except when locked). If disabled, can still hold shift to rotate in place"
 			}
 		},
@@ -20,6 +20,7 @@
 				"hint": "Set the multiplier for the indicator's distance. Math: Highest Size x (Multiplier / 2)."
 			},
 			"lockRotation": {
+				"name": "Lock Rotation",
 				"hint": "Every token will be created with the Lock Rotation Token Configuration toggled on."
 			},
 			"enable-indicator": {

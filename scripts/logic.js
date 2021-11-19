@@ -18,6 +18,7 @@ const TokenDirections = {
 
 export function drawAboutFaceIndicator(wrapped, ...args) {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) {
+		if (this.aboutFaceIndicator) this.aboutFaceIndicator.graphics.visible = false;
 		wrapped(...args);
 		return;
 	}
