@@ -4,7 +4,7 @@
 			"hint": "Configure the About Face settings for this scene.",
 			"scene-enabled": {
 				"name": "Enable on this scene",
-				"hint": "Rotates tokens when moving them (except when locked). If disabled, can still hold shift to rotate in place"
+				"hint": "Rotates tokens when moving them (except when locked). If disabled, can still hold SHIFT to rotate in place"
 			}
 		},
 		"options": {
@@ -18,6 +18,10 @@
 			"arrowDistance": {
 				"name": "Indicator Distance",
 				"hint": "Set the multiplier for the indicator's distance. Math: Highest Size x (Multiplier / 2)."
+			},
+			"lockArrowRotation": {
+				"name": "Lock Indicator Rotation",
+				"hint": "The indicator won't change when the token moves. Use SHIFT + direction key to rotate the indicator."
 			},
 			"lockRotation": {
 				"name": "Lock Rotation",

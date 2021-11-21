@@ -19,6 +19,10 @@
 				"name": "Distância do Indicador",
 				"hint": "Define o multiplicador da distância do indicador. Matemática: Maior Tamanho x (Multiplicador / 2)."
 			},
+			"lockArrowRotation": {
+				"name": "Bloquear Rotação do Indicador",
+				"hint": "O indicador não mudará quando o token se move. Use SHIFT + tecla da direção para rotacionar o indicador."
+			},
 			"enable-indicator.name": "Habilitar indicadores de token",
 			"enable-indicator.hint": "Adiciona um indicador para a direção dos tokens",
 			"enable-indicator.choices.0": "Nunca",

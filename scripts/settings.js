@@ -104,20 +104,30 @@ export function registerSettings() {
 		hint: "about-face.options.indicator-sprite.hint",
 		scope: "world",
 		config: true,
-		default: 0,
+		default: 1.0,
 		type: Number,
-		choices: {
-			0: "about-face.options.indicator-sprite.choices.normal",
-			1: "about-face.options.indicator-sprite.choices.large",
+		range: {
+			min: 0.5,
+			max: 2.0,
+			step: 0.05,
 		},
 		onChange: (value) => {
 			if (canvas == null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
-				const scale = Math.max(token.data.width, token.data.height) * token.data.scale * [1, 1.5][value];
+				const scale = Math.max(token.data.width, token.data.height) * token.data.scale * value;
 				if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.scale.set(scale, scale);
 			}
 		},
+	});
+
+	game.settings.register(MODULE_ID, "lockArrowRotation", {
+		name: "about-face.options.lockArrowRotation.name",
+		hint: "about-face.options.lockArrowRotation.hint",
+		scope: "world",
+		config: true,
+		default: false,
+		type: Boolean,
 	});
 
 	game.settings.register(MODULE_ID, "lockRotation", {

@@ -25,11 +25,10 @@ export function drawAboutFaceIndicator(wrapped, ...args) {
 	try {
 		//get the rotation of the token
 		let dir = this.data.flags[MODULE_ID]?.direction ?? getIndicatorDirection(this) ?? 90;
-		const indicatorSize = [1, 1.5][game.settings.get(MODULE_ID, "sprite-type")];
 		//calc distance
 		const r = (Math.max(this.w, this.h) / 2) * indicatorDistance;
 		//calc scale
-		const scale = Math.max(this.data.width, this.data.height) * this.data.scale * indicatorSize;
+		const scale = Math.max(this.data.width, this.data.height) * this.data.scale * (game.settings.get(MODULE_ID, "sprite-type") || 1);
 		if (!this.aboutFaceIndicator || this.aboutFaceIndicator._destroyed) {
 			const container = new PIXI.Container();
 			container.name = "aboutFaceIndicator";
@@ -105,7 +104,7 @@ export function onPreUpdateToken(token, updates) {
 			if (mirrorKey) updates[mirrorKey] = mirrorVal;
 			return;
 		}
-	} else if ("x" in updates || "y" in updates) {
+	} else if (("x" in updates || "y" in updates) && !game.settings.get(MODULE_ID, "lockArrowRotation")) {
 		//get previews and new positions
 		const prevPos = { x: token.data.x, y: token.data.y };
 		const newPos = { x: updates.x ?? token.data.x, y: updates.y ?? token.data.y };

@@ -21,6 +21,10 @@
 				"name": "Distancia del Indicador",
 				"hint": "Defina el multiplicador para la distancia del indicador. Matemáticas: Tamaño más alto x (Multiplicador / 2)."
 			},
+			"lockArrowRotation": {
+				"name": "Bloquear Rotación del Indicator",
+				"hint": "El indicador no cambiará cuando el icono se mueve. Use SHIFT + tecla de dirección para rotar el indicador."
+			},
 			"enable-indicator.name": "Activar el indicador de orientación del icono",
 			"enable-indicator.hint": "Añade un indicador de la orientación actual del icono",
 			"enable-indicator.choices.0": "No mostrar nunca",
