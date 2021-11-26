@@ -149,14 +149,25 @@ function getFlipOrRotation(tokenDocument) {
 function getMirror(tokenDocument, flipOrRotate, dir) {
 	if (dir == null) dir = tokenDocument.getFlag(MODULE_ID, "direction") || 0;
 	const facingDirection = tokenDocument.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
-	let angles = flipAngles[canvas.grid.type][flipOrRotate][facingDirection];
-	if (angles[dir] != null) {
-		const update = {
-			[angles.mirror]: angles[dir],
-		};
-		return [angles.mirror, angles[dir]];
+	try {
+		var angles = flipAngles[canvas.grid.type][flipOrRotate][facingDirection];
+	} catch (error) {
+		console.error(`About Face: failed to mirror token "${tokenDocument.name}" (ID: ${tokenDocument.id}).
+			tokenDocument.flags.about-face.facingDirection: ${tokenDocument.getFlag(MODULE_ID, "facingDirection")}
+			canvas.grid.type: ${canvas.grid.type}
+			flipOrRotate: ${flipOrRotate}
+			facingDirection: ${facingDirection}
+			angles: ${JSON.stringify(angles)}
+			${error}`);
+	} finally {
+		if (angles && angles[dir] != null) {
+			const update = {
+				[angles.mirror]: angles[dir],
+			};
+			return [angles.mirror, angles[dir]];
+		}
+		return [];
 	}
-	return [];
 }
 
 export function updateArrowColor(color) {
