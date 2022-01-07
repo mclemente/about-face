@@ -104,7 +104,7 @@ export function onPreUpdateToken(token, updates) {
 			if (mirrorKey) updates[mirrorKey] = mirrorVal;
 			return;
 		}
-	} else if (("x" in updates || "y" in updates) && !game.settings.get(MODULE_ID, "lockArrowRotation")) {
+	} else if (("x" in updates || "y" in updates) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
 		//get previews and new positions
 		const prevPos = { x: token.data.x, y: token.data.y };
 		const newPos = { x: updates.x ?? token.data.x, y: updates.y ?? token.data.y };
