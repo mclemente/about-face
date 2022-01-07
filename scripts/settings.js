@@ -1,4 +1,5 @@
 import { updateArrowColor, updateArrowDistance } from "./logic.js";
+import { injectConfig } from "./injectConfig.js";
 
 export const MODULE_ID = "about-face";
 export const IndicatorMode = {
@@ -211,7 +212,20 @@ function replaceSelectChoices(select, choices) {
  * @param {JQuery} html
  */
 export async function renderTokenConfigHandler(tokenConfig, html) {
-	const posTab = html.find('.tab[data-tab="position"]');
+	injectConfig.inject(
+		tokenConfig,
+		html,
+		{
+			moduleId: "about-face",
+			tab: {
+				name: "about-face",
+				label: "About Face",
+				icon: "fas fa-caret-down fa-fw",
+			},
+		},
+		tokenConfig.object
+	);
+	const posTab = html.find('.tab[data-tab="about-face"]');
 
 	const flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "global";
 	const flipOrRotates = {
