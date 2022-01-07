@@ -19,10 +19,14 @@
 				"name": "Indicator Distance",
 				"hint": "Set the multiplier for the indicator's distance. Math: Highest Size x (Multiplier / 2)."
 			},
-			"lockArrowRotation": {
-				"name": "Lock Indicator Rotation",
-				"hint": "The indicator won't change when the token moves. Use SHIFT + direction key to rotate the indicator."
-			},
+      "lockArrowToHexFace": {
+        "name": "Lock Indicator to Hex face",
+        "hint": "On Hex maps, the indicator will orient itself to the 'best' HEX facing after the move"
+      },
+      "lockArrowRotation": {
+        "name": "Lock Indicator Rotation",
+        "hint": "The indicator won't change when the token moves. Use SHIFT + direction key to rotate the indicator."
+      },
 			"lockRotation": {
 				"name": "Lock Rotation",
 				"hint": "Every token will be created with the Lock Rotation Token Configuration toggled on."
