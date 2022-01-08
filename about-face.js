@@ -38,18 +38,12 @@ Hooks.on("renderSceneConfig", (app, html) => {
 			notes: game.i18n.localize("about-face.options.lockRotation.hint"),
 			default: app.object.data?.flags?.[MODULE_ID]?.lockRotation ?? game.settings.get(MODULE_ID, "lockRotation"),
 		},
-/*    lockArrowToHexFace: {
-      type: "checkbox",
-      label: game.i18n.localize("about-face.options.lockArrowToHexFace.name"),
-      notes: game.i18n.localize("about-face.options.lockArrowToHexFace.hint"),
-      default: game.settings.get(MODULE_ID, "lockArrowToHexFace"),
-    }, */
-    lockArrowRotation: {
-      type: "checkbox",
-      label: game.i18n.localize("about-face.options.lockArrowRotation.name"),
-      notes: game.i18n.localize("about-face.options.lockArrowRotation.hint"),
-      default: app.object.data?.flags?.[MODULE_ID]?.lockArrowRotation ?? game.settings.get(MODULE_ID, "lockArrowRotation"),
-    },
+		lockArrowRotation: {
+			type: "checkbox",
+			label: game.i18n.localize("about-face.options.lockArrowRotation.name"),
+			notes: game.i18n.localize("about-face.options.lockArrowRotation.hint"),
+			default: app.object.data?.flags?.[MODULE_ID]?.lockArrowRotation ?? game.settings.get(MODULE_ID, "lockArrowRotation"),
+		},
 	};
 	injectConfig.inject(app, html, data, app.object);
 });
