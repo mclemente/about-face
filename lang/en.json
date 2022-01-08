@@ -23,6 +23,10 @@
 				"name": "Lock Indicator Rotation",
 				"hint": "The indicator won't change when the token moves. Use SHIFT + direction key to rotate the indicator."
 			},
+			"lockArrowToFace": {
+				"name": "Snap Indicator to Closest Tile",
+				"hint": "Snaps the indicator's direction to the closest tile it would be facing instead of the direction of the movement's angle. This setting is ignored if 'Lock Indicator Rotation' is on."
+			},
 			"lockRotation": {
 				"name": "Lock Rotation",
 				"hint": "Every token will be created with the Lock Rotation Token Configuration toggled on."
@@ -52,8 +56,8 @@
 				"choices": {
 					"right": "Facing Right",
 					"left": "Facing Left",
-					"down": "Facing Forward",
-					"up": "Facing Back"
+					"down": "Facing Down",
+					"up": "Facing Up"
 				}
 			},
 			"indicator-sprite": {
