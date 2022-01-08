@@ -15,6 +15,8 @@ const TokenDirections = {
 	up: 180,
 	left: 270,
 };
+const HexRowFacings = [ 0, 60, 120, 180, 240, 300, 360 ]
+const HexColumnFacings = [ 30, 90, 150, 210, 270, 330, 390 ]
 
 export function drawAboutFaceIndicator(wrapped, ...args) {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) {
@@ -112,6 +114,19 @@ export function onPreUpdateToken(token, updates) {
 		let diffY = newPos.y - prevPos.y;
 		let diffX = newPos.x - prevPos.x;
 		dir = (Math.atan2(diffY, diffX) * 180) / Math.PI;
+    if (game.settings.get(MODULE_ID, "lockArrowToHexFace")) { 
+      let gridType = token.parent?.data?.gridType ?? 1
+      var facings
+      if (gridType == 2 || gridType == 3) facings = HexRowFacings
+      if (gridType == 4 || gridType == 5) facings = HexColumnFacings
+      if (!!facings) {
+         let normalizedDir = Math.round((dir < 0) ? 360 + dir : dir)  // convert negative dirs into a range from 0-360
+         let secondAngle = facings.find(e => e > normalizedDir)  // find the largest normalized angle
+         dir = secondAngle - 60  // and assume the facing is 60 degrees to the counter clockwise
+         if ((secondAngle - normalizedDir) < (normalizedDir - dir)) dir = secondAngle  // unless the largest angle was closer
+         if (dir > 180) dir = dir - 360  // return to the range 180 to -180
+      }
+    }
 		//store the direction in the token data
 		if (!updates.flags) updates.flags = {};
 		updates.flags[MODULE_ID] = { direction: dir };
@@ -182,3 +197,5 @@ export function updateSettings() {
 	indicatorColor = game.settings.get(MODULE_ID, "arrowColor");
 	indicatorDistance = game.settings.get(MODULE_ID, "arrowDistance");
 }
+
+

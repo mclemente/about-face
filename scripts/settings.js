@@ -131,6 +131,14 @@ export function registerSettings() {
 		type: Boolean,
 	});
 
+  game.settings.register(MODULE_ID, "lockArrowToHexFace", {
+    name: "about-face.options.lockArrowToHexFace.name",
+    hint: "about-face.options.lockArrowToHexFace.hint",
+    scope: "world",
+    config: true,
+    default: false,
+    type: Boolean,
+  });
 	game.settings.register(MODULE_ID, "lockRotation", {
 		name: "about-face.options.lockRotation.name",
 		hint: "about-face.options.lockRotation.hint",
