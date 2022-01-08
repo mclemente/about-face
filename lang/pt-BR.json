@@ -23,6 +23,10 @@
 				"name": "Bloquear Rotação do Indicador",
 				"hint": "O indicador não mudará quando o token se move. Use SHIFT + tecla da direção para rotacionar o indicador."
 			},
+			"lockArrowToFace": {
+				"name": "Ajustar Indicador ao Espaço Mais Próximo",
+				"hint": "Ajusta a direção do indicador para o espaço mais próximo em vez da direção do ângulo do movimento feito. Esta opção é ignorada se \"Bloquear Rotação do Indicador\" estiver ativada."
+			},
 			"enable-indicator.name": "Habilitar indicadores de token",
 			"enable-indicator.hint": "Adiciona um indicador para a direção dos tokens",
 			"enable-indicator.choices.0": "Nunca",
@@ -39,11 +43,11 @@
 			"flip-or-rotate.choices.flip-v": "Espelhar na Vertical",
 			"flip-or-rotate.choices.flip-h": "Espelhar na Horizontal",
 			"facing-direction.name": "Direção da Rotação",
-			"facing-direction.hint": "A direção padrão que o token está voltado para.",
+			"facing-direction.hint": "A direção padrão que o indicador estará voltado para.",
 			"facing-direction.choices.right": "Direita",
 			"facing-direction.choices.left": "Esquerda",
-			"facing-direction.choices.down": "Cima",
-			"facing-direction.choices.up": "Baixo",
+			"facing-direction.choices.down": "Baixo",
+			"facing-direction.choices.up": "Cima",
 			"indicator-sprite.name": "Ícone do Indicador",
 			"indicator-sprite.hint": "Mudar o icone indicador (requer reinicialização).",
 			"indicator-sprite.choices.normal": "Indicador Normal",

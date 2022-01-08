@@ -131,14 +131,14 @@ export function registerSettings() {
 		type: Boolean,
 	});
 
-  game.settings.register(MODULE_ID, "lockArrowToHexFace", {
-    name: "about-face.options.lockArrowToHexFace.name",
-    hint: "about-face.options.lockArrowToHexFace.hint",
-    scope: "world",
-    config: true,
-    default: false,
-    type: Boolean,
-  });
+	game.settings.register(MODULE_ID, "lockArrowToFace", {
+		name: "about-face.options.lockArrowToFace.name",
+		hint: "about-face.options.lockArrowToFace.hint",
+		scope: "world",
+		config: true,
+		default: false,
+		type: Boolean,
+	});
 	game.settings.register(MODULE_ID, "lockRotation", {
 		name: "about-face.options.lockRotation.name",
 		hint: "about-face.options.lockRotation.hint",
@@ -186,6 +186,15 @@ export function registerSettings() {
  * @param {JQuery} html
  */
 export async function renderSettingsConfigHandler(tokenConfig, html) {
+	const lockArrowRotation = game.settings.get(MODULE_ID, "lockArrowRotation");
+	const lockArrowRotationCheckbox = html.find('input[name="about-face.lockArrowRotation"]');
+	const lockArrowToFaceCheckbox = html.find('input[name="about-face.lockArrowToFace"]');
+	disableCheckbox(lockArrowToFaceCheckbox, lockArrowRotation);
+
+	lockArrowRotationCheckbox.on("change", (event) => {
+		disableCheckbox(lockArrowToFaceCheckbox, event.target.checked);
+	});
+
 	const flipOrRotate = game.settings.get(MODULE_ID, "flip-or-rotate");
 	const flipOrRotateSelect = html.find('select[name="about-face.flip-or-rotate"]');
 	const flipDirectionSelect = html.find('select[name="about-face.facing-direction"]');
@@ -195,6 +204,10 @@ export async function renderSettingsConfigHandler(tokenConfig, html) {
 		const facingDirections = facingOptions[event.target.value];
 		replaceSelectChoices(flipDirectionSelect, facingDirections);
 	});
+}
+
+function disableCheckbox(checkbox, boolean) {
+	checkbox.prop("disabled", boolean);
 }
 
 function replaceSelectChoices(select, choices) {
