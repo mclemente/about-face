@@ -15,6 +15,7 @@ const TokenDirections = {
 	up: 180,
 	left: 270,
 };
+const SquareFacings = [ 45, 90, 135, 180, 225, 270, 315, 360]
 const HexRowFacings = [ 0, 60, 120, 180, 240, 300, 360 ]
 const HexColumnFacings = [ 30, 90, 150, 210, 270, 330, 390 ]
 
@@ -114,17 +115,19 @@ export function onPreUpdateToken(token, updates) {
 		let diffY = newPos.y - prevPos.y;
 		let diffX = newPos.x - prevPos.x;
 		dir = (Math.atan2(diffY, diffX) * 180) / Math.PI;
-    if (game.settings.get(MODULE_ID, "lockArrowToHexFace")) { 
-      let gridType = token.parent?.data?.gridType ?? 1
-      var facings
-      if (gridType == 2 || gridType == 3) facings = HexRowFacings
-      if (gridType == 4 || gridType == 5) facings = HexColumnFacings
-      if (!!facings) {
-         let normalizedDir = Math.round((dir < 0) ? 360 + dir : dir)  // convert negative dirs into a range from 0-360
-         let secondAngle = facings.find(e => e > normalizedDir)  // find the largest normalized angle
-         dir = secondAngle - 60  // and assume the facing is 60 degrees to the counter clockwise
-         if ((secondAngle - normalizedDir) < (normalizedDir - dir)) dir = secondAngle  // unless the largest angle was closer
-         if (dir > 180) dir = dir - 360  // return to the range 180 to -180
+    if (game.settings.get(MODULE_ID, "lockArrowToFace")) { 
+      let gridType = token.parent?.data?.gridType ?? 0  // The only way I could figure out the scene's gridType
+      if (gridType > 0) {
+        let facings = SquareFacings
+        let width = 60  // degree width of a facing
+        if (gridType == 1) width = 45
+        if (gridType == 2 || gridType == 3) facings = HexRowFacings
+        if (gridType == 4 || gridType == 5) facings = HexColumnFacings
+        let normalizedDir = Math.round((dir < 0) ? 360 + dir : dir)  // convert negative dirs into a range from 0-360
+        let secondAngle = facings.find(e => e > normalizedDir)  // find the largest normalized angle
+        dir = secondAngle - width  // and assume the facing is 60 degrees to the counter clockwise
+        if ((secondAngle - normalizedDir) < (normalizedDir - dir)) dir = secondAngle  // unless the largest angle was closer
+        if (dir > 180) dir = dir - 360  // return to the range 180 to -180
       }
     }
 		//store the direction in the token data
