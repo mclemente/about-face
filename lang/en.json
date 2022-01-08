@@ -21,7 +21,7 @@
 			},
       "lockArrowToHexFace": {
         "name": "Lock Indicator to Hex face",
-        "hint": "On Hex maps, the indicator will orient itself to the 'best' HEX facing after the move"
+        "hint": "On Hex maps, the indicator will orient itself to the 'best' HEX facing after the move.  This setting is ignored if 'Lock Indicator Rotation' is on."
       },
       "lockArrowRotation": {
         "name": "Lock Indicator Rotation",
