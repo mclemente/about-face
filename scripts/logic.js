@@ -1,5 +1,4 @@
 import { IndicatorMode, MODULE_ID } from "./settings.js";
-import flipAngles from "./flipAngles.js";
 
 let indicatorColor, indicatorDistance;
 const IndicatorDirections = {
@@ -141,7 +140,7 @@ export function onPreUpdateToken(token, updates) {
 		if (!updates.flags) updates.flags = {};
 		updates.flags[MODULE_ID] = { direction: dir };
 		if (flipOrRotate != "rotate") {
-			const [mirrorKey, mirrorVal] = getMirror(token, flipOrRotate, dir + 90);
+			const [mirrorKey, mirrorVal] = getMirror(token, { x: diffX, y: diffY });
 			if (mirrorKey) updates[mirrorKey] = mirrorVal;
 			return;
 		}
@@ -175,28 +174,22 @@ function getFlipOrRotation(tokenDocument) {
 	return tokenFlipOrRotate != "global" ? tokenFlipOrRotate : game.settings.get(MODULE_ID, "flip-or-rotate");
 }
 
-function getMirror(tokenDocument, flipOrRotate, dir) {
-	if (dir == null) dir = tokenDocument.getFlag(MODULE_ID, "direction") || 0;
+function getMirror(tokenDocument, position) {
 	const facingDirection = tokenDocument.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
-	try {
-		var angles = flipAngles[canvas.grid.type][flipOrRotate][facingDirection];
-	} catch (error) {
-		console.error(`About Face: failed to mirror token "${tokenDocument.name}" (ID: ${tokenDocument.id}).
-			tokenDocument.flags.about-face.facingDirection: ${tokenDocument.getFlag(MODULE_ID, "facingDirection")}
-			canvas.grid.type: ${canvas.grid.type}
-			flipOrRotate: ${flipOrRotate}
-			facingDirection: ${facingDirection}
-			angles: ${JSON.stringify(angles)}
-			${error}`);
-	} finally {
-		if (angles && angles[dir] != null) {
-			const update = {
-				[angles.mirror]: angles[dir],
-			};
-			return [angles.mirror, angles[dir]];
-		}
-		return [];
+	if (facingDirection === "right") {
+		if (position.x < 0) return ["mirrorX", true];
+		if (position.x > 0) return ["mirrorX", false];
+	} else if (facingDirection === "left") {
+		if (position.x < 0) return ["mirrorX", false];
+		if (position.x > 0) return ["mirrorX", true];
+	} else if (facingDirection === "up") {
+		if (position.y < 0) return ["mirrorY", false];
+		if (position.y > 0) return ["mirrorY", true];
+	} else if (facingDirection === "down") {
+		if (position.y < 0) return ["mirrorY", true];
+		if (position.y > 0) return ["mirrorY", false];
 	}
+	return [];
 }
 
 export function updateArrowColor(color) {
