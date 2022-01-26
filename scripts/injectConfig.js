@@ -4,6 +4,8 @@
 
 export var injectConfig = {
 	inject: function injectConfig(app, html, data, object) {
+		this._generateTabStruct(app, html, data, object);
+		const tabSize = data.tab?.width ?? 100;
 		object = object || app.object;
 		const moduleId = data.moduleId;
 		let injectPoint;
@@ -20,6 +22,7 @@ export var injectConfig = {
 			const flag = "flags." + moduleId + "." + (k || "");
 			const flagValue = object?.getFlag(moduleId, k) ?? elemData.default ?? getDefaultFlag(k);
 			const notes = v.notes ? `<p class="notes">${v.notes}</p>` : "";
+			v.label = v.units ? v.label + `<span class="units"> (${v.units})</span>` : v.label;
 			switch (elemData.type) {
 				case "text":
 					injectHtml += `<div class="form-group">
@@ -79,7 +82,9 @@ export var injectConfig = {
 				injectHtml += `<div class="form-group">
                 <label for="${k}">${v.label || ""}</label>
                 <div class="form-fields">     
-                    <button type="button" class="file-picker" data-type="${fpType}" data-target="${flag}" title="Browse Files" tabindex="-1">
+                    <button type="button" class="file-picker" data-extras="${
+						elemData.fpTypes ? elemData.fpTypes.join(",") : ""
+					}" data-type="${fpType}" data-target="${flag}" title="Browse Files" tabindex="-1">
                         <i class="fas fa-file-import fa-fw"></i>
                     </button>
                     <input class="image" type="text" name="${flag}" placeholder="${v.placeholder || ""}" value="${flagValue}">
@@ -88,16 +93,16 @@ export var injectConfig = {
 			}
 		}
 		injectHtml = $(injectHtml);
-		injectHtml.on("click", ".file-picker", _bindFilePicker);
+		injectHtml.on("click", ".file-picker", this.fpTypes, _bindFilePicker);
 		injectHtml.on("change", `input[type="color"]`, _colorChange);
 		if (data.tab) {
 			const injectTab = createTab(data.tab.name, data.tab.label, data.tab.icon).append(injectHtml);
 			injectPoint.after(injectTab);
-			app?.setPosition({ height: "auto", width: data.tab ? app.options.width + 100 : "auto" });
+			app?.setPosition({ height: "auto", width: data.tab ? app.options.width + tabSize : "auto" });
 			return injectHtml;
 		}
 		injectPoint.after(injectHtml);
-		app?.setPosition({ height: "auto", width: data.tab ? app.options.width + 100 : "auto" });
+		if (app) app?.setPosition({ height: "auto", width: data.tab ? app.options.width + tabSize : "auto" });
 		return injectHtml;
 
 		function createTab(name, label, icon) {
@@ -131,6 +136,7 @@ export var injectConfig = {
 			event.preventDefault();
 			const button = event.currentTarget;
 			const input = $(button).closest(".form-fields").find("input") || null;
+			const extraExt = button.dataset.extras ? button.dataset.extras.split(",") : [];
 			const options = {
 				field: input[0],
 				type: button.dataset.type,
@@ -138,6 +144,7 @@ export var injectConfig = {
 				button: button,
 			};
 			const fp = new FilePicker(options);
+			fp.extensions ? fp.extensions.push(...extraExt) : (fp.extensions = extraExt);
 			return fp.browse();
 		}
 	},
@@ -153,5 +160,35 @@ export var injectConfig = {
 				injectConfig.inject(app, html, newData);
 			});
 		}
+	},
+	_generateTabStruct: function _generateTabStruct(app, html, data, object) {
+		const isTabs = html.find(".sheet-tabs").length;
+		const useTabs = data.tab;
+		if (isTabs || !useTabs) return;
+		const tabSize = data.tab?.width || 100;
+		const layer = app?.object?.layer?.options?.name;
+		const icon = $(".main-controls").find(`li[data-canvas-layer="${layer}"]`).find("i").attr("class");
+
+		const $tabs = $(`<nav class="sheet-tabs tabs">
+        <a class="item active" data-tab="basic"><i class="${icon}"></i> ${game.i18n.localize("LIGHT.HeaderBasic")}</a>
+        </nav>
+        <div class="tab active" data-tab="basic"></div>`);
+		//move all content of form into tab
+		const form = html.find("form").first();
+		form.children().each((i, e) => {
+			$($tabs[2]).append(e);
+		});
+
+		form.append($tabs);
+		const submitButton = html.find("button[type='submit']").first();
+		form.append(submitButton);
+
+		html.on("click", ".item", (e) => {
+			html.find(".item").removeClass("active");
+			$(e.currentTarget).addClass("active");
+			html.find(".tab").removeClass("active");
+			html.find(`[data-tab="${e.currentTarget.dataset.tab}"]`).addClass("active");
+			app.setPosition({ height: "auto", width: data.tab ? app.options.width + tabSize : "auto" });
+		});
 	},
 };
