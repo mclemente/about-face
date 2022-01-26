@@ -146,7 +146,7 @@ export function onPreUpdateToken(token, updates) {
 		}
 	} else return;
 	//update the rotation of the token
-	updates.rotation = dir - 90;
+	if (!canvas.scene.getFlag(MODULE_ID, "lockRotation")) updates.rotation = dir - 90;
 }
 
 /////////////
