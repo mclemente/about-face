@@ -20,9 +20,9 @@ Hooks.on("preUpdateToken", onPreUpdateToken);
 Hooks.on("canvasReady", onCanvasReady);
 Hooks.on("renderSceneConfig", (app, html) => {
 	const data = {
-		moduleId: "about-face",
+		moduleId: MODULE_ID,
 		tab: {
-			name: "about-face",
+			name: MODULE_ID,
 			label: "About Face",
 			icon: "fas fa-caret-down fa-fw",
 		},
@@ -34,18 +34,62 @@ Hooks.on("renderSceneConfig", (app, html) => {
 		},
 		lockRotation: {
 			type: "checkbox",
-			label: game.i18n.localize("about-face.options.lockRotation.name"),
-			notes: game.i18n.localize("about-face.options.lockRotation.hint"),
+			label: game.i18n.localize("about-face.sceneConfig.lockRotation.name"),
+			notes: game.i18n.localize("about-face.sceneConfig.lockRotation.hint"),
 			default: app.object.data?.flags?.[MODULE_ID]?.lockRotation ?? game.settings.get(MODULE_ID, "lockRotation"),
+		},
+		lockRotationButton: {
+			type: "custom",
+			html: `<button type="button" id="lockRotationButton">${game.i18n.localize("about-face.sceneConfig.apply")}</button>`,
 		},
 		lockArrowRotation: {
 			type: "checkbox",
-			label: game.i18n.localize("about-face.options.lockArrowRotation.name"),
-			notes: game.i18n.localize("about-face.options.lockArrowRotation.hint"),
+			label: game.i18n.localize("about-face.sceneConfig.lockArrowRotation.name"),
+			notes: game.i18n.localize("about-face.sceneConfig.lockArrowRotation.hint"),
 			default: app.object.data?.flags?.[MODULE_ID]?.lockArrowRotation ?? game.settings.get(MODULE_ID, "lockArrowRotation"),
+		},
+		lockArrowRotationButton: {
+			type: "custom",
+			html: `<button type="button" id="lockArrowRotationButton">${game.i18n.localize("about-face.sceneConfig.apply")}</button>`,
 		},
 	};
 	injectConfig.inject(app, html, data, app.object);
+});
+Hooks.on("renderSceneConfig", async (app, html) => {
+	const lockRotationButton = html.find("button[id='lockRotationButton']");
+	lockRotationButton.on("click", () => {
+		const lockRotationCheckbox = html.find('input[name="flags.about-face.lockRotation"]');
+		const state = lockRotationCheckbox[0].checked;
+		const updates = [];
+		canvas.scene.tokens.forEach((token) => {
+			console.log(token);
+			if (token.data.lockRotation != state) {
+				updates.push({
+					_id: token.id,
+					lockRotation: state,
+				});
+			}
+		});
+		canvas.scene.updateEmbeddedDocuments("Token", updates);
+	});
+	const lockArrowRotationButton = html.find("button[id='lockArrowRotationButton']");
+	lockArrowRotationButton.on("click", () => {
+		const lockArrowRotationCheckbox = html.find('input[name="flags.about-face.lockArrowRotation"]');
+		const state = lockArrowRotationCheckbox[0].checked;
+		const updates = [];
+		canvas.scene.tokens.forEach((token) => {
+			console.log(token);
+			if ("token.data.flags.about-face.lockArrowRotation" != state) {
+				updates.push({
+					_id: token.id,
+					flags: {
+						"about-face": { lockArrowRotation: state },
+					},
+				});
+			}
+		});
+		canvas.scene.updateEmbeddedDocuments("Token", updates);
+	});
 });
 Hooks.on("renderTokenConfig", renderTokenConfigHandler);
 Hooks.on("renderSettingsConfig", renderSettingsConfigHandler);

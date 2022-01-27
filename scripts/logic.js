@@ -99,23 +99,28 @@ export function onPreCreateToken(document, data, options, userId) {
 	if (Object.keys(updates).length) document.data.update(updates);
 }
 
-export function onPreUpdateToken(token, updates) {
+export function onPreUpdateToken(tokenDocument, updates) {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) return;
-	const flipOrRotate = getFlipOrRotation(token);
+	const flipOrRotate = getFlipOrRotation(tokenDocument);
 	if ("rotation" in updates) {
 		var dir = updates.rotation + 90;
 		//store the direction in the token data
 		if (!updates.flags) updates.flags = {};
 		updates.flags[MODULE_ID] = { direction: dir };
 		if (flipOrRotate != "rotate") {
-			const [mirrorKey, mirrorVal] = getMirror(token, flipOrRotate, dir);
+			const [mirrorKey, mirrorVal] = getMirror(tokenDocument, flipOrRotate, dir);
 			if (mirrorKey) updates[mirrorKey] = mirrorVal;
+			return;
+		} else {
+			updates.rotation = dir - 90;
 			return;
 		}
 	} else if (("x" in updates || "y" in updates) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
 		//get previews and new positions
-		const prevPos = { x: token.data.x, y: token.data.y };
-		const newPos = { x: updates.x ?? token.data.x, y: updates.y ?? token.data.y };
+		const prevPos = { x: tokenDocument.data.x, y: tokenDocument.data.y };
+		const newPos = { x: updates.x ?? tokenDocument.data.x, y: updates.y ?? tokenDocument.data.y };
+		const tokenPrevPos = tokenDocument.getFlag(MODULE_ID, "prevPos");
+		if (game.settings.get(MODULE_ID, "rememberTokenPrevPos") && tokenPrevPos && newPos.x == tokenPrevPos.x && newPos.y == tokenPrevPos.y) return;
 		//get the direction in degrees of the movement
 		let diffY = newPos.y - prevPos.y;
 		let diffX = newPos.x - prevPos.x;
@@ -138,15 +143,15 @@ export function onPreUpdateToken(token, updates) {
 		}
 		//store the direction in the token data
 		if (!updates.flags) updates.flags = {};
-		updates.flags[MODULE_ID] = { direction: dir };
+		updates.flags[MODULE_ID] = { direction: dir, prevPos: prevPos };
 		if (flipOrRotate != "rotate") {
-			const [mirrorKey, mirrorVal] = getMirror(token, { x: diffX, y: diffY });
+			const [mirrorKey, mirrorVal] = getMirror(tokenDocument, { x: diffX, y: diffY });
 			if (mirrorKey) updates[mirrorKey] = mirrorVal;
 			return;
 		}
 	} else return;
 	//update the rotation of the token
-	if (!canvas.scene.getFlag(MODULE_ID, "lockRotation")) updates.rotation = dir - 90;
+	if (!canvas.scene.getFlag(MODULE_ID, "lockRotation") || game.settings.get(MODULE_ID, "lockVisionToRotation")) updates.rotation = dir - 90;
 }
 
 /////////////

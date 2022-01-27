@@ -129,8 +129,24 @@ export function registerSettings() {
 		config: true,
 		default: false,
 		type: Boolean,
+		onChange: (value) => {
+			new Dialog({
+				title: game.i18n.localize("about-face.options.lockArrowRotation.name"),
+				content: game.i18n.localize("about-face.options.changeEverySceneDialog"),
+				buttons: {
+					yes: {
+						label: "Yes",
+						callback: (html) => {
+							game.scenes.updateAll({ flags: { [MODULE_ID]: { lockArrowRotation: value } } });
+						},
+					},
+					no: {
+						label: "No",
+					},
+				},
+			}).render(true);
+		},
 	});
-
 	game.settings.register(MODULE_ID, "lockArrowToFace", {
 		name: "about-face.options.lockArrowToFace.name",
 		hint: "about-face.options.lockArrowToFace.hint",
@@ -139,9 +155,36 @@ export function registerSettings() {
 		default: false,
 		type: Boolean,
 	});
+
 	game.settings.register(MODULE_ID, "lockRotation", {
 		name: "about-face.options.lockRotation.name",
 		hint: "about-face.options.lockRotation.hint",
+		scope: "world",
+		config: true,
+		default: false,
+		type: Boolean,
+		onChange: (value) => {
+			new Dialog({
+				title: game.i18n.localize("about-face.options.lockRotation.name"),
+				content: game.i18n.localize("about-face.options.changeEverySceneDialog"),
+				buttons: {
+					yes: {
+						label: "Yes",
+						callback: (html) => {
+							game.scenes.updateAll({ flags: { [MODULE_ID]: { lockRotation: value } } });
+						},
+					},
+					no: {
+						label: "No",
+					},
+				},
+			}).render(true);
+		},
+	});
+
+	game.settings.register(MODULE_ID, "rememberTokenPrevPos", {
+		name: "about-face.options.rememberTokenPrevPos.name",
+		hint: "about-face.options.rememberTokenPrevPos.hint",
 		scope: "world",
 		config: true,
 		default: false,
@@ -161,7 +204,6 @@ export function registerSettings() {
 			"flip-v": "about-face.options.flip-or-rotate.choices.flip-v",
 		},
 	});
-
 	game.settings.register(MODULE_ID, "facing-direction", {
 		name: "about-face.options.facing-direction.name",
 		hint: "about-face.options.facing-direction.hint",
@@ -173,6 +215,14 @@ export function registerSettings() {
 			right: "about-face.options.facing-direction.choices.right",
 			left: "about-face.options.facing-direction.choices.left",
 		},
+	});
+	game.settings.register(MODULE_ID, "lockVisionToRotation", {
+		name: "about-face.options.lockVisionToRotation.name",
+		hint: "about-face.options.lockVisionToRotation.hint",
+		scope: "world",
+		config: true,
+		default: true,
+		type: Boolean,
 	});
 }
 
@@ -200,9 +250,14 @@ export async function renderSettingsConfigHandler(tokenConfig, html) {
 	const flipDirectionSelect = html.find('select[name="about-face.facing-direction"]');
 	replaceSelectChoices(flipDirectionSelect, facingOptions[flipOrRotate]);
 
+	const lockVisionToRotationCheckbox = html.find('input[name="about-face.lockVisionToRotation"]');
+	disableCheckbox(lockVisionToRotationCheckbox, flipOrRotate !== "rotate");
+
 	flipOrRotateSelect.on("change", (event) => {
 		const facingDirections = facingOptions[event.target.value];
 		replaceSelectChoices(flipDirectionSelect, facingDirections);
+
+		disableCheckbox(lockVisionToRotationCheckbox, event.target.value !== "rotate");
 	});
 }
 

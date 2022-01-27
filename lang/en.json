@@ -2,6 +2,7 @@
 	"about-face": {
 		"sceneConfig": {
 			"hint": "Configure the About Face settings for this scene.",
+			"apply": "Apply to existing tokens",
 			"scene-enabled": {
 				"name": "Enable on this scene",
 				"hint": "Rotates tokens when moving them (except when locked). If disabled, can still hold SHIFT to rotate in place"
@@ -16,6 +17,7 @@
 			}
 		},
 		"options": {
+			"changeEverySceneDialog": "Would you like to change this setting on every scene?",
 			"disable-indicator": "Disable Direction Indicator",
 			"individual-token-text": "Show indicator for this token?",
 			"arrowColor": {
@@ -38,6 +40,14 @@
 			"lockRotation": {
 				"name": "Lock Rotation",
 				"hint": "Every scene will be created with the About Face's Lock Rotation setting toggled on. Tokens created in such a scene will have the Lock Rotation Token Configuration toggled on."
+			},
+			"lockVisionToRotation": {
+				"name": "Lock Vision to Rotation",
+				"hint": "The token's vision will follow its rotation. SHIFT + direction key overrides this setting. This setting is ignored if \"Flip or Rotate Token\" isn't set to \"Rotate\"."
+			},
+			"rememberTokenPrevPos": {
+				"name": "Step Back / Remember Token's Previous Position",
+				"hint": "If a token moves to its previous position, its indicator won't change. Useful for games with Vision Angles."
 			},
 			"enable-indicator": {
 				"name": "Enable token indicators",
