@@ -151,7 +151,7 @@ export function onPreUpdateToken(tokenDocument, updates) {
 		}
 	} else return;
 	//update the rotation of the token
-	if (!canvas.scene.getFlag(MODULE_ID, "lockRotation") || game.settings.get(MODULE_ID, "lockVisionToRotation")) updates.rotation = dir - 90;
+	if (!tokenDocument.data.lockRotation || game.settings.get(MODULE_ID, "lockVisionToRotation")) updates.rotation = dir - 90;
 }
 
 /////////////
