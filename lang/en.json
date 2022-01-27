@@ -5,6 +5,14 @@
 			"scene-enabled": {
 				"name": "Enable on this scene",
 				"hint": "Rotates tokens when moving them (except when locked). If disabled, can still hold SHIFT to rotate in place"
+			},
+			"lockRotation": {
+				"name": "Lock Rotation",
+				"hint": "Tokens created in this scene will have the Lock Rotation Token Configuration toggled on."
+			},
+			"lockArrowRotation": {
+				"name": "Lock Indicator Rotation",
+				"hint": "The indicator won't change when a token moves. Use SHIFT + direction key to rotate the indicator."
 			}
 		},
 		"options": {
@@ -21,7 +29,7 @@
 			},
 			"lockArrowRotation": {
 				"name": "Lock Indicator Rotation",
-				"hint": "The indicator won't change when the token moves. Use SHIFT + direction key to rotate the indicator."
+				"hint": "Every scene will be created with the About Face's Lock Indicator Rotation setting toggled on. The indicator won't change when a token moves in such a scene. Use SHIFT + direction key to rotate the indicator."
 			},
 			"lockArrowToFace": {
 				"name": "Snap Indicator to Closest Tile",
@@ -29,7 +37,7 @@
 			},
 			"lockRotation": {
 				"name": "Lock Rotation",
-				"hint": "Every token will be created with the Lock Rotation Token Configuration toggled on."
+				"hint": "Every scene will be created with the About Face's Lock Rotation setting toggled on. Tokens created in such a scene will have the Lock Rotation Token Configuration toggled on."
 			},
 			"enable-indicator": {
 				"name": "Enable token indicators",
@@ -41,8 +49,8 @@
 				}
 			},
 			"flip-or-rotate": {
-				"name": "Flip or Rotate the token",
-				"hint": "Instead of rotating the token, flip it",
+				"name": "Flip or Rotate Token",
+				"hint": "Instead of rotating a token, flip it",
 				"choices": {
 					"global": "Global",
 					"rotate": "Rotate",
@@ -52,7 +60,7 @@
 			},
 			"facing-direction": {
 				"name": "Facing Direction",
-				"hint": "The default direction the token is facing",
+				"hint": "The default direction tokens are facing",
 				"choices": {
 					"right": "Facing Right",
 					"left": "Facing Left",
