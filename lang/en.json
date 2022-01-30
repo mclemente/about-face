@@ -6,7 +6,7 @@
 				"hint": "Tokens won't rotate during movement. Useful for games with Vision Angles.",
 				"tooltip": {
 					"true": "Token Rotation is off.",
-					"false": "Token Movement is on."
+					"false": "Token Rotation is on."
 				}
 			}
 		},
