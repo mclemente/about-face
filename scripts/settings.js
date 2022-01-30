@@ -182,15 +182,6 @@ export function registerSettings() {
 		},
 	});
 
-	game.settings.register(MODULE_ID, "rememberTokenPrevPos", {
-		name: "about-face.options.rememberTokenPrevPos.name",
-		hint: "about-face.options.rememberTokenPrevPos.hint",
-		scope: "world",
-		config: true,
-		default: false,
-		type: Boolean,
-	});
-
 	game.settings.register(MODULE_ID, "flip-or-rotate", {
 		name: "about-face.options.flip-or-rotate.name",
 		hint: "about-face.options.flip-or-rotate.hint",

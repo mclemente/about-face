@@ -121,8 +121,6 @@ export function onPreUpdateToken(tokenDocument, updates) {
 		//get previews and new positions
 		const prevPos = { x: tokenDocument.data.x, y: tokenDocument.data.y };
 		const newPos = { x: updates.x ?? tokenDocument.data.x, y: updates.y ?? tokenDocument.data.y };
-		const tokenPrevPos = tokenDocument.getFlag(MODULE_ID, "prevPos");
-		if (game.settings.get(MODULE_ID, "rememberTokenPrevPos") && tokenPrevPos && newPos.x == tokenPrevPos.x && newPos.y == tokenPrevPos.y) return;
 		//get the direction in degrees of the movement
 		let diffY = newPos.y - prevPos.y;
 		let diffX = newPos.x - prevPos.x;

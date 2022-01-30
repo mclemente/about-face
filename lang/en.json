@@ -55,10 +55,6 @@
 				"name": "Lock Vision to Rotation",
 				"hint": "The token's vision will follow its rotation instead of its indicator. Useful for games with Vision Angles. SHIFT + direction key overrides this setting. This setting is ignored if \"Flip or Rotate Token\" isn't set to \"Rotate\"."
 			},
-			"rememberTokenPrevPos": {
-				"name": "Step Back / Remember Token's Previous Position",
-				"hint": "If a token moves to its previous position, its indicator won't change. Useful for games with Vision Angles."
-			},
 			"enable-indicator": {
 				"name": "Enable token indicators",
 				"hint": "Adds an indicator for direction to tokens",
