@@ -191,6 +191,15 @@ export function registerSettings() {
 		type: Boolean,
 	});
 
+	game.settings.register(MODULE_ID, "tokenAutoRotateOptInPerMovement", {
+		name: "about-face.options.tokenAutoRotateOptInPerMovement.name",
+		hint: "about-face.options.tokenAutoRotateOptInPerMovement.hint",
+		scope: "world",
+		config: true,
+		default: false,
+		type: Boolean,
+	});
+
 	game.settings.register(MODULE_ID, "flip-or-rotate", {
 		name: "about-face.options.flip-or-rotate.name",
 		hint: "about-face.options.flip-or-rotate.hint",

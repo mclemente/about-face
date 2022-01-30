@@ -116,6 +116,7 @@ export function onPreUpdateToken(tokenDocument, updates) {
 			return;
 		}
 	} else if (("x" in updates || "y" in updates) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
+		if (game.settings.get(MODULE_ID, "tokenAutoRotateOptInPerMovement") && !keyboard.downKeys.has("KeyZ")) return;
 		//get previews and new positions
 		const prevPos = { x: tokenDocument.data.x, y: tokenDocument.data.y };
 		const newPos = { x: updates.x ?? tokenDocument.data.x, y: updates.y ?? tokenDocument.data.y };
