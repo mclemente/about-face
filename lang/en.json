@@ -1,5 +1,15 @@
 {
 	"about-face": {
+		"keybindings": {
+			"toggleTokenRotation": {
+				"name": "Toggle Token Rotation",
+				"hint": "Tokens won't rotate during movement. Useful for games with Vision Angles.",
+				"tooltip": {
+					"true": "Token Rotation is off.",
+					"false": "Token Movement is on."
+				}
+			}
+		},
 		"sceneConfig": {
 			"hint": "Configure the About Face settings for this scene.",
 			"apply": "Apply to existing tokens",
@@ -48,10 +58,6 @@
 			"rememberTokenPrevPos": {
 				"name": "Step Back / Remember Token's Previous Position",
 				"hint": "If a token moves to its previous position, its indicator won't change. Useful for games with Vision Angles."
-			},
-			"tokenAutoRotateOptInPerMovement": {
-				"name": "Token rotation is opt in per movement",
-				"hint": "Token will not auto rotate unless \"z\" key is pressed during movement. Useful for games with Vision Angles."
 			},
 			"enable-indicator": {
 				"name": "Enable token indicators",
