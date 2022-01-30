@@ -31,6 +31,13 @@ Hooks.once("init", () => {
 Hooks.on("preCreateToken", onPreCreateToken);
 Hooks.on("preUpdateToken", onPreUpdateToken);
 
+Hooks.once("ready", () => {
+	try {
+		window.Ardittristan.ColorSetting.tester;
+	} catch {
+		ui.notifications.notify('Please make sure you have the "lib - ColorSettings" module installed and enabled.', "error");
+	}
+});
 Hooks.on("canvasReady", onCanvasReady);
 Hooks.on("renderSceneConfig", (app, html) => {
 	const data = {
