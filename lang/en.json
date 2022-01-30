@@ -6,7 +6,7 @@
 				"hint": "Tokens won't rotate during movement. Useful for games with Vision Angles.",
 				"tooltip": {
 					"true": "Token Rotation is off.",
-					"false": "Token Rotation is on."
+					"false": "Token Movement is on."
 				}
 			}
 		},
@@ -86,12 +86,7 @@
 			},
 			"indicator-sprite": {
 				"name": "Indicator Icon",
-				"hint": "Change the indicator icon (requires reload)",
-				"choices": {
-					"normal": "Normal Indicator",
-					"large": "Large Indicator",
-					"hex": "Hex Indicator (Only works on Hex Columns)"
-				}
+				"hint": "Change the indicator icon (requires reload)"
 			}
 		}
 	}
