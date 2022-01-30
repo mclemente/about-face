@@ -1,5 +1,15 @@
 {
 	"about-face": {
+		"keybindings": {
+			"toggleTokenRotation": {
+				"name": "Toggle Token Rotation",
+				"hint": "Tokens won't rotate during movement. Useful for games with Vision Angles.",
+				"tooltip": {
+					"true": "Token Rotation is off.",
+					"false": "Token Movement is on."
+				}
+			}
+		},
 		"sceneConfig": {
 			"hint": "Configure the About Face settings for this scene.",
 			"apply": "Apply to existing tokens",

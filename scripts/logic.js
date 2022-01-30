@@ -1,3 +1,4 @@
+import { toggleTokenRotation } from "../about-face.js";
 import { IndicatorMode, MODULE_ID } from "./settings.js";
 
 let indicatorColor, indicatorDistance;
@@ -116,6 +117,7 @@ export function onPreUpdateToken(tokenDocument, updates) {
 			return;
 		}
 	} else if (("x" in updates || "y" in updates) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
+		if (toggleTokenRotation) return;
 		//get previews and new positions
 		const prevPos = { x: tokenDocument.data.x, y: tokenDocument.data.y };
 		const newPos = { x: updates.x ?? tokenDocument.data.x, y: updates.y ?? tokenDocument.data.y };
