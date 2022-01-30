@@ -70,8 +70,8 @@
 				"choices": {
 					"global": "Global",
 					"rotate": "Rotate",
-					"flip-h": "Flip Horizontal",
-					"flip-v": "Flip Vertical"
+					"flip-h": "Flip Horizontally",
+					"flip-v": "Flip Vertically"
 				}
 			},
 			"facing-direction": {
