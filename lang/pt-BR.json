@@ -1,13 +1,33 @@
 {
 	"about-face": {
+		"keybindings": {
+			"toggleTokenRotation": {
+				"name": "Alternar Rotação do Token",
+				"hint": "Tokens não rodarão durante o movimento. Útil para jogos com Ângulos de Visão.",
+				"tooltip": {
+					"true": "Rotação do Token está inativa.",
+					"false": "Rotação do Token está ativa."
+				}
+			}
+		},
 		"sceneConfig": {
 			"hint": "Configurar o About Face nesta cena.",
+			"apply": "Aplicar para os tokens existentes",
 			"scene-enabled": {
 				"name": "Ativar nesta cena",
 				"hint": "Rotaciona tokens quando são movidos (exceto quando trancado). Se desativado, ainda é possivel segurar o Shift para rotacionar no eixo."
+			},
+			"lockRotation": {
+				"name": "Bloquear Rotação",
+				"hint": "Todo token criado nesta cena terá a configuração de token Bloquear Rotação ativada."
+			},
+			"lockArrowRotation": {
+				"name": "Bloquear Rotação do Indicador",
+				"hint": "O indicador não mudará quando o token se mover. Use SHIFT + tecla da direção para rotacionar o indicador."
 			}
 		},
 		"options": {
+			"changeEverySceneDialog": "Você gostaria de alterar esta configuração para todas as cenas?",
 			"disable-indicator": "Desabilitar Indicador de Direção",
 			"individual-token-text": "Exibir indicador para os tokens?",
 			"arrowColor": {
@@ -21,38 +41,53 @@
 			},
 			"lockArrowRotation": {
 				"name": "Bloquear Rotação do Indicador",
-				"hint": "O indicador não mudará quando o token se move. Use SHIFT + tecla da direção para rotacionar o indicador."
+				"hint": "Toda cena será criada com a configuração Bloquear Rotação do Indicador ativada. O indicador não mudará quando o token se mover em uma dessas cenas. Use SHIFT + tecla da direção para rotacionar o indicador."
 			},
 			"lockArrowToFace": {
 				"name": "Ajustar Indicador ao Espaço Mais Próximo",
-				"hint": "Ajusta a direção do indicador para o espaço mais próximo em vez da direção do ângulo do movimento feito. Esta opção é ignorada se \"Bloquear Rotação do Indicador\" estiver ativada."
+				"hint": "Ajusta a direção do indicador para o espaço mais próximo em vez da direção do ângulo do movimento feito. Esta configuração é ignorada se \"Bloquear Rotação do Indicador\" estiver ativada."
 			},
-			"enable-indicator.name": "Habilitar indicadores de token",
-			"enable-indicator.hint": "Adiciona um indicador para a direção dos tokens",
-			"enable-indicator.choices.0": "Nunca",
-			"enable-indicator.choices.1": "Ao passar o mouse por cima",
-			"enable-indicator.choices.2": "Sempre",
 			"lockRotation": {
 				"name": "Bloquear Rotação",
-				"hint": "Todo token será criado com a configuração de token Bloquear Rotação ativada"
+				"hint": "Toda cena será criada com a configuração Bloquear Rotação do About Face ativada. Todo token criado em uma dessas cenas terá a configuração de token Bloquear Rotação ativada"
 			},
-			"flip-or-rotate.name": "Espelhar ou rotacionar o token",
-			"flip-or-rotate.hint": "Espelhar o token em vez de rotacioná-lo",
-			"flip-or-rotate.choices.global": "Global",
-			"flip-or-rotate.choices.rotate": "Rotacionar",
-			"flip-or-rotate.choices.flip-v": "Espelhar na Vertical",
-			"flip-or-rotate.choices.flip-h": "Espelhar na Horizontal",
-			"facing-direction.name": "Direção da Rotação",
-			"facing-direction.hint": "A direção padrão que o indicador estará voltado para.",
-			"facing-direction.choices.right": "Direita",
-			"facing-direction.choices.left": "Esquerda",
-			"facing-direction.choices.down": "Baixo",
-			"facing-direction.choices.up": "Cima",
-			"indicator-sprite.name": "Ícone do Indicador",
-			"indicator-sprite.hint": "Mudar o icone indicador (requer reinicialização).",
-			"indicator-sprite.choices.normal": "Indicador Normal",
-			"indicator-sprite.choices.large": "Indicador Grande",
-			"indicator-sprite.choices.hex": "Indicador de Hexágonos (Só funciona com Colunas)"
+			"lockVisionToRotation": {
+				"name": "Prender Visão à RotaçãoLock Vision to Rotation",
+				"hint": "A visão do token irá seguir a sua rotação em vez do indicador. Útil para jogos com Ângulos de Visão. SHIFT + tecla de direção ignore esta configuração. Esta configuração é ignorada se \"Espelhar ou rotacionar o token\" não for \"Rotacionar\"."
+			},
+			"enable-indicator": {
+				"name": "Habilitar indicadores de token",
+				"hint": "Adiciona um indicador para a direção dos tokens",
+				"choices": {
+					"0": "Nunca",
+					"1": "Ao passar o mouse por cima",
+					"2": "Sempre"
+				}
+			},
+			"flip-or-rotate": {
+				"name": "Espelhar ou rotacionar o token",
+				"hint": "Espelhar o token em vez de rotacioná-lo",
+				"choices": {
+					"global": "Global",
+					"rotate": "Rotacionar",
+					"flip-h": "Espelhar na Horizontal",
+					"flip-v": "Espelhar na Vertical"
+				}
+			},
+			"facing-direction": {
+				"name": "Direção da Rotação",
+				"hint": "A direção padrão que o indicador estará voltado para.",
+				"choices": {
+					"right": "Direita",
+					"left": "Esquerda",
+					"down": "Baixo",
+					"up": "Cima"
+				}
+			},
+			"indicator-sprite": {
+				"name": "Ícone do Indicador",
+				"hint": "Mudar o icone indicador (requer reinicialização)."
+			}
 		}
 	}
 }
