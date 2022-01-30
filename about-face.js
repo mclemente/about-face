@@ -19,7 +19,6 @@ Hooks.once("init", () => {
 	game.keybindings.register(MODULE_ID, "toggleTokenRotation", {
 		name: "about-face.keybindings.toggleTokenRotation.name",
 		hint: "about-face.keybindings.toggleTokenRotation.hint",
-		editable: [{ key: "KeyZ" }],
 		onDown: () => {
 			toggleTokenRotation = !toggleTokenRotation;
 			ui.notifications.notify("About Face: " + game.i18n.localize(`about-face.keybindings.toggleTokenRotation.tooltip.${toggleTokenRotation}`));
