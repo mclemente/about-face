@@ -247,7 +247,7 @@ export async function renderSettingsConfigHandler(tokenConfig, html) {
 	flipOrRotateSelect.on("change", (event) => {
 		const facingDirections = facingOptions[event.target.value];
 		replaceSelectChoices(flipDirectionSelect, facingDirections);
-
+		disableCheckbox(flipDirectionSelect, event.target.value == "rotate");
 		disableCheckbox(lockVisionToRotationCheckbox, event.target.value !== "rotate");
 	});
 }
