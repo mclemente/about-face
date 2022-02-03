@@ -212,7 +212,7 @@ export function registerSettings() {
 		hint: "about-face.options.lockVisionToRotation.hint",
 		scope: "world",
 		config: true,
-		default: true,
+		default: false,
 		type: Boolean,
 	});
 }
