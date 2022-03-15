@@ -83,10 +83,13 @@ export async function onCanvasReady() {
 }
 
 export function onPreCreateToken(document, data, options, userId) {
-	const updates = { flags: {} };
+	const updates = { flags: { [MODULE_ID]: {} } };
 	const facingDirection = game.settings.get(MODULE_ID, "facing-direction");
 	if (canvas.scene.getFlag(MODULE_ID, "lockRotation")) {
 		updates.lockRotation = true;
+	}
+	if (document.data.rotation) {
+		updates.flags[MODULE_ID].rotationOffset = document.data.rotation;
 	}
 	if (facingDirection) {
 		const flipMode = game.settings.get(MODULE_ID, "flip-or-rotate");
@@ -94,7 +97,7 @@ export function onPreCreateToken(document, data, options, userId) {
 		if (gridType == 0 || (gridType == 1 && flipMode == "flip-h") || (gridType == 2 && flipMode == "flip-v")) {
 			let angle = TokenDirections[facingDirection];
 			updates.direction = angle;
-			updates.flags[MODULE_ID] = { direction: angle };
+			updates.flags[MODULE_ID].direction = angle;
 		}
 	}
 	if (Object.keys(updates).length) document.data.update(updates);
@@ -113,7 +116,7 @@ export function onPreUpdateToken(tokenDocument, updates) {
 			if (mirrorKey) updates[mirrorKey] = mirrorVal;
 			return;
 		} else {
-			updates.rotation = dir - 90 + (tokenDocument.actor.data.flags[MODULE_ID].rotationOffset ?? 0);
+			updates.rotation = dir - 90 + (tokenDocument.actor.data.flags[MODULE_ID]?.rotationOffset ?? 0);
 			return;
 		}
 	} else if (("x" in updates || "y" in updates) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
@@ -152,7 +155,7 @@ export function onPreUpdateToken(tokenDocument, updates) {
 	} else return;
 	//update the rotation of the token
 	if (!(tokenDocument.data.lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation"))) {
-		updates.rotation = dir - 90 + (tokenDocument.actor.data.flags[MODULE_ID].rotationOffset ?? 0);
+		updates.rotation = dir - 90 + (tokenDocument.actor.data.flags[MODULE_ID]?.rotationOffset ?? 0);
 	}
 }
 
