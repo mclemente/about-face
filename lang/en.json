@@ -1,6 +1,14 @@
 {
 	"about-face": {
 		"keybindings": {
+			"lockRotation": {
+				"name": "Lock Rotation",
+				"hint": "Toggles the selected tokens' Lock Rotation setting."
+			},
+			"rotationOffset": {
+				"name": "Rotation Offset",
+				"hint": "Opens a dialog to set the selected tokens' rotation Offset."
+			},
 			"toggleTokenRotation": {
 				"name": "Toggle Token Rotation",
 				"hint": "Tokens won't rotate during movement. Useful for games with Vision Angles.",

@@ -11,6 +11,38 @@ import { MODULE_ID, registerSettings, renderSettingsConfigHandler, renderTokenCo
 
 export let toggleTokenRotation = false;
 
+export function createDialog(data = {}) {
+	for (let token of canvas.tokens.controlled) {
+		var rotationOffset = token.actor.getFlag(MODULE_ID, "rotationOffset") || 0;
+	}
+	new Dialog(
+		{
+			title: "Rotation Offset",
+			label: "create",
+			buttons: {
+				OK: {
+					icon: '<i class="fas fa-check"></i>',
+					label: game.i18n.localize("OK"),
+					callback: (html) => {
+						const rotationOffset = Number(html.find("#rotationOffset").val());
+						for (let token of canvas.tokens.controlled) {
+							token.actor.setFlag(MODULE_ID, "rotationOffset", rotationOffset);
+						}
+					},
+				},
+			},
+			default: "OK",
+			content: `<form>
+						<div class="form-group">
+							<label for="rotationOffset">Rotation Offset:</label>
+							<input type="number" id="rotationOffset" name="rotationOffset" value="${rotationOffset}" min="-89" max="89" />
+						</div>
+					</form>`,
+		},
+		{ width: 200, height: 140 }
+	).render(true);
+}
+
 Hooks.once("init", () => {
 	libWrapper.register(MODULE_ID, "Token.prototype.refresh", drawAboutFaceIndicator);
 	registerSettings();
@@ -22,6 +54,27 @@ Hooks.once("init", () => {
 		onDown: () => {
 			toggleTokenRotation = !toggleTokenRotation;
 			ui.notifications.notify("About Face: " + game.i18n.localize(`about-face.keybindings.toggleTokenRotation.tooltip.${toggleTokenRotation}`));
+		},
+		restricted: false,
+		precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
+	});
+	game.keybindings.register(MODULE_ID, "lockRotation", {
+		name: "about-face.keybindings.lockRotation.name",
+		hint: "about-face.keybindings.lockRotation.hint",
+		onDown: () => {
+			for (let token of canvas.tokens.controlled) {
+				var lockRotation = token.data.lockRotation;
+				token.document.update({ lockRotation: !lockRotation });
+			}
+		},
+		restricted: false,
+		precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
+	});
+	game.keybindings.register(MODULE_ID, "rotationOffset", {
+		name: "about-face.keybindings.rotationOffset.name",
+		hint: "about-face.keybindings.rotationOffset.hint",
+		onDown: () => {
+			createDialog();
 		},
 		restricted: false,
 		precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,

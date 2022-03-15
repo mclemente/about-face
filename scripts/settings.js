@@ -85,7 +85,7 @@ export function registerSettings() {
 	game.settings.register(MODULE_ID, "indicator-state", {
 		name: "about-face.options.enable-indicator.name",
 		hint: "about-face.options.enable-indicator.hint",
-		scope: "client",
+		scope: "world",
 		config: true,
 		default: 2,
 		type: Number,
@@ -212,7 +212,7 @@ export function registerSettings() {
 		hint: "about-face.options.lockVisionToRotation.hint",
 		scope: "world",
 		config: true,
-		default: false,
+		default: true,
 		type: Boolean,
 	});
 }
@@ -240,6 +240,7 @@ export async function renderSettingsConfigHandler(tokenConfig, html) {
 	const flipOrRotateSelect = html.find('select[name="about-face.flip-or-rotate"]');
 	const flipDirectionSelect = html.find('select[name="about-face.facing-direction"]');
 	replaceSelectChoices(flipDirectionSelect, facingOptions[flipOrRotate]);
+	disableCheckbox(flipDirectionSelect, flipOrRotate == "rotate");
 
 	const lockVisionToRotationCheckbox = html.find('input[name="about-face.lockVisionToRotation"]');
 	disableCheckbox(lockVisionToRotationCheckbox, flipOrRotate !== "rotate");
