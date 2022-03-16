@@ -116,7 +116,7 @@ export function onPreUpdateToken(tokenDocument, updates) {
 			if (mirrorKey) updates[mirrorKey] = mirrorVal;
 			return;
 		} else {
-			updates.rotation = dir - 90 + (tokenDocument.actor.data.flags[MODULE_ID]?.rotationOffset ?? 0);
+			updates.rotation = dir - 90 + (tokenDocument.data.flags[MODULE_ID]?.rotationOffset ?? 0);
 			return;
 		}
 	} else if (("x" in updates || "y" in updates) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
@@ -155,7 +155,7 @@ export function onPreUpdateToken(tokenDocument, updates) {
 	} else return;
 	//update the rotation of the token
 	if (!(tokenDocument.data.lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation"))) {
-		updates.rotation = dir - 90 + (tokenDocument.actor.data.flags[MODULE_ID]?.rotationOffset ?? 0);
+		updates.rotation = dir - 90 + (tokenDocument.data.flags[MODULE_ID]?.rotationOffset ?? 0);
 	}
 }
 
