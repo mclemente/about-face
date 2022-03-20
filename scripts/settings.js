@@ -295,7 +295,14 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 	);
 	const posTab = html.find('.tab[data-tab="about-face"]');
 
-	const flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "global";
+	// const flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "global";
+	if (tokenConfig.options.sheetConfig) {
+		var flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "global";
+		var facingDirection = tokenConfig.object.getFlag(MODULE_ID, "facingDirection") || "";
+	} else {
+		flipOrRotate = tokenConfig.token.getFlag(MODULE_ID, "flipOrRotate") || "global";
+		facingDirection = tokenConfig.token.getFlag(MODULE_ID, "facingDirection") || "";
+	}
 	const flipOrRotates = {
 		global: "about-face.options.flip-or-rotate.choices.global",
 		...game.settings.settings.get("about-face.flip-or-rotate").choices,
@@ -304,6 +311,7 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 		indicatorDisabled: tokenConfig.object.getFlag(MODULE_ID, "indicatorDisabled") ? "checked" : "",
 		flipOrRotates: flipOrRotates,
 		flipOrRotate: flipOrRotate,
+		facingDirection: facingDirection,
 		facingDirections: facingOptions[flipOrRotate != "global" ? flipOrRotate : game.settings.get(MODULE_ID, "flip-or-rotate")],
 	};
 
