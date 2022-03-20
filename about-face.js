@@ -94,7 +94,6 @@ Hooks.on("renderSceneConfig", async (app, html) => {
 		const state = lockRotationCheckbox[0].checked;
 		const updates = [];
 		canvas.scene.tokens.forEach((token) => {
-			console.log(token);
 			if (token.data.lockRotation != state) {
 				updates.push({
 					_id: token.id,
@@ -110,7 +109,6 @@ Hooks.on("renderSceneConfig", async (app, html) => {
 		const state = lockArrowRotationCheckbox[0].checked;
 		const updates = [];
 		canvas.scene.tokens.forEach((token) => {
-			console.log(token);
 			if ("token.data.flags.about-face.lockArrowRotation" != state) {
 				updates.push({
 					_id: token.id,
