@@ -31,11 +31,12 @@ Hooks.once("init", () => {
 		hint: "about-face.keybindings.lockRotation.hint",
 		onDown: () => {
 			for (let token of canvas.tokens.controlled) {
-				var lockRotation = token.data.lockRotation;
-				token.document.update({ lockRotation: !lockRotation });
+				var lockRotation = !token.data.lockRotation;
+				token.document.update({ lockRotation: lockRotation });
 			}
+			ui.notifications.notify("About Face: " + game.i18n.localize(`about-face.keybindings.lockRotation.tooltip.${lockRotation}`));
 		},
-		restricted: false,
+		restricted: true,
 		precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
 	});
 });
