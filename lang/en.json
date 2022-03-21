@@ -3,7 +3,11 @@
 		"keybindings": {
 			"lockRotation": {
 				"name": "Lock Rotation",
-				"hint": "Toggles the selected tokens' Lock Rotation setting."
+				"hint": "Toggles the selected tokens' Lock Rotation setting.",
+				"tooltip": {
+					"true": "Lock Rotation is on",
+					"false": "Lock Rotation is off"
+				}
 			},
 			"toggleTokenRotation": {
 				"name": "Toggle Token Rotation",
@@ -60,13 +64,17 @@
 				"hint": "The token's vision will follow its rotation instead of its indicator. Useful for games with Vision Angles. SHIFT + direction key overrides this setting. This setting is ignored if \"Flip or Rotate Token\" isn't set to \"Rotate\"."
 			},
 			"enable-indicator": {
-				"name": "Enable token indicators",
-				"hint": "Adds an indicator for direction to tokens",
+				"name": "(NPCs) Enable token indicators",
+				"hint": "Adds an indicator for direction to NPC tokens",
 				"choices": {
 					"0": "Never Show",
 					"1": "On Hover",
 					"2": "Always"
 				}
+			},
+			"enable-indicator-pc": {
+				"name": "(PCs) Enable token indicators",
+				"hint": "Adds an indicator for direction to PC tokens"
 			},
 			"flip-or-rotate": {
 				"name": "Flip or Rotate Token",

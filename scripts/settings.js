@@ -100,6 +100,24 @@ export function registerSettings() {
 		},
 	});
 
+	game.settings.register(MODULE_ID, "indicator-state-pc", {
+		name: "about-face.options.enable-indicator-pc.name",
+		hint: "about-face.options.enable-indicator-pc.hint",
+		scope: "world",
+		config: true,
+		default: 2,
+		type: Number,
+		choices: {
+			0: "about-face.options.enable-indicator.choices.0",
+			1: "about-face.options.enable-indicator.choices.1",
+			2: "about-face.options.enable-indicator.choices.2",
+		},
+		onChange: (value) => {
+			if (Number(value) !== IndicatorMode.ALWAYS) toggleAllIndicators(false, true);
+			else toggleAllIndicators(true, true);
+		},
+	});
+
 	game.settings.register(MODULE_ID, "sprite-type", {
 		name: "about-face.options.indicator-sprite.name",
 		hint: "about-face.options.indicator-sprite.hint",
