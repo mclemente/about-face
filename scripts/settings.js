@@ -297,9 +297,11 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 
 	// const flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "global";
 	if (tokenConfig.options.sheetConfig) {
+		var indicatorDisabled = tokenConfig.object.getFlag(MODULE_ID, "indicatorDisabled") ? "checked" : "";
 		var flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "global";
 		var facingDirection = tokenConfig.object.getFlag(MODULE_ID, "facingDirection") || "";
 	} else {
+		indicatorDisabled = tokenConfig.token.getFlag(MODULE_ID, "indicatorDisabled") ? "checked" : "";
 		flipOrRotate = tokenConfig.token.getFlag(MODULE_ID, "flipOrRotate") || "global";
 		facingDirection = tokenConfig.token.getFlag(MODULE_ID, "facingDirection") || "";
 	}
@@ -308,7 +310,7 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 		...game.settings.settings.get("about-face.flip-or-rotate").choices,
 	};
 	let data = {
-		indicatorDisabled: tokenConfig.object.getFlag(MODULE_ID, "indicatorDisabled") ? "checked" : "",
+		indicatorDisabled: indicatorDisabled,
 		flipOrRotates: flipOrRotates,
 		flipOrRotate: flipOrRotate,
 		facingDirection: facingDirection,
@@ -328,9 +330,11 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 	});
 }
 
-function toggleAllIndicators(state) {
+function toggleAllIndicators(state, playerOwner = false) {
 	if (canvas == null) return;
-	const tokens = getAllTokens();
+	const tokens = getAllTokens().filter((token) => {
+		return token.actor.hasPlayerOwner == playerOwner;
+	});
 	for (const token of tokens) {
 		if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = state;
 	}
