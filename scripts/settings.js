@@ -134,7 +134,7 @@ export function registerSettings() {
 			if (canvas == null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
-				const scale = Math.max(token.data.width, token.data.height) * token.data.scale * value;
+				const scale = Math.max(token.document.width, token.document.height) * (this.document.texture.scaleX + this.document.texture.scaleY) * value;
 				if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.scale.set(scale, scale);
 			}
 		},
