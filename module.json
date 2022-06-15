@@ -1,14 +1,23 @@
 {
-	"name": "about-face",
+	"id": "about-face",
 	"title": "About Face",
 	"description": "Rotates Tokens and provide indicators for direction based on movement",
-	"version": "3.0.0",
-	"author": "Matheus Clemente (mclemente#5524)",
+	"version": "3.16",
+	"authors": [
+		{
+			"name": "Matheus Clemente (mclemente#5524)",
+			"discord": "mclemente#5524"
+		},
+		{ "name": "Eadorin" },
+		{ "name": "Edzillion" }
+	],
 	"esmodules": ["about-face.js"],
-	"compatibleCoreVersion": "9",
-	"minimumCoreVersion": "9",
+	"compatibility": {
+		"minimum": "9",
+		"verified": "9"
+	},
 	"manifest": "https://github.com/mclemente/about-face/releases/latest/download/module.json",
-	"download": "https://github.com/mclemente/about-face/releases/latest/download/module.zip",
+	"download": "https://github.com/mclemente/about-face/releases/download/latest/module.zip",
 	"url": "https://github.com/mclemente/about-face",
 	"changelog": "https://github.com/mclemente/about-face/releases",
 	"languages": [
@@ -33,14 +42,24 @@
 			"path": "lang/ja.json"
 		}
 	],
-	"dependencies": [
-		{
-			"name": "lib-wrapper",
-			"manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json"
-		},
-		{
-			"name": "colorsettings",
-			"manifest": "https://github.com/ardittristan/VTTColorSettings/releases/latest/download/module.json"
-		}
-	]
+	"relationships": {
+		"requires": [
+			{
+				"id": "lib-wrapper",
+				"type": "module",
+				"manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json",
+				"compatibility": {
+					"verified": "1.12.6.0"
+				}
+			},
+			{
+				"id": "colorsettings",
+				"type": "module",
+				"manifest": "https://github.com/ardittristan/VTTColorSettings/releases/latest/download/module.json",
+				"compatibility": {
+					"verified": "2.8.4"
+				}
+			}
+		]
+	}
 }
