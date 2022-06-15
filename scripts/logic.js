@@ -28,11 +28,13 @@ export function drawAboutFaceIndicator(wrapped, ...args) {
 	}
 	try {
 		//get the rotation of the token
-		let dir = this.data.flags[MODULE_ID]?.direction ?? getIndicatorDirection(this) ?? 90;
+		let dir = this.document.flags[MODULE_ID]?.direction ?? getIndicatorDirection(this) ?? 90;
 		//calc distance
 		const r = (Math.max(this.w, this.h) / 2) * indicatorDistance;
 		//calc scale
-		const scale = Math.max(this.data.width, this.data.height) * this.data.scale * (game.settings.get(MODULE_ID, "sprite-type") || 1);
+		const scale =
+			((Math.max(this.document.width, this.document.height) * (this.document.texture.scaleX + this.document.texture.scaleY)) / 2) *
+			(game.settings.get(MODULE_ID, "sprite-type") || 1);
 		if (!this.aboutFaceIndicator || this.aboutFaceIndicator._destroyed) {
 			const container = new PIXI.Container();
 			container.name = "aboutFaceIndicator";
@@ -77,7 +79,7 @@ function drawArrow(graphics) {
 }
 
 export async function onCanvasReady() {
-	if (canvas.scene.data?.flags?.[MODULE_ID] == undefined) {
+	if (canvas.scene?.flags?.[MODULE_ID] == undefined) {
 		canvas.scene.setFlag(MODULE_ID, "sceneEnabled", true);
 	}
 }
@@ -116,14 +118,14 @@ export function onPreUpdateToken(tokenDocument, updates) {
 			if (mirrorKey) updates[mirrorKey] = mirrorVal;
 			return;
 		} else {
-			updates.rotation = dir - 90 + (tokenDocument.data.flags[MODULE_ID]?.rotationOffset ?? 0);
+			updates.rotation = dir - 90 + (tokenDocument.flags[MODULE_ID]?.rotationOffset ?? 0);
 			return;
 		}
 	} else if (("x" in updates || "y" in updates) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
 		if (toggleTokenRotation) return;
 		//get previews and new positions
-		const prevPos = { x: tokenDocument.data.x, y: tokenDocument.data.y };
-		const newPos = { x: updates.x ?? tokenDocument.data.x, y: updates.y ?? tokenDocument.data.y };
+		const prevPos = { x: tokenDocument.x, y: tokenDocument.y };
+		const newPos = { x: updates.x ?? tokenDocument.x, y: updates.y ?? tokenDocument.y };
 		//get the direction in degrees of the movement
 		let diffY = newPos.y - prevPos.y;
 		let diffX = newPos.x - prevPos.x;
@@ -154,8 +156,8 @@ export function onPreUpdateToken(tokenDocument, updates) {
 		}
 	} else return;
 	//update the rotation of the token
-	if (!(tokenDocument.data.lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation"))) {
-		updates.rotation = dir - 90 + (tokenDocument.data.flags[MODULE_ID]?.rotationOffset ?? 0);
+	if (!(tokenDocument.lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation"))) {
+		updates.rotation = dir - 90 + (tokenDocument.flags[MODULE_ID]?.rotationOffset ?? 0);
 	}
 }
 
