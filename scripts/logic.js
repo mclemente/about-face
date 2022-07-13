@@ -33,7 +33,7 @@ export function drawAboutFaceIndicator(wrapped, ...args) {
 		const r = (Math.max(this.w, this.h) / 2) * indicatorDistance;
 		//calc scale
 		const scale =
-			((Math.max(this.document.width, this.document.height) * (this.document.texture.scaleX + this.document.texture.scaleY)) / 2) *
+			((Math.max(this.document.width, this.document.height) * (Math.abs(this.document.texture.scaleX) + Math.abs(this.document.texture.scaleY))) / 2) *
 			(game.settings.get(MODULE_ID, "sprite-type") || 1);
 		if (!this.aboutFaceIndicator || this.aboutFaceIndicator._destroyed) {
 			const container = new PIXI.Container();
@@ -115,7 +115,8 @@ export function onPreUpdateToken(tokenDocument, updates) {
 		updates.flags[MODULE_ID] = { direction: dir };
 		if (flipOrRotate != "rotate") {
 			const [mirrorKey, mirrorVal] = getMirror(tokenDocument, flipOrRotate, dir);
-			if (mirrorKey) updates[mirrorKey] = mirrorVal;
+			if ((tokenDocument.texture[mirrorKey] < 0 && !mirrorVal) || (tokenDocument.texture[mirrorKey] > 0 && mirrorVal))
+				updates[`texture.${mirrorKey}`] = tokenDocument.texture[mirrorKey] * -1;
 			return;
 		} else {
 			updates.rotation = dir - 90 + (tokenDocument.flags[MODULE_ID]?.rotationOffset ?? 0);
@@ -151,7 +152,8 @@ export function onPreUpdateToken(tokenDocument, updates) {
 		updates.flags[MODULE_ID] = { direction: dir, prevPos: prevPos };
 		if (flipOrRotate != "rotate") {
 			const [mirrorKey, mirrorVal] = getMirror(tokenDocument, { x: diffX, y: diffY });
-			if (mirrorKey) updates[mirrorKey] = mirrorVal;
+			if ((tokenDocument.texture[mirrorKey] < 0 && !mirrorVal) || (tokenDocument.texture[mirrorKey] > 0 && mirrorVal))
+				updates[`texture.${mirrorKey}`] = tokenDocument.texture[mirrorKey] * -1;
 			return;
 		}
 	} else return;
@@ -188,18 +190,20 @@ function getFlipOrRotation(tokenDocument) {
 
 function getMirror(tokenDocument, position) {
 	const facingDirection = tokenDocument.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
+	const mirrorX = "scaleX";
+	const mirrorY = "scaleY";
 	if (facingDirection === "right") {
-		if (position.x < 0) return ["mirrorX", true];
-		if (position.x > 0) return ["mirrorX", false];
+		if (position.x < 0) return [mirrorX, true];
+		if (position.x > 0) return [mirrorX, false];
 	} else if (facingDirection === "left") {
-		if (position.x < 0) return ["mirrorX", false];
-		if (position.x > 0) return ["mirrorX", true];
+		if (position.x < 0) return [mirrorX, false];
+		if (position.x > 0) return [mirrorX, true];
 	} else if (facingDirection === "up") {
-		if (position.y < 0) return ["mirrorY", false];
-		if (position.y > 0) return ["mirrorY", true];
+		if (position.y < 0) return [mirrorY, false];
+		if (position.y > 0) return [mirrorY, true];
 	} else if (facingDirection === "down") {
-		if (position.y < 0) return ["mirrorY", true];
-		if (position.y > 0) return ["mirrorY", false];
+		if (position.y < 0) return [mirrorY, true];
+		if (position.y > 0) return [mirrorY, false];
 	}
 	return [];
 }
