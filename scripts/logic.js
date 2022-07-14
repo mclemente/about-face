@@ -88,8 +88,8 @@ export function onPreCreateToken(document, data, options, userId) {
 	if (canvas.scene.getFlag(MODULE_ID, "lockRotation")) {
 		updates.lockRotation = true;
 	}
-	if (document.data.rotation) {
-		updates.flags[MODULE_ID].rotationOffset = document.flags?.[MODULE_ID]?.rotationOffset ?? document.data.rotation;
+	if (document.data.rotation && !document.data.flags?.[MODULE_ID]?.rotationOffset) {
+		updates.flags[MODULE_ID].rotationOffset = document.rotation;
 	}
 	if (facingDirection) {
 		const flipMode = game.settings.get(MODULE_ID, "flip-or-rotate");
