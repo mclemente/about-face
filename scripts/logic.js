@@ -95,7 +95,7 @@ export function onPreCreateToken(document, data, options, userId) {
 		const flipMode = game.settings.get(MODULE_ID, "flip-or-rotate");
 		const gridType = getGridType();
 		if (gridType == 0 || (gridType == 1 && flipMode == "flip-h") || (gridType == 2 && flipMode == "flip-v")) {
-			let angle = TokenDirections[facingDirection];
+			let angle = document.flags?.[MODULE_ID]?.direction ?? TokenDirections[facingDirection];
 			updates.direction = angle;
 			updates.flags[MODULE_ID].direction = angle;
 		}
