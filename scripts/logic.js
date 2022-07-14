@@ -90,7 +90,7 @@ export function onPreCreateToken(document, data, options, userId) {
 	if (canvas.scene.getFlag(MODULE_ID, "lockRotation")) {
 		updates.lockRotation = true;
 	}
-	if (document.rotation  && !document.flags?.[MODULE_ID]?.rotationOffset)) {
+	if (document.rotation && !document.flags?.[MODULE_ID]?.rotationOffset) {
 		updates.flags[MODULE_ID].rotationOffset = document.rotation;
 	}
 	if (facingDirection) {
