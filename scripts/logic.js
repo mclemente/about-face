@@ -65,7 +65,7 @@ export function drawAboutFaceIndicator(wrapped, ...args) {
 		}
 		const indicatorState = this.actor.hasPlayerOwner ? game.settings.get(MODULE_ID, "indicator-state-pc") : game.settings.get(MODULE_ID, "indicator-state");
 		if (indicatorState == IndicatorMode.OFF || this.document.getFlag(MODULE_ID, "indicatorDisabled")) this.aboutFaceIndicator.graphics.visible = false;
-		else if (indicatorState == IndicatorMode.HOVER) this.aboutFaceIndicator.graphics.visible = this._hover;
+		else if (indicatorState == IndicatorMode.HOVER) this.aboutFaceIndicator.graphics.visible = this.hover;
 		else if (indicatorState == IndicatorMode.ALWAYS) this.aboutFaceIndicator.graphics.visible = true;
 	} catch (error) {
 		console.error(error);
