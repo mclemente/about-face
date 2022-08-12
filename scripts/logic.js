@@ -105,7 +105,7 @@ export function onPreCreateToken(document, data, options, userId) {
 	if (Object.keys(updates).length) document.updateSource(updates);
 }
 
-export function onPreUpdateToken(tokenDocument, updates) {
+export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) return;
 	const flipOrRotate = getFlipOrRotation(tokenDocument);
 	if ("rotation" in updates) {
