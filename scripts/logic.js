@@ -28,11 +28,13 @@ export function drawAboutFaceIndicator(wrapped, ...args) {
 	}
 	try {
 		//get the rotation of the token
-		let dir = this.data.flags[MODULE_ID]?.direction ?? getIndicatorDirection(this) ?? 90;
+		let dir = this.document.flags[MODULE_ID]?.direction ?? getIndicatorDirection(this) ?? 90;
 		//calc distance
 		const r = (Math.max(this.w, this.h) / 2) * indicatorDistance;
 		//calc scale
-		const scale = Math.max(this.data.width, this.data.height) * this.data.scale * (game.settings.get(MODULE_ID, "sprite-type") || 1);
+		const scale =
+			((Math.max(this.document.width, this.document.height) * (Math.abs(this.document.texture.scaleX) + Math.abs(this.document.texture.scaleY))) / 2) *
+			(game.settings.get(MODULE_ID, "sprite-type") || 1);
 		if (!this.aboutFaceIndicator || this.aboutFaceIndicator._destroyed) {
 			const container = new PIXI.Container();
 			container.name = "aboutFaceIndicator";
@@ -63,7 +65,7 @@ export function drawAboutFaceIndicator(wrapped, ...args) {
 		}
 		const indicatorState = this.actor.hasPlayerOwner ? game.settings.get(MODULE_ID, "indicator-state-pc") : game.settings.get(MODULE_ID, "indicator-state");
 		if (indicatorState == IndicatorMode.OFF || this.document.getFlag(MODULE_ID, "indicatorDisabled")) this.aboutFaceIndicator.graphics.visible = false;
-		else if (indicatorState == IndicatorMode.HOVER) this.aboutFaceIndicator.graphics.visible = this._hover;
+		else if (indicatorState == IndicatorMode.HOVER) this.aboutFaceIndicator.graphics.visible = this.hover;
 		else if (indicatorState == IndicatorMode.ALWAYS) this.aboutFaceIndicator.graphics.visible = true;
 	} catch (error) {
 		console.error(error);
@@ -77,7 +79,7 @@ function drawArrow(graphics) {
 }
 
 export async function onCanvasReady() {
-	if (canvas.scene.data?.flags?.[MODULE_ID] == undefined) {
+	if (canvas.scene?.flags?.[MODULE_ID] == undefined) {
 		canvas.scene.setFlag(MODULE_ID, "sceneEnabled", true);
 	}
 }
@@ -88,22 +90,22 @@ export function onPreCreateToken(document, data, options, userId) {
 	if (canvas.scene.getFlag(MODULE_ID, "lockRotation")) {
 		updates.lockRotation = true;
 	}
-	if (document.data.rotation && !document.data.flags?.[MODULE_ID]?.rotationOffset) {
+	if (document.rotation && !document.flags?.[MODULE_ID]?.rotationOffset) {
 		updates.flags[MODULE_ID].rotationOffset = document.rotation;
 	}
 	if (facingDirection) {
 		const flipMode = game.settings.get(MODULE_ID, "flip-or-rotate");
 		const gridType = getGridType();
 		if (gridType == 0 || (gridType == 1 && flipMode == "flip-h") || (gridType == 2 && flipMode == "flip-v")) {
-			let angle = document.data.flags?.[MODULE_ID]?.direction ?? TokenDirections[facingDirection];
+			let angle = document.flags?.[MODULE_ID]?.direction ?? TokenDirections[facingDirection];
 			updates.direction = angle;
 			updates.flags[MODULE_ID].direction = angle;
 		}
 	}
-	if (Object.keys(updates).length) document.data.update(updates);
+	if (Object.keys(updates).length) document.updateSource(updates);
 }
 
-export function onPreUpdateToken(tokenDocument, updates) {
+export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) return;
 	const flipOrRotate = getFlipOrRotation(tokenDocument);
 	if ("rotation" in updates) {
@@ -113,17 +115,18 @@ export function onPreUpdateToken(tokenDocument, updates) {
 		updates.flags[MODULE_ID] = { direction: dir };
 		if (flipOrRotate != "rotate") {
 			const [mirrorKey, mirrorVal] = getMirror(tokenDocument, flipOrRotate, dir);
-			if (mirrorKey) updates[mirrorKey] = mirrorVal;
+			if ((tokenDocument.texture[mirrorKey] < 0 && !mirrorVal) || (tokenDocument.texture[mirrorKey] > 0 && mirrorVal))
+				updates[`texture.${mirrorKey}`] = tokenDocument.texture[mirrorKey] * -1;
 			return;
 		} else {
-			updates.rotation = dir - 90 + (tokenDocument.data.flags[MODULE_ID]?.rotationOffset ?? 0);
+			updates.rotation = dir - 90 + (tokenDocument.flags[MODULE_ID]?.rotationOffset ?? 0);
 			return;
 		}
 	} else if (("x" in updates || "y" in updates) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
 		if (toggleTokenRotation) return;
 		//get previews and new positions
-		const prevPos = { x: tokenDocument.data.x, y: tokenDocument.data.y };
-		const newPos = { x: updates.x ?? tokenDocument.data.x, y: updates.y ?? tokenDocument.data.y };
+		const prevPos = { x: tokenDocument.x, y: tokenDocument.y };
+		const newPos = { x: updates.x ?? tokenDocument.x, y: updates.y ?? tokenDocument.y };
 		//get the direction in degrees of the movement
 		let diffY = newPos.y - prevPos.y;
 		let diffX = newPos.x - prevPos.x;
@@ -149,13 +152,14 @@ export function onPreUpdateToken(tokenDocument, updates) {
 		updates.flags[MODULE_ID] = { direction: dir, prevPos: prevPos };
 		if (flipOrRotate != "rotate") {
 			const [mirrorKey, mirrorVal] = getMirror(tokenDocument, { x: diffX, y: diffY });
-			if (mirrorKey) updates[mirrorKey] = mirrorVal;
+			if ((tokenDocument.texture[mirrorKey] < 0 && !mirrorVal) || (tokenDocument.texture[mirrorKey] > 0 && mirrorVal))
+				updates[`texture.${mirrorKey}`] = tokenDocument.texture[mirrorKey] * -1;
 			return;
 		}
 	} else return;
 	//update the rotation of the token
-	if (!(tokenDocument.data.lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation"))) {
-		updates.rotation = dir - 90 + (tokenDocument.data.flags[MODULE_ID]?.rotationOffset ?? 0);
+	if (!(tokenDocument.lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation"))) {
+		updates.rotation = dir - 90 + (tokenDocument.flags[MODULE_ID]?.rotationOffset ?? 0);
 	}
 }
 
@@ -186,18 +190,20 @@ function getFlipOrRotation(tokenDocument) {
 
 function getMirror(tokenDocument, position) {
 	const facingDirection = tokenDocument.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
+	const mirrorX = "scaleX";
+	const mirrorY = "scaleY";
 	if (facingDirection === "right") {
-		if (position.x < 0) return ["mirrorX", true];
-		if (position.x > 0) return ["mirrorX", false];
+		if (position.x < 0) return [mirrorX, true];
+		if (position.x > 0) return [mirrorX, false];
 	} else if (facingDirection === "left") {
-		if (position.x < 0) return ["mirrorX", false];
-		if (position.x > 0) return ["mirrorX", true];
+		if (position.x < 0) return [mirrorX, false];
+		if (position.x > 0) return [mirrorX, true];
 	} else if (facingDirection === "up") {
-		if (position.y < 0) return ["mirrorY", false];
-		if (position.y > 0) return ["mirrorY", true];
+		if (position.y < 0) return [mirrorY, false];
+		if (position.y > 0) return [mirrorY, true];
 	} else if (facingDirection === "down") {
-		if (position.y < 0) return ["mirrorY", true];
-		if (position.y > 0) return ["mirrorY", false];
+		if (position.y < 0) return [mirrorY, true];
+		if (position.y > 0) return [mirrorY, false];
 	}
 	return [];
 }

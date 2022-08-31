@@ -130,12 +130,11 @@ export function registerSettings() {
 			max: 2.0,
 			step: 0.05,
 		},
-		onChange: (value) => {
+		onChange: () => {
 			if (canvas == null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
-				const scale = Math.max(token.data.width, token.data.height) * token.data.scale * value;
-				if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.scale.set(scale, scale);
+				token.refresh();
 			}
 		},
 	});
@@ -319,9 +318,9 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 		var flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "global";
 		var facingDirection = tokenConfig.object.getFlag(MODULE_ID, "facingDirection") || "";
 	} else {
-		indicatorDisabled = tokenConfig.token.getFlag(MODULE_ID, "indicatorDisabled") ? "checked" : "";
-		flipOrRotate = tokenConfig.token.getFlag(MODULE_ID, "flipOrRotate") || "global";
-		facingDirection = tokenConfig.token.getFlag(MODULE_ID, "facingDirection") || "";
+		indicatorDisabled = tokenConfig.token.flags?.[MODULE_ID]?.indicatorDisabled ? "checked" : "";
+		flipOrRotate = tokenConfig.token.flags?.[MODULE_ID]?.flipOrRotate || "global";
+		facingDirection = tokenConfig.token.flags?.[MODULE_ID]?.facingDirection || "";
 	}
 	const flipOrRotates = {
 		global: "about-face.options.flip-or-rotate.choices.global",
