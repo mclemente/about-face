@@ -5,8 +5,8 @@
 				"name": "Lock Rotation",
 				"hint": "Toggles the selected tokens' Lock Rotation setting.",
 				"tooltip": {
-					"true": "Lock Rotation is on",
-					"false": "Lock Rotation is off"
+					"true": "Lock Rotation is on.",
+					"false": "Lock Rotation is off."
 				}
 			},
 			"toggleTokenRotation": {
@@ -23,7 +23,7 @@
 			"apply": "Apply to existing tokens",
 			"scene-enabled": {
 				"name": "Enable on this scene",
-				"hint": "Rotates tokens when moving them (except when locked). If disabled, can still hold SHIFT to rotate in place"
+				"hint": "Rotates tokens when moving them (except when locked). If disabled, can still hold SHIFT to rotate in place."
 			},
 			"lockRotation": {
 				"name": "Lock Rotation",
@@ -65,7 +65,7 @@
 			},
 			"enable-indicator": {
 				"name": "(NPCs) Enable token indicators",
-				"hint": "Adds an indicator for direction to NPC tokens",
+				"hint": "Adds an indicator for direction to NPC tokens.",
 				"choices": {
 					"0": "Never Show",
 					"1": "On Hover",
@@ -74,7 +74,7 @@
 			},
 			"enable-indicator-pc": {
 				"name": "(PCs) Enable token indicators",
-				"hint": "Adds an indicator for direction to PC tokens"
+				"hint": "Adds an indicator for direction to PC tokens."
 			},
 			"flip-or-rotate": {
 				"name": "Flip or Rotate Token",
@@ -88,7 +88,7 @@
 			},
 			"facing-direction": {
 				"name": "Facing Direction",
-				"hint": "The default direction tokens are facing",
+				"hint": "The default direction tokens are facing.",
 				"choices": {
 					"right": "Facing Right",
 					"left": "Facing Left",
@@ -98,7 +98,7 @@
 			},
 			"indicator-sprite": {
 				"name": "Indicator Icon",
-				"hint": "Change the indicator icon (requires reload)"
+				"hint": "Change the indicator icon (requires reload)."
 			}
 		}
 	}
