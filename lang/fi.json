@@ -1,1 +1,97 @@
-{}
+{
+	"about-face": {
+		"keybindings": {
+			"lockRotation": {
+				"tooltip": {
+					"true": "Kierron lukitus on päällä",
+					"false": "Kierron lukitus on pois päältä"
+				},
+				"name": "Lukitse kierto"
+			},
+			"toggleTokenRotation": {
+				"tooltip": {
+					"true": "Pelinappulan kierto on pois päältä.",
+					"false": "Pelinappulan kierto on päällä."
+				},
+				"name": "Pelinappulan kierto päälle/pois päältä"
+			}
+		},
+		"sceneConfig": {
+			"apply": "Käytä olemassa oleviin pelinappuloihin",
+			"scene-enabled": {
+				"name": "Käytä tässä kohtauksessa",
+				"hint": "Kiertää pelinappuloita kun niitä liikutetaan (paitsi jos ne on lukittu). Jos asetus ei ole käytössä, pelinappulaa voi silti kiertää tavalliseen tapaan"
+			},
+			"lockRotation": {
+				"name": "Lukitse kierto",
+				"hint": "Tässä kohtauksessa luotujen pelinappuloiden Lukitse kierto -asetus on päällä."
+			},
+			"hint": "Määritä tämän kohtauksen About Face -asetukset.",
+			"lockArrowRotation": {
+				"name": "Lukitse ilmaisimen kierto",
+				"hint": "Ilmaisin ei muutu, kun pelinappula liikkuu. Käytä SHIFT + suuntanäppäintä ilmaisimen kiertämiseen."
+			}
+		},
+		"options": {
+			"disable-indicator": "Poista suuntailmaisin käytöstä",
+			"individual-token-text": "Näytä tämän pelinappulan ilmaisin?",
+			"arrowColor": {
+				"name": "Ilmaisimen väri",
+				"hint": "Valitse ilmaisimen väri. Läpinäkyvyyttä ei oteta huomioon.",
+				"colorPicker": "Värinvalitsin"
+			},
+			"arrowDistance": {
+				"name": "Ilmaisimen etäisyys",
+				"hint": "Asettaa kertoimen ilmaisimen etäisyydelle. Kaava: suurin koko × (kerroin / 2)."
+			},
+			"lockArrowRotation": {
+				"name": "Lukitse ilmaisimen kierto",
+				"hint": "Jokainen kohtaus luodaan niin, että Lukitse ilmaisimen kierto -asetus on päällä. Ilmaisin ei muutu, kun pelinappula liikkuu tällaisessa kohtauksessa. Käytä SHIFT + suuntanäppäintä ilmaisimen kiertämiseen."
+			},
+			"lockRotation": {
+				"name": "Lukitse kierto"
+			},
+			"lockVisionToRotation": {
+				"name": "Lukitse näkökyky kiertoon"
+			},
+			"enable-indicator": {
+				"name": "(EPH:t) Ota pelinappuloiden ilmaisimet käyttöön",
+				"choices": {
+					"0": "Ei koskaan",
+					"1": "Kun osoitin kohdistetaan",
+					"2": "Aina"
+				},
+				"hint": "Lisää suunnan ilmaisimen ei-pelaajahahmojen pelinappuloihin"
+			},
+			"enable-indicator-pc": {
+				"name": "(PH:t) Ota pelinappuloiden ilmaisimet käyttöön",
+				"hint": "Lisää suunnan ilmaisimen pelaajahahmojen pelinappuloihin"
+			},
+			"flip-or-rotate": {
+				"choices": {
+					"global": "Globaali",
+					"rotate": "Kierrä",
+					"flip-v": "Peilaa pystysuunnassa",
+					"flip-h": "Peilaa vaakasuunnassa"
+				},
+				"name": "Peilaa tai kierrä pelinappulaa",
+				"hint": "Peilaa pelinappula sen kiertämisen sijaan"
+			},
+			"facing-direction": {
+				"name": "Katselusuunta",
+				"hint": "Oletussuunta, johon pelinappulat katsovat",
+				"choices": {
+					"right": "Oikealle",
+					"left": "Vasemmalle",
+					"down": "Alas",
+					"up": "Ylös"
+				}
+			},
+			"indicator-sprite": {
+				"name": "Ilmaisimen kuvake",
+				"hint": "Vaihda ilmaisimen kuvake (vaatii uudelleenlataamisen)"
+			},
+			"changeEverySceneDialog": "Haluatko vaihtaa tämän asetuksen jokaisessa kohtauksessa?"
+		}
+	}
+}
