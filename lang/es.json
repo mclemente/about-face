@@ -7,7 +7,8 @@
 			"scene-enabled": {
 				"name": "Activar la rotación",
 				"hint": "Rota los iconos al moverse (excepto si están bloqueados). Si se desactivada, se podrán seguir rotando los iconos manualmente."
-			}
+			},
+			"apply": "Aplicar a fichas existentes"
 		},
 		"options": {
 			"disable-indicator": "Dehabilitar Indicador de Dirección",
@@ -51,6 +52,18 @@
 			"indicator-sprite.choices.normal": "Normal",
 			"indicator-sprite.choices.large": "Grande",
 			"indicator-sprite.choices.hex": "Indicador hexagonal (Solo funciona en columnas hexagonales)"
+		},
+		"keybindings": {
+			"lockRotation": {
+				"name": "Bloquear Rotación",
+				"tooltip": {
+					"true": "Bloquear Rotación está activada.",
+					"false": "Bloquear Rotación está desactivada."
+				}
+			},
+			"toggleTokenRotation": {
+				"hint": "Las fichas no rotarán mientras se mueven. Útil para juegos con Ángulos de Visión."
+			}
 		}
 	}
 }
