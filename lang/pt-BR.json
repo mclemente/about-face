@@ -11,7 +11,7 @@
 			},
 			"lockRotation": {
 				"name": "Bloquear Rotação",
-				"hint": "Alterna a configuração de Bloqueio de Rotação dos tokens selecionados.",
+				"hint": "Alterna a configuração de Bloqueio de Rotação dos tokens selecionados. Um token com rotação bloqueada não rotacionará com movimento ou quando usar SHIFT + teclas de direção.\nSe você quiser que todos os tokens tenham a rotação bloqueada por padrão, ative a configuração Bloquear Rotação nas configurações do About Face.",
 				"tooltip": {
 					"false": "Bloqueio de Rotação está inativo.",
 					"true": "Bloqueio de Rotação está ativo."
@@ -45,7 +45,7 @@
 			},
 			"arrowDistance": {
 				"name": "Distância do Indicador",
-				"hint": "Define o multiplicador da distância do indicador. Matemática: Maior Tamanho x (Multiplicador / 2)."
+				"hint": "Define o multiplicador da distância do indicador. Matemática: Maior Tamanho × (Multiplicador / 2)."
 			},
 			"lockArrowRotation": {
 				"name": "Bloquear Rotação do Indicador",
@@ -57,15 +57,15 @@
 			},
 			"lockRotation": {
 				"name": "Bloquear Rotação",
-				"hint": "Toda cena será criada com a configuração Bloquear Rotação do About Face ativada. Todo token criado em uma dessas cenas terá a configuração de token Bloquear Rotação ativada."
+				"hint": "Toda cena será criada com a configuração Bloquear Rotação do About Face ativada. Todo token criado em uma dessas cenas terá a configuração de token Bloquear Rotação ativada, o que fará com que o token não rotacione ao se mover."
 			},
 			"lockVisionToRotation": {
 				"name": "Prender Visão à Rotação",
 				"hint": "A visão do token irá seguir a sua rotação em vez do indicador. Útil para jogos com Ângulos de Visão. SHIFT + tecla de direção ignore esta configuração. Esta configuração é ignorada se \"Espelhar ou rotacionar o token\" não for \"Rotacionar\"."
 			},
 			"enable-indicator": {
-				"name": "(NPCs) Habilitar indicadores de token",
-				"hint": "Adiciona um indicador para a direção dos tokens de NPCs.",
+				"name": "(PNJs) Habilitar indicadores de token",
+				"hint": "Adiciona um indicador para a direção dos tokens de PNJs.",
 				"choices": {
 					"0": "Nunca Mostrar",
 					"1": "Ao passar o mouse por cima",
@@ -74,12 +74,12 @@
 			},
 			"flip-or-rotate": {
 				"name": "Espelhar ou rotacionar o token",
-				"hint": "Espelhar o token em vez de rotacioná-lo",
+				"hint": "Espelha o token em vez de rotacioná-lo.",
 				"choices": {
 					"global": "Global",
 					"rotate": "Rotacionar",
-					"flip-h": "Espelhar na Horizontal",
-					"flip-v": "Espelhar na Vertical"
+					"flip-h": "Espelhar Horizontalmente",
+					"flip-v": "Espelhar Verticalmente"
 				}
 			},
 			"facing-direction": {
