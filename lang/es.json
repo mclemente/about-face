@@ -3,12 +3,20 @@
 	"I18N.MAINTAINERS": "@Viriato139ac#0342, @Honzo#5012",
 	"about-face": {
 		"sceneConfig": {
-			"hint": "Configure the About Face settings for this scene.",
+			"hint": "Ajusta la configuración de About Face para esta escena.",
 			"scene-enabled": {
 				"name": "Activar la rotación",
-				"hint": "Rota los iconos al moverse (excepto si están bloqueados). Si se desactivada, se podrán seguir rotando los iconos manualmente."
+				"hint": "Rota los iconos al moverse (excepto si están bloqueados). Si se desactiva esta opción, se pueden seguir rotando en el sitio manteniendo Mayus."
 			},
-			"apply": "Aplicar a fichas existentes"
+			"apply": "Aplicar a fichas existentes",
+			"lockRotation": {
+				"name": "Bloquear Rotación",
+				"hint": "Los iconos creados en esta escena tendrán activada la opción de Bloquear Rotación en la Configuración del Icono."
+			},
+			"lockArrowRotation": {
+				"name": "Bloquear la rotación del Indicador",
+				"hint": "El indicador no cambiará al mover el icono. Usa Mayus + teclas de dirección para rotar el indicador."
+			}
 		},
 		"options": {
 			"disable-indicator": "Dehabilitar Indicador de Dirección",
@@ -20,38 +28,51 @@
 			},
 			"arrowDistance": {
 				"name": "Distancia del Indicador",
-				"hint": "Defina el multiplicador para la distancia del indicador. Matemáticas: Tamaño más alto x (Multiplicador / 2)."
+				"hint": "Define el multiplicador de la distancia del indicador. Cálculo: Mayor tamaño × (Multiplicador / 2)."
 			},
 			"lockArrowRotation": {
 				"name": "Bloquear Rotación del Indicator",
 				"hint": "El indicador no cambiará cuando el icono se mueve. Use SHIFT + tecla de dirección para rotar el indicador."
 			},
 			"enable-indicator.name": "Activar el indicador de orientación del icono",
-			"enable-indicator.hint": "Añade un indicador de la orientación actual del icono",
+			"enable-indicator.hint": "Añade un indicador de la orientación actual a los iconos de los PNJ.",
 			"enable-indicator.choices.0": "No mostrar nunca",
 			"enable-indicator.choices.1": "Al pasar por encima",
 			"enable-indicator.choices.2": "Siempre",
 			"lockRotation": {
 				"name": "Bloquear Rotación",
-				"hint": "Cada icono se creará con la configuración de icono de Bloqueo de Rotación habilitada"
+				"hint": "Todas las escenas se crearán con el ajuste de About Face 'Bloquear Rotación' activado. Los iconos creados en estas escenas tendrán este ajuste activado por defecto, lo que impedirá que el icono rote al moverse."
 			},
-			"flip-or-rotate.name": "Rotar o dar la vuelta",
-			"flip-or-rotate.hint": "En vez de rotar, da la vuelta al icono",
+			"flip-or-rotate.name": "Dar la vuelta o rotar icono",
+			"flip-or-rotate.hint": "En vez de rotar, da la vuelta al icono.",
 			"flip-or-rotate.choices.global": "Global",
 			"flip-or-rotate.choices.rotate": "Rotar",
 			"flip-or-rotate.choices.flip-v": "Dar la vuelta verticalmente",
 			"flip-or-rotate.choices.flip-h": "Dar la vuelta horizontalmente",
 			"facing-direction.name": "Cambiar la dirección",
-			"facing-direction.hint": "La dirección por defecto que el icono encara",
+			"facing-direction.hint": "La dirección que el icono encara por defecto.",
 			"facing-direction.choices.right": "Mirando a la derecha",
 			"facing-direction.choices.left": "Mirando a la izquierda",
 			"facing-direction.choices.down": "Mirando hacia delante",
 			"facing-direction.choices.up": "Mirando a hacia atrás",
 			"indicator-sprite.name": "Tamaño del indicador",
-			"indicator-sprite.hint": "Cambia el tamaño del indicador (requiere recargar el programa)",
+			"indicator-sprite.hint": "Cambia el tamaño del indicador.",
 			"indicator-sprite.choices.normal": "Normal",
 			"indicator-sprite.choices.large": "Grande",
-			"indicator-sprite.choices.hex": "Indicador hexagonal (Solo funciona en columnas hexagonales)"
+			"indicator-sprite.choices.hex": "Indicador hexagonal (Solo funciona en columnas hexagonales)",
+			"lockArrowToFace": {
+				"hint": "Ajusta la dirección del indicador hacia la baldosa más cercana, en vez de hacia el ángulo de dirección de movimiento. Esta opción es ignorada si 'Bloquear la rotación del Indicador' está activada.",
+				"name": "Ajustar el indicador a la baldosa más cercana"
+			},
+			"lockVisionToRotation": {
+				"hint": "La visión del icono seguirá su rotación, en vez de su indicador. Útil para juegos con ángulos de visión. Usar Mayus + teclas de dirección anula este ajuste. El ajuste será ignorado si \"Dar la vuelta o rotar icono\" no está configurado en \"Rotar\".",
+				"name": "Bloquear la visión a la rotación"
+			},
+			"changeEverySceneDialog": "¿Quieres cambiar este ajuste en todas las escenas?",
+			"enable-indicator-pc": {
+				"name": "(PJ) Habilitar indicadores en los iconos",
+				"hint": "Añade un indicador de dirección a los iconos de los PJ."
+			}
 		},
 		"keybindings": {
 			"lockRotation": {
@@ -59,10 +80,16 @@
 				"tooltip": {
 					"true": "Bloquear Rotación está activada.",
 					"false": "Bloquear Rotación está desactivada."
-				}
+				},
+				"hint": "Alterna el Bloqueo de Rotación del icono seleccionado. Un icono con la rotación bloqueada no rotará al moverse ni al usar Mayus + teclas de dirección.\nSi quieres que todos los iconos tengan la rotación bloqueada por defecto, activa la opción Bloquear Rotación en los ajustes de About Face."
 			},
 			"toggleTokenRotation": {
-				"hint": "Las fichas no rotarán mientras se mueven. Útil para juegos con Ángulos de Visión."
+				"hint": "Las fichas no rotarán mientras se mueven. Útil para juegos con Ángulos de Visión.",
+				"name": "Alternar la Rotación del Icono",
+				"tooltip": {
+					"true": "La Rotación del Icono está desactivada.",
+					"false": "La Rotación del Icono está activada."
+				}
 			}
 		}
 	}
