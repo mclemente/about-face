@@ -8,10 +8,16 @@
 			"name": "Matheus Clemente (mclemente#5524)",
 			"discord": "mclemente#5524"
 		},
-		{ "name": "Eadorin" },
-		{ "name": "Edzillion" }
+		{
+			"name": "Eadorin"
+		},
+		{
+			"name": "Edzillion"
+		}
 	],
-	"esmodules": ["about-face.js"],
+	"esmodules": [
+		"about-face.js"
+	],
 	"compatibility": {
 		"minimum": "10",
 		"verified": "10"
@@ -40,6 +46,11 @@
 			"lang": "ja",
 			"name": "日本語",
 			"path": "lang/ja.json"
+		},
+		{
+			"lang": "fi",
+			"name": "Suomi",
+			"path": "lang/fi.json"
 		}
 	],
 	"relationships": {
