@@ -23,7 +23,7 @@
 			"individual-token-text": "¿Mostrar indicador en este icono?",
 			"arrowColor": {
 				"name": "Color del Indicador",
-				"hint": "Seleccione un color para el indicador. La transparencia es ignorada.",
+				"hint": "Seleccione un color para el indicador.",
 				"colorPicker": "Selector de Cores"
 			},
 			"arrowDistance": {
