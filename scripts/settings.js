@@ -1,5 +1,6 @@
 import { updateArrowColor, updateArrowDistance } from "./logic.js";
 import { injectConfig } from "./injectConfig.js";
+import { colorPicker } from "./colorPicker.js";
 
 export const MODULE_ID = "about-face";
 export const IndicatorMode = {
@@ -38,13 +39,13 @@ function getAllTokens() {
 }
 
 export function registerSettings() {
-	new window.Ardittristan.ColorSetting(MODULE_ID, "arrowColor", {
+	game.settings.register(MODULE_ID, "arrowColor", {
 		name: "about-face.options.arrowColor.name",
 		hint: "about-face.options.arrowColor.hint",
-		label: "about-face.options.arrowColor.colorPicker",
-		restricted: true,
-		defaultColor: "#000000ff",
 		scope: "world",
+		config: true,
+		default: "#000000",
+		type: String,
 		onChange: (value) => {
 			updateArrowColor(value);
 			if (canvas == null) return;
@@ -268,6 +269,9 @@ export async function renderSettingsConfigHandler(tokenConfig, html) {
 		disableCheckbox(flipDirectionSelect, event.target.value == "rotate");
 		disableCheckbox(lockVisionToRotationCheckbox, event.target.value !== "rotate");
 	});
+
+	// Create color picker
+	colorPicker("about-face.arrowColor", html);
 }
 
 function disableCheckbox(checkbox, boolean) {

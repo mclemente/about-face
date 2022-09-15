@@ -51,14 +51,6 @@
 				"compatibility": {
 					"verified": "1.12.6.0"
 				}
-			},
-			{
-				"id": "colorsettings",
-				"type": "module",
-				"manifest": "https://github.com/ardittristan/VTTColorSettings/releases/latest/download/module.json",
-				"compatibility": {
-					"verified": "2.8.4"
-				}
 			}
 		]
 	}
