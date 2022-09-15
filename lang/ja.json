@@ -12,7 +12,7 @@
 			"individual-token-text": "このコマの向きを示す矢印を非表示にします。",
 			"arrowColor": {
 				"name": "方向矢印の色",
-				"hint": "矢印の色を選択します。透明度は無視されます。",
+				"hint": "矢印の色を選択します。",
 				"colorPicker": "色選択"
 			},
 			"arrowDistance": {

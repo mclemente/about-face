@@ -40,7 +40,7 @@
 			"individual-token-text": "Exibir indicador para os tokens?",
 			"arrowColor": {
 				"name": "Cor do Indicador",
-				"hint": "Selecione uma cor para o indicador. A transparência é ignorada.",
+				"hint": "Selecione uma cor para o indicador.",
 				"colorPicker": "Selecionador de Cores"
 			},
 			"arrowDistance": {
