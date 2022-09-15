@@ -37,7 +37,7 @@
 			"individual-token-text": "Näytä tämän pelinappulan ilmaisin?",
 			"arrowColor": {
 				"name": "Ilmaisimen väri",
-				"hint": "Valitse ilmaisimen väri. Läpinäkyvyyttä ei oteta huomioon.",
+				"hint": "Valitse ilmaisimen väri.",
 				"colorPicker": "Värinvalitsin"
 			},
 			"arrowDistance": {
