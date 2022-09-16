@@ -271,7 +271,8 @@ export async function renderSettingsConfigHandler(tokenConfig, html) {
 	});
 
 	// Create color picker
-	colorPicker("about-face.arrowColor", html);
+	const arrowColorInput = html.find('input[name="about-face.arrowColor"]');
+	if (arrowColorInput.length) colorPicker("about-face.arrowColor", html, game.settings.get("about-face", "arrowColor"));
 }
 
 function disableCheckbox(checkbox, boolean) {
