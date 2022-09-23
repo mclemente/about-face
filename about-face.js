@@ -8,6 +8,7 @@
 import { injectConfig } from "./scripts/injectConfig.js";
 import { drawAboutFaceIndicator, onCanvasReady, onPreCreateToken, onPreUpdateToken, updateSettings } from "./scripts/logic.js";
 import { MODULE_ID, registerSettings, renderSettingsConfigHandler, renderTokenConfigHandler } from "./scripts/settings.js";
+import { libWrapper } from "./scripts/shim.js";
 
 export let toggleTokenRotation = false;
 
