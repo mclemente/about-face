@@ -34,6 +34,11 @@
 				"hint": "The indicator won't change when a token moves. Use SHIFT + direction key to rotate the indicator."
 			}
 		},
+		"tokenConfig": {
+			"rotationOffset": {
+				"name": "Rotation Offset"
+			}
+		},
 		"options": {
 			"changeEverySceneDialog": "Would you like to change this setting on every scene?",
 			"disable-indicator": "Disable Direction Indicator",

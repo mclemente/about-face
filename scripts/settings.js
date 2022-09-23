@@ -1,7 +1,7 @@
 import { updateArrowColor, updateArrowDistance } from "./logic.js";
 import { injectConfig } from "./injectConfig.js";
 import { colorPicker } from "./colorPicker.js";
-import { _animateFrame, setIgnoreRotationAnimation } from "../about-face.js";
+import { _animateFrame, setDisableAnimations } from "../about-face.js";
 
 export const MODULE_ID = "about-face";
 export const IndicatorMode = {
@@ -12,7 +12,12 @@ export const IndicatorMode = {
 const facingOptions = {
 	global: {},
 	none: {},
-	rotate: {},
+	rotate: {
+		right: "about-face.options.facing-direction.choices.right",
+		left: "about-face.options.facing-direction.choices.left",
+		down: "about-face.options.facing-direction.choices.down",
+		up: "about-face.options.facing-direction.choices.up",
+	},
 	"flip-h": {
 		right: "about-face.options.facing-direction.choices.right",
 		left: "about-face.options.facing-direction.choices.left",
@@ -43,6 +48,8 @@ export function registerSettings() {
 	game.settings.register(MODULE_ID, "arrowColor", {
 		name: "about-face.options.arrowColor.name",
 		hint: "about-face.options.arrowColor.hint",
+		label: "about-face.options.arrowColor.colorPicker",
+		// restricted: true,
 		scope: "world",
 		config: true,
 		default: "#000000",
@@ -175,21 +182,21 @@ export function registerSettings() {
 		type: Boolean,
 	});
 
-	game.settings.register(MODULE_ID, "ignoreRotationAnimation", {
-		name: "about-face.options.ignoreRotationAnimation.name",
-		hint: "about-face.options.ignoreRotationAnimation.hint",
+	game.settings.register(MODULE_ID, "disableAnimations", {
+		name: "about-face.options.disableAnimations.name",
+		hint: "about-face.options.disableAnimations.hint",
 		scope: "world",
 		config: true,
 		default: false,
 		type: Number,
 		choices: {
-			0: "about-face.options.ignoreRotationAnimation.choices.none",
-			1: "about-face.options.ignoreRotationAnimation.choices.mirror",
-			2: "about-face.options.ignoreRotationAnimation.choices.rotation",
-			3: "about-face.options.ignoreRotationAnimation.choices.all",
+			0: "about-face.options.disableAnimations.choices.none",
+			1: "about-face.options.disableAnimations.choices.mirror",
+			2: "about-face.options.disableAnimations.choices.rotation",
+			3: "about-face.options.disableAnimations.choices.all",
 		},
 		onChange: (value) => {
-			setIgnoreRotationAnimation(value);
+			setDisableAnimations(value);
 			if (value) libWrapper.register(MODULE_ID, "CanvasAnimation._animateFrame", _animateFrame, "OVERRIDE");
 			else libWrapper.unregister(MODULE_ID, "CanvasAnimation._animateFrame");
 		},
@@ -278,15 +285,15 @@ export async function renderSettingsConfigHandler(tokenConfig, html) {
 	const flipOrRotateSelect = html.find('select[name="about-face.flip-or-rotate"]');
 	const flipDirectionSelect = html.find('select[name="about-face.facing-direction"]');
 	replaceSelectChoices(flipDirectionSelect, facingOptions[flipOrRotate]);
-	disableCheckbox(flipDirectionSelect, flipOrRotate == "rotate");
+	// disableCheckbox(flipDirectionSelect, flipOrRotate == "rotate");
 
 	const lockVisionToRotationCheckbox = html.find('input[name="about-face.lockVisionToRotation"]');
-	disableCheckbox(lockVisionToRotationCheckbox, flipOrRotate !== "rotate");
+	// disableCheckbox(lockVisionToRotationCheckbox, flipOrRotate !== "rotate");
 
 	flipOrRotateSelect.on("change", (event) => {
 		const facingDirections = facingOptions[event.target.value];
 		replaceSelectChoices(flipDirectionSelect, facingDirections);
-		disableCheckbox(flipDirectionSelect, event.target.value == "rotate");
+		// disableCheckbox(flipDirectionSelect, event.target.value == "rotate");
 		disableCheckbox(lockVisionToRotationCheckbox, event.target.value !== "rotate");
 	});
 
@@ -342,13 +349,18 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 		var indicatorDisabled = tokenConfig.object.getFlag(MODULE_ID, "indicatorDisabled") ? "checked" : "";
 		var flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "global";
 		var facingDirection = tokenConfig.object.getFlag(MODULE_ID, "facingDirection") || "";
+		var rotationOffset = tokenConfig.object.getFlag(MODULE_ID, "rotationOffset") || "0";
 	} else {
 		indicatorDisabled = tokenConfig.token.flags?.[MODULE_ID]?.indicatorDisabled ? "checked" : "";
 		flipOrRotate = tokenConfig.token.flags?.[MODULE_ID]?.flipOrRotate || "global";
 		facingDirection = tokenConfig.token.flags?.[MODULE_ID]?.facingDirection || "";
+		rotationOffset = tokenConfig.token.flags?.[MODULE_ID]?.rotationOffset || "0";
 	}
+	const flipOrRotateSetting = game.settings.get(MODULE_ID, "flip-or-rotate");
 	const flipOrRotates = {
-		global: "about-face.options.flip-or-rotate.choices.global",
+		global: `${game.i18n.localize("about-face.options.flip-or-rotate.choices.global")} (${game.i18n.localize(
+			"about-face.options.flip-or-rotate.choices." + flipOrRotateSetting
+		)})`,
 		...game.settings.settings.get("about-face.flip-or-rotate").choices,
 	};
 	let data = {
@@ -356,7 +368,8 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 		flipOrRotates: flipOrRotates,
 		flipOrRotate: flipOrRotate,
 		facingDirection: facingDirection,
-		facingDirections: facingOptions[flipOrRotate != "global" ? flipOrRotate : game.settings.get(MODULE_ID, "flip-or-rotate")],
+		facingDirections: facingOptions[flipOrRotate != "global" ? flipOrRotate : flipOrRotateSetting],
+		rotationOffset: rotationOffset,
 	};
 
 	const insertHTML = await renderTemplate("modules/" + MODULE_ID + "/templates/token-config.html", data);
@@ -366,7 +379,7 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 	const selectFacingDirection = posTab.find(".token-config-select-facing-direction");
 
 	selectFlipOrRotate.on("change", (event) => {
-		const flipOrRotate = event.target.value != "global" ? event.target.value : game.settings.get(MODULE_ID, "flip-or-rotate");
+		const flipOrRotate = event.target.value != "global" ? event.target.value : flipOrRotateSetting;
 		const facingDirections = facingOptions[flipOrRotate];
 		replaceSelectChoices(selectFacingDirection, facingDirections);
 	});
