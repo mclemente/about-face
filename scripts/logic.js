@@ -108,15 +108,17 @@ export function onPreCreateToken(document, data, options, userId) {
 export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) return;
 	const flipOrRotate = getFlipOrRotation(tokenDocument);
+	const source = tokenDocument.toObject();
 	if ("rotation" in updates) {
 		var dir = updates.rotation + 90;
 		//store the direction in the token data
 		if (!updates.flags) updates.flags = {};
 		updates.flags[MODULE_ID] = { direction: dir };
+
 		if (flipOrRotate != "rotate") {
 			const [mirrorKey, mirrorVal] = getMirror(tokenDocument, flipOrRotate, dir);
 			if ((tokenDocument.texture[mirrorKey] < 0 && !mirrorVal) || (tokenDocument.texture[mirrorKey] > 0 && mirrorVal))
-				updates[`texture.${mirrorKey}`] = tokenDocument.texture[mirrorKey] * -1;
+				updates[`texture.${mirrorKey}`] = source.texture[mirrorKey] * -1;
 			return;
 		} else {
 			updates.rotation = dir - 90 + (tokenDocument.flags[MODULE_ID]?.rotationOffset ?? 0);
@@ -150,10 +152,11 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 		//store the direction in the token data
 		if (!updates.flags) updates.flags = {};
 		updates.flags[MODULE_ID] = { direction: dir, prevPos: prevPos };
+
 		if (flipOrRotate != "rotate") {
 			const [mirrorKey, mirrorVal] = getMirror(tokenDocument, { x: diffX, y: diffY });
 			if ((tokenDocument.texture[mirrorKey] < 0 && !mirrorVal) || (tokenDocument.texture[mirrorKey] > 0 && mirrorVal))
-				updates[`texture.${mirrorKey}`] = tokenDocument.texture[mirrorKey] * -1;
+				updates[`texture.${mirrorKey}`] = source.texture[mirrorKey] * -1;
 			return;
 		}
 	} else return;
