@@ -192,7 +192,8 @@ function getFlipOrRotation(tokenDocument) {
 }
 
 function getMirror(tokenDocument, position) {
-	const facingDirection = tokenDocument.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
+	const tokenFlipOrRotate = tokenDocument.getFlag(MODULE_ID, "flipOrRotate") || "global";
+	const facingDirection = tokenFlipOrRotate == "global" ? game.settings.get(MODULE_ID, "facing-direction") : tokenDocument.getFlag(MODULE_ID, "facingDirection");
 	const mirrorX = "scaleX";
 	const mirrorY = "scaleY";
 	if (facingDirection === "right") {
