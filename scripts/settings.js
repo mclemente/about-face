@@ -1,6 +1,7 @@
 import { updateArrowColor, updateArrowDistance } from "./logic.js";
 import { injectConfig } from "./injectConfig.js";
 import { colorPicker } from "./colorPicker.js";
+import { _animateFrame, setIgnoreRotationAnimation } from "../about-face.js";
 
 export const MODULE_ID = "about-face";
 export const IndicatorMode = {
@@ -174,6 +175,25 @@ export function registerSettings() {
 		type: Boolean,
 	});
 
+	game.settings.register(MODULE_ID, "ignoreRotationAnimation", {
+		name: "about-face.options.ignoreRotationAnimation.name",
+		hint: "about-face.options.ignoreRotationAnimation.hint",
+		scope: "world",
+		config: true,
+		default: false,
+		type: Number,
+		choices: {
+			0: "about-face.options.ignoreRotationAnimation.choices.none",
+			1: "about-face.options.ignoreRotationAnimation.choices.mirror",
+			2: "about-face.options.ignoreRotationAnimation.choices.rotation",
+			3: "about-face.options.ignoreRotationAnimation.choices.all",
+		},
+		onChange: (value) => {
+			setIgnoreRotationAnimation(value);
+			if (value) libWrapper.register(MODULE_ID, "CanvasAnimation._animateFrame", _animateFrame, "OVERRIDE");
+			else libWrapper.unregister(MODULE_ID, "CanvasAnimation._animateFrame");
+		},
+	});
 	game.settings.register(MODULE_ID, "lockRotation", {
 		name: "about-face.options.lockRotation.name",
 		hint: "about-face.options.lockRotation.hint",

@@ -10,12 +10,15 @@ import { drawAboutFaceIndicator, onCanvasReady, onPreCreateToken, onPreUpdateTok
 import { MODULE_ID, registerSettings, renderSettingsConfigHandler, renderTokenConfigHandler } from "./scripts/settings.js";
 import { libWrapper } from "./scripts/shim.js";
 
-export let toggleTokenRotation = false;
+let disableAnimations,
+	toggleTokenRotation = false;
 
 Hooks.once("init", () => {
 	libWrapper.register(MODULE_ID, "Token.prototype.refresh", drawAboutFaceIndicator);
 	registerSettings();
 	updateSettings();
+	disableAnimations = game.settings.get(MODULE_ID, "disableAnimations");
+	if (disableAnimations) libWrapper.register(MODULE_ID, "CanvasAnimation._animateFrame", _animateFrame, "OVERRIDE");
 
 	game.keybindings.register(MODULE_ID, "toggleTokenRotation", {
 		name: "about-face.keybindings.toggleTokenRotation.name",
@@ -118,3 +121,51 @@ Hooks.on("renderSceneConfig", async (app, html) => {
 });
 Hooks.on("renderTokenConfig", renderTokenConfigHandler);
 Hooks.on("renderSettingsConfig", renderSettingsConfigHandler);
+
+function _animateFrame(deltaTime, animation) {
+	const { attributes, duration, ontick } = animation;
+
+	// Compute animation timing and progress
+	const dt = this.ticker.elapsedMS; // Delta time in MS
+	animation.time += dt; // Total time which has elapsed
+	const pt = animation.time / duration; // Proportion of total duration
+	const complete = animation.time >= duration;
+	const pa = complete ? 1 : animation.easing ? animation.easing(pt) : pt;
+
+	// Update each attribute
+	try {
+		for (let a of attributes) {
+			// Snap to final target
+			if (
+				complete ||
+				(a.attribute == "rotation" && [2, 3].includes(disableAnimations)) ||
+				((a.attribute == "scaleX" || a.attribute == "scaleY") && [1, 3].includes(disableAnimations))
+			) {
+				a.parent[a.attribute] = a.to;
+				a.done = a.delta;
+			}
+
+			// Continue animating
+			else {
+				const da = a.delta * pa;
+				a.parent[a.attribute] = a.from + da;
+				a.done = da;
+			}
+		}
+
+		// Callback function
+		if (ontick) ontick(dt, animation);
+	} catch (err) {
+		// Terminate the animation if any errors occur
+		animation.reject(err);
+	}
+
+	// Resolve the original promise once the animation is complete
+	if (complete) animation.resolve(true);
+}
+
+function setDisableAnimations(value) {
+	disableAnimations = value;
+}
+
+export { _animateFrame, setDisableAnimations, toggleTokenRotation };

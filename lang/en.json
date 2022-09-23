@@ -47,6 +47,16 @@
 				"name": "Indicator Distance",
 				"hint": "Set the multiplier for the indicator's distance. Math: Largest Size × (Multiplier / 2)."
 			},
+			"disableAnimations": {
+				"name": "Disable Animations",
+				"hint": "Disables the animations whenever the chosen movement is made.",
+				"choices": {
+					"none": "None",
+					"mirror": "When mirroring",
+					"rotation": "When rotating",
+					"all": "When mirroring or rotating"
+				}
+			},
 			"lockArrowRotation": {
 				"name": "Lock Indicator Rotation",
 				"hint": "Every scene will be created with the About Face's Lock Indicator Rotation setting toggled on. The indicator won't change when a token moves in such a scene. Use SHIFT + direction key to rotate the indicator."
