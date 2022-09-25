@@ -48,8 +48,6 @@ export function registerSettings() {
 	game.settings.register(MODULE_ID, "arrowColor", {
 		name: "about-face.options.arrowColor.name",
 		hint: "about-face.options.arrowColor.hint",
-		label: "about-face.options.arrowColor.colorPicker",
-		// restricted: true,
 		scope: "world",
 		config: true,
 		default: "#000000",
