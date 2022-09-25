@@ -285,21 +285,18 @@ export async function renderSettingsConfigHandler(tokenConfig, html) {
 	const flipOrRotateSelect = html.find('select[name="about-face.flip-or-rotate"]');
 	const flipDirectionSelect = html.find('select[name="about-face.facing-direction"]');
 	replaceSelectChoices(flipDirectionSelect, facingOptions[flipOrRotate]);
-	// disableCheckbox(flipDirectionSelect, flipOrRotate == "rotate");
 
 	const lockVisionToRotationCheckbox = html.find('input[name="about-face.lockVisionToRotation"]');
-	// disableCheckbox(lockVisionToRotationCheckbox, flipOrRotate !== "rotate");
 
 	flipOrRotateSelect.on("change", (event) => {
 		const facingDirections = facingOptions[event.target.value];
 		replaceSelectChoices(flipDirectionSelect, facingDirections);
-		// disableCheckbox(flipDirectionSelect, event.target.value == "rotate");
 		disableCheckbox(lockVisionToRotationCheckbox, event.target.value !== "rotate");
 	});
 
 	// Create color picker
 	const arrowColorInput = html.find('input[name="about-face.arrowColor"]');
-	if (arrowColorInput.length) colorPicker("about-face.arrowColor", html, game.settings.get("about-face", "arrowColor"));
+	if (arrowColorInput.length) colorPicker("about-face.arrowColor", html, game.settings.get(MODULE_ID, "arrowColor"));
 }
 
 function disableCheckbox(checkbox, boolean) {
@@ -309,13 +306,19 @@ function disableCheckbox(checkbox, boolean) {
 function replaceSelectChoices(select, choices) {
 	const facing = game.settings.get(MODULE_ID, "facing-direction");
 	select.empty();
+	let hasGlobal = false;
 	for (const [key, value] of Object.entries(choices)) {
-		select.append(
-			$("<option></option>")
-				.attr("value", key)
-				.attr("selected", facing == key)
-				.text(game.i18n.localize(value))
-		);
+		if (key == "global") {
+			hasGlobal = true;
+			select.append($("<option></option>").attr("value", key).attr("selected", true).text(game.i18n.localize(value)));
+		} else {
+			select.append(
+				$("<option></option>")
+					.attr("value", key)
+					.attr("selected", !hasGlobal && facing == key)
+					.text(game.i18n.localize(value))
+			);
+		}
 	}
 }
 
@@ -333,27 +336,27 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 		tokenConfig,
 		html,
 		{
-			moduleId: "about-face",
+			moduleId: MODULE_ID,
 			tab: {
-				name: "about-face",
+				name: MODULE_ID,
 				label: "About Face",
 				icon: "fas fa-caret-down fa-fw",
 			},
 		},
 		tokenConfig.object
 	);
-	const posTab = html.find('.tab[data-tab="about-face"]');
+	const posTab = html.find(`.tab[data-tab="${MODULE_ID}"]`);
 
 	// const flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "global";
 	if (tokenConfig.options.sheetConfig) {
 		var indicatorDisabled = tokenConfig.object.getFlag(MODULE_ID, "indicatorDisabled") ? "checked" : "";
 		var flipOrRotate = tokenConfig.object.getFlag(MODULE_ID, "flipOrRotate") || "global";
-		var facingDirection = tokenConfig.object.getFlag(MODULE_ID, "facingDirection") || "";
+		var facingDirection = tokenConfig.object.getFlag(MODULE_ID, "facingDirection") || "global";
 		var rotationOffset = tokenConfig.object.getFlag(MODULE_ID, "rotationOffset") || "0";
 	} else {
 		indicatorDisabled = tokenConfig.token.flags?.[MODULE_ID]?.indicatorDisabled ? "checked" : "";
 		flipOrRotate = tokenConfig.token.flags?.[MODULE_ID]?.flipOrRotate || "global";
-		facingDirection = tokenConfig.token.flags?.[MODULE_ID]?.facingDirection || "";
+		facingDirection = tokenConfig.token.flags?.[MODULE_ID]?.facingDirection || "global";
 		rotationOffset = tokenConfig.token.flags?.[MODULE_ID]?.rotationOffset || "0";
 	}
 	const flipOrRotateSetting = game.settings.get(MODULE_ID, "flip-or-rotate");
@@ -363,12 +366,19 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 		)})`,
 		...game.settings.settings.get("about-face.flip-or-rotate").choices,
 	};
+	const facingDirectionSetting = game.settings.get(MODULE_ID, "facing-direction");
+	const facingDirections = {
+		global: `${game.i18n.localize("about-face.options.flip-or-rotate.choices.global")} (${game.i18n.localize(
+			"about-face.options.facing-direction.choices." + facingDirectionSetting
+		)})`,
+		...facingOptions[flipOrRotateSetting],
+	};
 	let data = {
 		indicatorDisabled: indicatorDisabled,
 		flipOrRotates: flipOrRotates,
 		flipOrRotate: flipOrRotate,
 		facingDirection: facingDirection,
-		facingDirections: facingOptions[flipOrRotate != "global" ? flipOrRotate : flipOrRotateSetting],
+		facingDirections: facingDirections,
 		rotationOffset: rotationOffset,
 	};
 
@@ -380,7 +390,17 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 
 	selectFlipOrRotate.on("change", (event) => {
 		const flipOrRotate = event.target.value != "global" ? event.target.value : flipOrRotateSetting;
-		const facingDirections = facingOptions[flipOrRotate];
+		if (event.target.value == "global") {
+			var facingDirections = {
+				global: `${game.i18n.localize("about-face.options.flip-or-rotate.choices.global")} (${game.i18n.localize(
+					"about-face.options.facing-direction.choices." + facingDirectionSetting
+				)})`,
+			};
+		} else facingDirections = {};
+		facingDirections = {
+			...facingDirections,
+			...facingOptions[flipOrRotate],
+		};
 		replaceSelectChoices(selectFacingDirection, facingDirections);
 	});
 }
