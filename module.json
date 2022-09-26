@@ -15,7 +15,9 @@
 			"name": "Edzillion"
 		}
 	],
-	"esmodules": ["about-face.js"],
+	"esmodules": [
+		"about-face.js"
+	],
 	"compatibility": {
 		"minimum": "10",
 		"verified": "10"
@@ -49,6 +51,11 @@
 			"lang": "fi",
 			"name": "Suomi",
 			"path": "lang/fi.json"
+		},
+		{
+			"lang": "fr",
+			"name": "Français",
+			"path": "lang/fr.json"
 		}
 	]
 }
