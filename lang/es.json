@@ -87,8 +87,8 @@
 				"hint": "Las fichas no rotarán mientras se mueven. Útil para juegos con Ángulos de Visión.",
 				"name": "Alternar la Rotación del Icono",
 				"tooltip": {
-					"true": "La Rotación del Icono está desactivada.",
-					"false": "La Rotación del Icono está activada."
+					"false": "La Rotación del Icono está desactivada.",
+					"true": "La Rotación del Icono está activada."
 				}
 			}
 		}

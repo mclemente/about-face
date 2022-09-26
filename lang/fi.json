@@ -10,8 +10,8 @@
 			},
 			"toggleTokenRotation": {
 				"tooltip": {
-					"true": "Pelinappulan kierto on pois päältä.",
-					"false": "Pelinappulan kierto on päällä."
+					"false": "Pelinappulan kierto on pois päältä.",
+					"true": "Pelinappulan kierto on päällä."
 				},
 				"name": "Pelinappulan kierto päälle/pois päältä"
 			}
