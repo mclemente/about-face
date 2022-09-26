@@ -1,1 +1,29 @@
-{}
+{
+	"about-face": {
+		"keybindings": {
+			"lockRotation": {
+				"tooltip": {
+					"true": "Le verrouillage de Rotation est activé",
+					"false": "Le verrouillage de Rotation est désactivé."
+				},
+				"name": "Verrouiller la rotation",
+				"hint": "Bascule le paramètre de Rotation du Token sélectionné. Un token verrouillé ne tournera pas avec le mouvement ou en utilisant SHIFT + Flèches directionnelles.\nSi vous voulez que tous les  token soient verrouillés par défaut, vérifiez le paramètre de Verrouillage de Rotation dans les paramètres d'About face"
+			},
+			"toggleTokenRotation": {
+				"name": "Basculer la Rotation du Token",
+				"hint": "Les Tokens ne tourneront pas durant le mouvement. Utile pour les parties avec Angles de vision.",
+				"tooltip": {
+					"true": "Rotation du Token désactivée",
+					"false": "Rotation du Token désactivée."
+				}
+			}
+		},
+		"sceneConfig": {
+			"hint": "Configurer les paramètres d'About Face pour cette scène.",
+			"apply": "Appliquer aux Tokens existants",
+			"scene-enabled": {
+				"name": "Activer sur cette scène"
+			}
+		}
+	}
+}
