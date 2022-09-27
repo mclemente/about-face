@@ -41,11 +41,11 @@
 			"arrowColor": {
 				"name": "Couleur de l'Indicateur",
 				"hint": "Sélectionner une couleur pour l'Indicateur.",
-				"colorPicker": "Pipette à couleur"
+				"colorPicker": "Sélecteur de couleurs"
 			},
 			"arrowDistance": {
 				"name": "Distance de l'Indicateur",
-				"hint": "Multiplicateur pour la distance de l'Indicateur. Math : (Plus grande taille x (Multiplicateur / 2)."
+				"hint": "Définit le multiplicateur pour la distance de l'indicateur. Mathématiques : La plus grande taille × (Multiplicateur / 2)."
 			},
 			"disableAnimations": {
 				"name": "Désactiver les animations",
@@ -59,11 +59,11 @@
 			},
 			"lockArrowRotation": {
 				"name": "Verrouiller la rotation de l'Indicateur",
-				"hint": "Chaque scène sera créée avec le verrouillage de l'indicateur de rotation d'About Face d'activé. L'indicateur ne changera pas lorsqu'un Token bougera sur l'une de ces scènes. Utilisez SHIFT + Flèches directionnelles pour faire tourner l'indicateur."
+				"hint": "Chaque scène sera créée avec le paramètre de rotation de l'indicateur de verrouillage de About Face activé. L'indicateur ne changera pas lorsqu'un jeton se déplace dans une telle scène. Utilisez SHIFT + la touche de direction pour faire pivoter l'indicateur."
 			},
 			"lockRotation": {
 				"name": "Verrouiller la Rotation",
-				"hint": "Chaque scène sera créée avec le verrouillage de l'indicateur de rotation d'About Face d'activé. Les Tokens créés sur ces scènes auront le verrouillage de rotation d'activé, ce qui les empêchera de tourner lors des mouvements."
+				"hint": "Chaque scène sera créée avec le paramètre \"Lock Rotation\" de About Face activé. Les jetons créés dans une telle scène auront la configuration Token Lock Rotation activée, ce qui empêchera le jeton de pivoter lorsqu'il se déplace."
 			},
 			"enable-indicator": {
 				"name": "(PNJs) Active les indicateurs de Tokens",
@@ -81,7 +81,7 @@
 			"flip-or-rotate": {
 				"choices": {
 					"global": "Global",
-					"rotate": "Tourner",
+					"rotate": "Rotation",
 					"flip-h": "Miroir horizontalement",
 					"flip-v": "Miroir verticalement"
 				},
@@ -89,7 +89,7 @@
 				"hint": "Au lieu de faire tourner un jeton, mettez-le en miroir."
 			},
 			"facing-direction": {
-				"name": "Direction",
+				"name": "Direction de l'orientation",
 				"hint": "Les jetons de direction par défaut sont orientés.",
 				"choices": {
 					"right": "Face à droite",
@@ -103,12 +103,12 @@
 				"hint": "Changer la taille de l'icône d'indicateur."
 			},
 			"lockArrowToFace": {
-				"name": "Indicateur d’alignement sur la tuile la plus proche",
+				"name": "Indicateur d'alignement sur la tuile la plus proche",
 				"hint": "Aligne la direction de l'indicateur sur la tuile la plus proche à laquelle il serait confronté au lieu de la direction de l'angle du mouvement. Ce paramètre est ignoré si 'Verrouiller la rotation de l'Indicateur' est activé."
 			},
 			"lockVisionToRotation": {
 				"name": "Verrouiller la vision à la rotation",
-				"hint": "La vision du jeton suivra sa rotation au lieu de son indicateur. Utile pour les jeux avec Vision Angles. Maj + touche de direction remplace ce paramètre. Ce paramètre est ignoré si «Retourner ou faire pivoter le jeton» n'est pas défini sur «Rotation»."
+				"hint": "La vision du jeton suivra sa rotation au lieu de son indicateur. Utile pour les jeux avec Vision Angles. SHIFT + touche de direction annule ce paramètre. Ce paramètre est ignoré si \"Retourner ou faire pivoter le jeton\" n'est pas défini sur \"Faire tourner\"."
 			}
 		},
 		"tokenConfig": {
