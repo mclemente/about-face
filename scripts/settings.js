@@ -1,5 +1,5 @@
-import { injectConfig } from "./injectConfig.js";
 import { colorPicker } from "./colorPicker.js";
+import { injectConfig } from "./injectConfig.js";
 
 export const MODULE_ID = "about-face";
 export const IndicatorMode = {
@@ -283,6 +283,7 @@ export async function renderSettingsConfigHandler(tokenConfig, html) {
 
 	const lockVisionToRotationCheckbox = html.find('input[name="about-face.lockVisionToRotation"]');
 
+	disableCheckbox(lockVisionToRotationCheckbox, flipOrRotate !== "rotate");
 	flipOrRotateSelect.on("change", (event) => {
 		const facingDirections = facingOptions[event.target.value];
 		replaceSelectChoices(flipDirectionSelect, facingDirections);
