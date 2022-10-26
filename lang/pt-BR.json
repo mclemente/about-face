@@ -94,11 +94,26 @@
 			},
 			"indicator-sprite": {
 				"name": "Ícone do Indicador",
-				"hint": "Mudar o icone indicador (requer reinicialização)."
+				"hint": "Altere o tamanho do ícone do indicador."
 			},
 			"enable-indicator-pc": {
 				"name": "(PJs) Habilitar indicadores de token",
 				"hint": "Adiciona um indicador para a direção dos tokens de PJs."
+			},
+			"disableAnimations": {
+				"name": "Desativar animações",
+				"hint": "Desativa as animações sempre que o movimento escolhido é feito.",
+				"choices": {
+					"none": "Nenhum",
+					"mirror": "Ao espelhar",
+					"rotation": "Ao girar",
+					"all": "Ao espelhar ou girar"
+				}
+			}
+		},
+		"tokenConfig": {
+			"rotationOffset": {
+				"name": "Compensação de Rotação"
 			}
 		}
 	}
