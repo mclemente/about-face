@@ -183,7 +183,7 @@ export function registerSettings() {
 		hint: "about-face.options.disableAnimations.hint",
 		scope: "world",
 		config: true,
-		default: false,
+		default: 0,
 		type: Number,
 		choices: {
 			0: "about-face.options.disableAnimations.choices.none",
