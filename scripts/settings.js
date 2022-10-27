@@ -28,17 +28,9 @@ const facingOptions = {
 };
 
 function getAllTokens() {
-	const scenes = game.scenes
-		.filter((scene) => {
-			if (scene.getEmbeddedCollection("Token").size) return true;
-			return false;
-		})
-		.map((scene) => scene.getEmbeddedCollection("Token"));
 	const tokens = [];
-	scenes.forEach((scene) => {
-		scene.forEach((token) => {
-			if (token.object) tokens.push(token.object);
-		});
+	canvas.scene.tokens.forEach((tokenDocument) => {
+		if (tokenDocument.object) tokens.push(tokenDocument.object);
 	});
 	return tokens;
 }
@@ -475,10 +467,8 @@ export async function asyncRenderSceneConfigHandler(app, html) {
 
 function toggleAllIndicators(state, playerOwner = false) {
 	if (canvas == null) return;
-	const tokens = getAllTokens().filter((token) => {
-		return token.actor.hasPlayerOwner == playerOwner;
+	const tokens = getAllTokens();
+	tokens.forEach((token) => {
+		if (token.actor.hasPlayerOwner == playerOwner && token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = state;
 	});
-	for (const token of tokens) {
-		if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = state;
-	}
 }
