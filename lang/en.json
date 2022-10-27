@@ -76,7 +76,7 @@
 			},
 			"lockVisionToRotation": {
 				"name": "Lock Vision to Rotation",
-				"hint": "The token's vision will follow its rotation instead of its indicator. Useful for games with Vision Angles. SHIFT + direction key overrides this setting. This setting is ignored if \"Flip or Rotate Token\" isn't set to \"Rotate\"."
+				"hint": "The token's vision will follow its rotation instead of its indicator. Useful for games with Vision Angles. SHIFT + direction key overrides this setting. This setting is ignored if \"Mirror or Rotate Token\" isn't set to \"Rotate\"."
 			},
 			"enable-indicator": {
 				"name": "(NPCs) Enable token indicators",

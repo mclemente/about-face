@@ -1,5 +1,6 @@
 import { colorPicker } from "./colorPicker.js";
 import { injectConfig } from "./injectConfig.js";
+import { drawAboutFaceIndicator } from "./logic.js";
 
 export const MODULE_ID = "about-face";
 export const IndicatorMode = {
@@ -57,7 +58,7 @@ export function registerSettings() {
 			for (const token of tokens) {
 				if (token.aboutFaceIndicator) {
 					token.aboutFaceIndicator.destroy();
-					token.refresh();
+					drawAboutFaceIndicator(token);
 				}
 			}
 		},
@@ -80,9 +81,7 @@ export function registerSettings() {
 			if (canvas == null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
-				if (token.aboutFaceIndicator) {
-					token.refresh();
-				}
+				if (token.aboutFaceIndicator) drawAboutFaceIndicator(token);
 			}
 		},
 	});
@@ -139,7 +138,7 @@ export function registerSettings() {
 			if (canvas == null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
-				token.refresh();
+				drawAboutFaceIndicator(token);
 			}
 		},
 	});

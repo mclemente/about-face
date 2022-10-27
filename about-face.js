@@ -11,8 +11,6 @@ import { asyncRenderSceneConfigHandler, MODULE_ID, registerSettings, renderScene
 Hooks.once("init", () => {
 	registerSettings();
 	game.aboutFace = new AboutFace();
-	libWrapper.register(MODULE_ID, "Token.prototype.refresh", drawAboutFaceIndicator, "WRAPPER");
-
 	game.keybindings.register(MODULE_ID, "toggleTokenRotation", {
 		name: "about-face.keybindings.toggleTokenRotation.name",
 		hint: "about-face.keybindings.toggleTokenRotation.hint",
@@ -40,12 +38,13 @@ Hooks.once("init", () => {
 	});
 });
 Hooks.on("canvasReady", () => {
-	if (canvas.scene?.flags?.[MODULE_ID] == undefined) {
-		canvas.scene.setFlag(MODULE_ID, "sceneEnabled", true);
-	}
+	if (canvas.scene?.flags?.[MODULE_ID] == undefined) canvas.scene.setFlag(MODULE_ID, "sceneEnabled", true);
+	if (canvas.scene?.flags?.[MODULE_ID].sceneEnabled) canvas.scene.tokens.forEach((tokenDocument) => drawAboutFaceIndicator(tokenDocument.object));
 });
 Hooks.on("preCreateToken", onPreCreateToken);
 Hooks.on("preUpdateToken", onPreUpdateToken);
+Hooks.on("createToken", (tokenDocument, options, userId) => drawAboutFaceIndicator(tokenDocument.object));
+Hooks.on("updateToken", (tokenDocument, changes, options, userId) => drawAboutFaceIndicator(tokenDocument.object));
 Hooks.on("renderSceneConfig", renderSceneConfigHandler);
 Hooks.on("renderSceneConfig", asyncRenderSceneConfigHandler);
 Hooks.on("renderTokenConfig", renderTokenConfigHandler);

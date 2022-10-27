@@ -121,6 +121,59 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	}
 }
 
+export function drawAboutFaceIndicator(token) {
+	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) {
+		if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = false;
+	} else {
+		try {
+			//get the rotation of the token
+			let dir = token.document.flags[MODULE_ID]?.direction ?? getIndicatorDirection(token.document) ?? 90;
+			//calc distance
+			const r = (Math.max(token.w, token.h) / 2) * game.aboutFace.indicatorDistance;
+			//calc scale
+			const scale =
+				((Math.max(token.document.width, token.document.height) * (Math.abs(token.document.texture.scaleX) + Math.abs(token.document.texture.scaleY))) / 2) *
+				(game.settings.get(MODULE_ID, "sprite-type") || 1);
+			if (!token.aboutFaceIndicator || token.aboutFaceIndicator._destroyed) {
+				const container = new PIXI.Container();
+				container.name = "aboutFaceIndicator";
+				container.width = token.w;
+				container.height = token.h;
+				container.x = token.w / 2;
+				container.y = token.h / 2;
+				const graphics = new PIXI.Graphics();
+				//draw an arrow indicator
+				// drawArrow(graphics);
+				const color = `0x${game.aboutFace.indicatorColor.substring(1, 7)}` || ``;
+				graphics.beginFill(color, 0.5).lineStyle(2, color, 1).moveTo(0, 0).lineTo(0, -10).lineTo(10, 0).lineTo(0, 10).lineTo(0, 0).closePath().endFill();
+				//place the arrow in the correct position
+				container.angle = dir;
+				graphics.x = r;
+				graphics.scale.set(scale, scale);
+				//add the graphics to the container
+				container.addChild(graphics);
+				container.graphics = graphics;
+				token.aboutFaceIndicator = container;
+				//add the container to the token
+				token.addChild(container);
+			} else {
+				let container = token.aboutFaceIndicator;
+				let graphics = container.graphics;
+				graphics.x = r;
+				graphics.scale.set(scale, scale);
+				//update the rotation of the arrow
+				container.angle = dir;
+			}
+			const indicatorState = token.actor.hasPlayerOwner ? game.settings.get(MODULE_ID, "indicator-state-pc") : game.settings.get(MODULE_ID, "indicator-state");
+			if (indicatorState == IndicatorMode.OFF || token.document.getFlag(MODULE_ID, "indicatorDisabled")) token.aboutFaceIndicator.graphics.visible = false;
+			else if (indicatorState == IndicatorMode.HOVER) token.aboutFaceIndicator.graphics.visible = token.hover;
+			else if (indicatorState == IndicatorMode.ALWAYS) token.aboutFaceIndicator.graphics.visible = true;
+		} catch (error) {
+			console.error(error);
+		}
+	}
+}
+
 // HELPERS
 
 function getGridType() {
@@ -180,59 +233,6 @@ function getMirror(tokenDocument, position = {}) {
 }
 
 // WRAPPERS
-
-export function drawAboutFaceIndicator(wrapped, ...args) {
-	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) {
-		if (this.aboutFaceIndicator) this.aboutFaceIndicator.graphics.visible = false;
-		return wrapped(...args);
-	}
-	try {
-		//get the rotation of the token
-		let dir = this.document.flags[MODULE_ID]?.direction ?? getIndicatorDirection(this) ?? 90;
-		//calc distance
-		const r = (Math.max(this.w, this.h) / 2) * game.aboutFace.indicatorDistance;
-		//calc scale
-		const scale =
-			((Math.max(this.document.width, this.document.height) * (Math.abs(this.document.texture.scaleX) + Math.abs(this.document.texture.scaleY))) / 2) *
-			(game.settings.get(MODULE_ID, "sprite-type") || 1);
-		if (!this.aboutFaceIndicator || this.aboutFaceIndicator._destroyed) {
-			const container = new PIXI.Container();
-			container.name = "aboutFaceIndicator";
-			container.width = this.w;
-			container.height = this.h;
-			container.x = this.w / 2;
-			container.y = this.h / 2;
-			const graphics = new PIXI.Graphics();
-			//draw an arrow indicator
-			const color = `0x${game.aboutFace.indicatorColor.substring(1, 7)}` || ``;
-			graphics.beginFill(color, 0.5).lineStyle(2, color, 1).moveTo(0, 0).lineTo(0, -10).lineTo(10, 0).lineTo(0, 10).lineTo(0, 0).closePath().endFill();
-			//place the arrow in the correct position
-			container.angle = dir;
-			graphics.x = r;
-			graphics.scale.set(scale, scale);
-			//add the graphics to the container
-			container.addChild(graphics);
-			container.graphics = graphics;
-			this.aboutFaceIndicator = container;
-			//add the container to the token
-			this.addChild(container);
-		} else {
-			let container = this.aboutFaceIndicator;
-			let graphics = container.graphics;
-			graphics.x = r;
-			graphics.scale.set(scale, scale);
-			//update the rotation of the arrow
-			container.angle = dir;
-		}
-		const indicatorState = this.actor.hasPlayerOwner ? game.settings.get(MODULE_ID, "indicator-state-pc") : game.settings.get(MODULE_ID, "indicator-state");
-		if (indicatorState == IndicatorMode.OFF || this.document.getFlag(MODULE_ID, "indicatorDisabled")) this.aboutFaceIndicator.graphics.visible = false;
-		else if (indicatorState == IndicatorMode.HOVER) this.aboutFaceIndicator.graphics.visible = this.hover;
-		else if (indicatorState == IndicatorMode.ALWAYS) this.aboutFaceIndicator.graphics.visible = true;
-	} catch (error) {
-		console.error(error);
-	}
-	return wrapped(...args);
-}
 
 function _animateFrame(deltaTime, animation) {
 	const { attributes, duration, ontick } = animation;
