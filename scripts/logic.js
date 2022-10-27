@@ -180,14 +180,14 @@ function getGridType() {
 	return Math.floor(canvas.grid.type / 2);
 }
 
-function getIndicatorDirection(token) {
+function getIndicatorDirection(tokenDocument) {
 	const IndicatorDirections = {
 		up: -90,
 		right: 0,
 		down: 90,
 		left: 180,
 	};
-	const direction = token.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
+	const direction = tokenDocument.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
 	return IndicatorDirections[direction];
 }
 
