@@ -183,8 +183,8 @@ export function registerSettings() {
 			3: "about-face.options.disableAnimations.choices.all",
 		},
 		onChange: (value) => {
+			if (!(game.aboutFace.disableAnimations && value)) game.aboutFace.toggleAnimateFrame(value);
 			game.aboutFace.disableAnimations = value;
-			game.aboutFace.toggleAnimateFrame(value);
 		},
 	});
 	game.settings.register(MODULE_ID, "lockRotation", {
