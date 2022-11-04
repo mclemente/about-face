@@ -108,7 +108,7 @@
 			},
 			"lockVisionToRotation": {
 				"name": "Verrouiller la vision à la rotation",
-				"hint": "La vision du jeton suivra sa rotation au lieu de son indicateur. Utile pour les jeux avec Vision Angles. SHIFT + touche de direction annule ce paramètre. Ce paramètre est ignoré si \"Retourner ou faire pivoter le jeton\" n'est pas défini sur \"Faire tourner\"."
+				"hint": "La vision du jeton suivra sa rotation au lieu de son indicateur. Utile pour les jeux avec des angles de vision. SHIFT + touche de direction outrepasse ce paramètre. Ce paramètre est ignoré si \"Miroir ou Faire tourner le jeton\" n'est pas défini sur \"Faire tourner\"."
 			}
 		},
 		"tokenConfig": {
