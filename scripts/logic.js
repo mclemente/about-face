@@ -9,6 +9,7 @@ export class AboutFace {
 		this.indicatorColor = game.settings.get(MODULE_ID, "arrowColor");
 		this.indicatorDistance = game.settings.get(MODULE_ID, "arrowDistance");
 		if (this.disableAnimations) this.toggleAnimateFrame(this.disableAnimations);
+		libWrapper.register(MODULE_ID, "CanvasAnimation.animate", animate, "OVERRIDE");
 	}
 
 	get toggleTokenRotation() {
@@ -233,6 +234,52 @@ function getMirror(tokenDocument, position = {}) {
 }
 
 // WRAPPERS
+async function animate(attributes, { context = canvas.stage, name, duration = 1000, easing, ontick, priority } = {}) {
+	priority ??= PIXI.UPDATE_PRIORITY.LOW;
+	if (typeof easing === "string") easing = this[easing];
+
+	// If an animation with this name already exists, terminate it
+	if (name) this.terminateAnimation(name);
+
+	let delDuration = false;
+	// Define the animation and its animation function
+	attributes = attributes.map((a) => {
+		if (["x", "y"].includes(a.attribute) && duration > 250) delDuration = true;
+		else if (a.attribute == "rotation" && delDuration) duration = 250;
+		else if (["scaleX", "scaleY"].includes(a.attribute) && duration > 1000 / 3) duration = 1000 / 3;
+		a.from = a.from ?? a.parent[a.attribute];
+		a.delta = a.to - a.from;
+		a.done = 0;
+		return a;
+	});
+	if (attributes.length && attributes.every((a) => a.delta === 0)) return;
+	const animation = { attributes, context, duration, easing, name, ontick, time: 0 };
+	animation.fn = (dt) => this._animateFrame(dt, animation);
+
+	// Create a promise which manages the animation lifecycle
+	const promise = new Promise((resolve, reject) => {
+		animation.resolve = resolve;
+		animation.reject = reject;
+		this.ticker.add(animation.fn, context, priority);
+	})
+
+		// Log any errors
+		.catch((err) => console.error(err))
+
+		// Remove the animation once completed
+		.finally(() => {
+			this.ticker.remove(animation.fn, context);
+			const wasCompleted = name && this.animations[name]?.fn === animation.fn;
+			if (wasCompleted) delete this.animations[name];
+		});
+
+	// Record the animation and return
+	if (name) {
+		animation.promise = promise;
+		this.animations[name] = animation;
+	}
+	return promise;
+}
 
 function _animateFrame(deltaTime, animation) {
 	const { attributes, duration, ontick } = animation;
