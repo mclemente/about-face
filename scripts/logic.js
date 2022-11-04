@@ -9,7 +9,6 @@ export class AboutFace {
 		this.indicatorColor = game.settings.get(MODULE_ID, "arrowColor");
 		this.indicatorDistance = game.settings.get(MODULE_ID, "arrowDistance");
 		if (this.disableAnimations) this.toggleAnimateFrame(this.disableAnimations);
-		libWrapper.register(MODULE_ID, "CanvasAnimation.animate", animate, "OVERRIDE");
 	}
 
 	get toggleTokenRotation() {
@@ -59,29 +58,22 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	const flipOrRotate = getFlipOrRotation(tokenDocument);
 	const source = tokenDocument.toObject();
 
+	//get previous and new positions
+	const prevPos = { x: tokenDocument.x, y: tokenDocument.y };
+	const newPos = { x: updates.x ?? tokenDocument.x, y: updates.y ?? tokenDocument.y };
+	//get the direction in degrees of the movement
+	let diffY = newPos.y - prevPos.y;
+	let diffX = newPos.x - prevPos.x;
+	const durations = [];
+	let position = {};
+	if (diffX || diffY) durations.push((Math.hypot(diffX, diffY) * 1000) / (canvas.dimensions.size * 6));
+	// store the direction in the token data
+	if (!updates.flags) updates.flags = {};
 	if ("rotation" in updates) {
 		var dir = updates.rotation + 90;
-		//store the direction in the token data
-		if (!updates.flags) updates.flags = {};
 		updates.flags[MODULE_ID] = { direction: dir };
-		// if (game.aboutFace.disableAnimations) options.animate = false;
-
-		if (flipOrRotate != "rotate") {
-			const [mirrorKey, mirrorVal] = getMirror(tokenDocument);
-			if ((tokenDocument.texture[mirrorKey] < 0 && !mirrorVal) || (tokenDocument.texture[mirrorKey] > 0 && mirrorVal))
-				updates[`texture.${mirrorKey}`] = source.texture[mirrorKey] * -1;
-			return;
-		} else {
-			updates.rotation = dir - 90 + (tokenDocument.flags[MODULE_ID]?.rotationOffset ?? 0);
-			return;
-		}
+		durations.push(1000 / 6);
 	} else if (!game.aboutFace.toggleTokenRotation && ("x" in updates || "y" in updates) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
-		//get previews and new positions
-		const prevPos = { x: tokenDocument.x, y: tokenDocument.y };
-		const newPos = { x: updates.x ?? tokenDocument.x, y: updates.y ?? tokenDocument.y };
-		//get the direction in degrees of the movement
-		let diffY = newPos.y - prevPos.y;
-		let diffX = newPos.x - prevPos.x;
 		dir = (Math.atan2(diffY, diffX) * 180) / Math.PI;
 		if (canvas.grid.type && game.settings.get(MODULE_ID, "lockArrowToFace")) {
 			const directions = [
@@ -104,21 +96,22 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 				if (dir > 180) dir = dir - 360;
 			}
 		}
-		//store the direction in the token data
-		if (!updates.flags) updates.flags = {};
 		updates.flags[MODULE_ID] = { direction: dir, prevPos: prevPos };
-
-		if (flipOrRotate != "rotate") {
-			const [mirrorKey, mirrorVal] = getMirror(tokenDocument, { x: diffX, y: diffY });
-			if ((tokenDocument.texture[mirrorKey] < 0 && !mirrorVal) || (tokenDocument.texture[mirrorKey] > 0 && mirrorVal))
-				updates[`texture.${mirrorKey}`] = source.texture[mirrorKey] * -1;
-			return;
+		position = { x: diffX, y: diffY };
+	}
+	if (flipOrRotate != "rotate") {
+		const [mirrorKey, mirrorVal] = getMirror(tokenDocument, position);
+		if ((tokenDocument.texture[mirrorKey] < 0 && !mirrorVal) || (tokenDocument.texture[mirrorKey] > 0 && mirrorVal)) {
+			updates[`texture.${mirrorKey}`] = source.texture[mirrorKey] * -1;
 		}
-	} else return;
-
-	//update the rotation of the token
-	if (!(tokenDocument.lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation"))) {
+	}
+	// update the rotation of the token
+	else if ("rotation" in updates || !(tokenDocument.lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation"))) {
 		updates.rotation = dir - 90 + (tokenDocument.flags[MODULE_ID]?.rotationOffset ?? 0);
+	}
+	if (durations.length) {
+		if (!options.animation) options.animation = { duration: Math.max(...durations) };
+		else options.animation.duration = Math.max(...durations);
 	}
 }
 
@@ -234,53 +227,6 @@ function getMirror(tokenDocument, position = {}) {
 }
 
 // WRAPPERS
-async function animate(attributes, { context = canvas.stage, name, duration = 1000, easing, ontick, priority } = {}) {
-	priority ??= PIXI.UPDATE_PRIORITY.LOW;
-	if (typeof easing === "string") easing = this[easing];
-
-	// If an animation with this name already exists, terminate it
-	if (name) this.terminateAnimation(name);
-
-	let delDuration = false;
-	// Define the animation and its animation function
-	attributes = attributes.map((a) => {
-		if (["x", "y"].includes(a.attribute) && duration > 250) delDuration = true;
-		else if (a.attribute == "rotation" && delDuration) duration = 250;
-		else if (["scaleX", "scaleY"].includes(a.attribute) && duration > 1000 / 3) duration = 1000 / 3;
-		a.from = a.from ?? a.parent[a.attribute];
-		a.delta = a.to - a.from;
-		a.done = 0;
-		return a;
-	});
-	if (attributes.length && attributes.every((a) => a.delta === 0)) return;
-	const animation = { attributes, context, duration, easing, name, ontick, time: 0 };
-	animation.fn = (dt) => this._animateFrame(dt, animation);
-
-	// Create a promise which manages the animation lifecycle
-	const promise = new Promise((resolve, reject) => {
-		animation.resolve = resolve;
-		animation.reject = reject;
-		this.ticker.add(animation.fn, context, priority);
-	})
-
-		// Log any errors
-		.catch((err) => console.error(err))
-
-		// Remove the animation once completed
-		.finally(() => {
-			this.ticker.remove(animation.fn, context);
-			const wasCompleted = name && this.animations[name]?.fn === animation.fn;
-			if (wasCompleted) delete this.animations[name];
-		});
-
-	// Record the animation and return
-	if (name) {
-		animation.promise = promise;
-		this.animations[name] = animation;
-	}
-	return promise;
-}
-
 function _animateFrame(deltaTime, animation) {
 	const { attributes, duration, ontick } = animation;
 
