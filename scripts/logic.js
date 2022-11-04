@@ -55,18 +55,9 @@ export function onPreCreateToken(document, data, options, userId) {
 
 export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) return;
-	const flipOrRotate = getFlipOrRotation(tokenDocument);
-	const source = tokenDocument.toObject();
 
-	//get previous and new positions
-	const prevPos = { x: tokenDocument.x, y: tokenDocument.y };
-	const newPos = { x: updates.x ?? tokenDocument.x, y: updates.y ?? tokenDocument.y };
-	//get the direction in degrees of the movement
-	let diffY = newPos.y - prevPos.y;
-	let diffX = newPos.x - prevPos.x;
 	const durations = [];
 	let position = {};
-	if (diffX || diffY) durations.push((Math.hypot(diffX, diffY) * 1000) / (canvas.dimensions.size * 6));
 	// store the direction in the token data
 	if (!updates.flags) updates.flags = {};
 	if ("rotation" in updates) {
@@ -74,6 +65,13 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 		updates.flags[MODULE_ID] = { direction: dir };
 		durations.push(1000 / 6);
 	} else if (!game.aboutFace.toggleTokenRotation && ("x" in updates || "y" in updates) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
+		//get previous and new positions
+		const prevPos = { x: tokenDocument.x, y: tokenDocument.y };
+		const newPos = { x: updates.x ?? tokenDocument.x, y: updates.y ?? tokenDocument.y };
+		//get the direction in degrees of the movement
+		let diffY = newPos.y - prevPos.y;
+		let diffX = newPos.x - prevPos.x;
+		if (diffX || diffY) durations.push((Math.hypot(diffX, diffY) * 1000) / (canvas.dimensions.size * 6));
 		dir = (Math.atan2(diffY, diffX) * 180) / Math.PI;
 		if (canvas.grid.type && game.settings.get(MODULE_ID, "lockArrowToFace")) {
 			const directions = [
@@ -99,9 +97,12 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 		updates.flags[MODULE_ID] = { direction: dir, prevPos: prevPos };
 		position = { x: diffX, y: diffY };
 	}
+
+	const flipOrRotate = getFlipOrRotation(tokenDocument);
 	if (flipOrRotate != "rotate") {
 		const [mirrorKey, mirrorVal] = getMirror(tokenDocument, position);
 		if ((tokenDocument.texture[mirrorKey] < 0 && !mirrorVal) || (tokenDocument.texture[mirrorKey] > 0 && mirrorVal)) {
+			const source = tokenDocument.toObject();
 			updates[`texture.${mirrorKey}`] = source.texture[mirrorKey] * -1;
 		}
 	}
