@@ -37,8 +37,8 @@ Hooks.once("init", () => {
 		precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
 	});
 });
-Hooks.on("canvasReady", () => {
-	if (canvas.scene?.flags?.[MODULE_ID] == undefined) canvas.scene.setFlag(MODULE_ID, "sceneEnabled", true);
+Hooks.on("canvasReady", async () => {
+	if (canvas.scene?.flags?.[MODULE_ID] == null) await canvas.scene.setFlag(MODULE_ID, "sceneEnabled", true);
 	if (canvas.scene?.flags?.[MODULE_ID].sceneEnabled) canvas.scene.tokens.forEach((tokenDocument) => drawAboutFaceIndicator(tokenDocument.object));
 });
 Hooks.on("preCreateToken", onPreCreateToken);
