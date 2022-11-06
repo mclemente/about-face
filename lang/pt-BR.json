@@ -5,8 +5,8 @@
 				"name": "Alternar Rotação do Token",
 				"hint": "Tokens não rodarão durante o movimento. Útil para jogos com Ângulos de Visão.",
 				"tooltip": {
-					"false": "Rotação do Token está inativa.",
-					"true": "Rotação do Token está ativa."
+					"false": "Rotação durante o movimento do Token está destravada.",
+					"true": "Rotação durante o movimento do Token está travada."
 				}
 			},
 			"lockRotation": {
