@@ -13,8 +13,8 @@
 				"name": "Toggle Token Rotation",
 				"hint": "Tokens won't rotate during movement. Useful for games with Vision Angles.",
 				"tooltip": {
-					"false": "Token Rotation is off.",
-					"true": "Token Rotation is on."
+					"false": "Token's Rotation on movement is unlocked.",
+					"true": "Token's Rotation on movement is locked."
 				}
 			}
 		},
