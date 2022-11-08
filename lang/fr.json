@@ -13,8 +13,8 @@
 				"name": "Basculer la rotation des jetons",
 				"hint": "Les jetons ne tourneront pas pendant le mouvement. Utile pour les jeux avec des angles de vision.",
 				"tooltip": {
-					"true": "Rotation du Token activée.",
-					"false": "Rotation du Token désactivée."
+					"true": "La rotation du jeton sur le mouvement est bloquée.",
+					"false": "La rotation du jeton sur le mouvement est débloquée."
 				}
 			}
 		},
