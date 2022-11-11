@@ -74,13 +74,13 @@
 				"hint": "Añade un indicador de dirección a los iconos de los PJ."
 			},
 			"disableAnimations": {
-				"name": "Deshabilitar Animaciones",
-				"hint": "Deshabilita las animaciones cada vez que se realiza un movimiento elegido.",
+				"name": "Desactivar Animaciones",
+				"hint": "Desactiva las animaciones cuando se realiza el movimiento escogido.",
 				"choices": {
 					"none": "Ninguno",
-					"mirror": "Al reflejar",
-					"rotation": "Al rotar",
-					"all": "Al rotar o reflejar"
+					"mirror": "Cuando se refleja",
+					"rotation": "Cuando se rota",
+					"all": "Cuando se refleja o se rota"
 				}
 			}
 		},
@@ -97,14 +97,14 @@
 				"hint": "Las fichas no rotarán mientras se mueven. Útil para juegos con Ángulos de Visión.",
 				"name": "Alternar la Rotación del Icono",
 				"tooltip": {
-					"false": "La Rotación del Icono está desactivada.",
-					"true": "La Rotación del Icono está activada."
+					"false": "La Rotación del Icono en movimiento está desactivada.",
+					"true": "La Rotación del Icono en movimiento está desactivada."
 				}
 			}
 		},
 		"tokenConfig": {
 			"rotationOffset": {
-				"name": "Compensación de Rotación"
+				"name": "Desfase de Rotación"
 			}
 		}
 	}
