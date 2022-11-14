@@ -28,11 +28,11 @@ export class AboutFace {
 
 export function onPreCreateToken(document, data, options, userId) {
 	const updates = { flags: { [MODULE_ID]: {} } };
-	const facingDirection = game.settings.get(MODULE_ID, "facing-direction");
+	const facingDirection = document.flags?.[MODULE_ID]?.facingDirection ?? game.settings.get(MODULE_ID, "facing-direction");
 	if (canvas.scene.getFlag(MODULE_ID, "lockRotation")) {
 		updates.lockRotation = true;
 	}
-	if (document.rotation && !document.flags?.[MODULE_ID]?.rotationOffset) {
+	if (document.rotation && document.flags?.[MODULE_ID]?.rotationOffset === undefined) {
 		updates.flags[MODULE_ID].rotationOffset = document.rotation;
 	}
 	if (facingDirection) {
@@ -45,9 +45,9 @@ export function onPreCreateToken(document, data, options, userId) {
 				up: 270,
 				left: 180,
 			};
-			const angle = document.flags?.[MODULE_ID]?.direction ?? TokenDirections[facingDirection];
-			updates.direction = angle;
-			updates.flags[MODULE_ID].direction = angle;
+			if (document.flags?.[MODULE_ID]?.direction === undefined) {
+				updates.flags[MODULE_ID].direction = TokenDirections[facingDirection];
+			}
 		}
 	}
 	if (Object.keys(updates).length) document.updateSource(updates);
