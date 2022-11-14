@@ -23,6 +23,7 @@ Two options are available in the game settings module config. Otherwise, with ev
 ## Known Issues / Limitations
 
 -   If a token is not facing down just edit the rotation in Token Config > Image.
+-   Closing the Token Configuration will erase a token's indicator. This is due to Foundry redrawing the token whenever its configuration is changed.
 
 ## Troubleshooting
 
