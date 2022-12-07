@@ -79,17 +79,17 @@
 				"hint": "The token's vision will follow its rotation instead of its indicator. Useful for games with Vision Angles. SHIFT + direction key overrides this setting. This setting is ignored if \"Mirror or Rotate Token\" isn't set to \"Rotate\"."
 			},
 			"enable-indicator": {
-				"name": "(NPCs) Enable token indicators",
+				"name": "NPC Token Indicators",
 				"hint": "Adds an indicator for direction to NPC tokens.",
 				"choices": {
-					"0": "Never Show",
-					"1": "On Hover",
-					"2": "Always"
+					"0": "Never Shown",
+					"1": "Shown On Hover",
+					"2": "Always Shown"
 				}
 			},
 			"enable-indicator-pc": {
-				"name": "(PCs) Enable token indicators",
-				"hint": "Adds an indicator for direction to PC tokens."
+				"name": "PC Token Indicators",
+				"hint": "Adds an indicator for direction to player-controlled tokens."
 			},
 			"flip-or-rotate": {
 				"name": "Mirror or Rotate Token",
