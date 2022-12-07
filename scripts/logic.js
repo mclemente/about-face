@@ -159,12 +159,12 @@ export function drawAboutFaceIndicator(token) {
 				//update the rotation of the arrow
 				container.angle = dir;
 			}
-			const indicatorState = token.actor.hasPlayerOwner ? game.settings.get(MODULE_ID, "indicator-state-pc") : game.settings.get(MODULE_ID, "indicator-state");
+			const indicatorState = token?.actor?.hasPlayerOwner ? game.settings.get(MODULE_ID, "indicator-state-pc") : game.settings.get(MODULE_ID, "indicator-state");
 			if (indicatorState == IndicatorMode.OFF || token.document.getFlag(MODULE_ID, "indicatorDisabled")) token.aboutFaceIndicator.graphics.visible = false;
 			else if (indicatorState == IndicatorMode.HOVER) token.aboutFaceIndicator.graphics.visible = token.hover;
 			else if (indicatorState == IndicatorMode.ALWAYS) token.aboutFaceIndicator.graphics.visible = true;
 		} catch (error) {
-			console.error(error);
+			console.error(`About Face | Error drawing the indicator for token ${token.name} (ID: ${token.id}, Type: ${token.document?.actor?.type ?? null})`, error);
 		}
 	}
 }
