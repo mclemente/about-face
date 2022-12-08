@@ -66,17 +66,17 @@
 				"hint": "Chaque scène sera créée avec le paramètre \"Lock Rotation\" de About Face activé. Les jetons créés dans une telle scène auront la configuration Token Lock Rotation activée, ce qui empêchera le jeton de pivoter lorsqu'il se déplace."
 			},
 			"enable-indicator": {
-				"name": "(PNJs) Active les indicateurs de Tokens",
+				"name": "Indicateurs de jetons PNJ",
 				"hint": "Ajoute un indicateur de direction pour les Tokens de PNJs.",
 				"choices": {
-					"0": "Ne jamais montrer",
-					"2": "Toujours",
-					"1": "En survolant"
+					"0": "Jamais montrée",
+					"2": "Toujours indiqué",
+					"1": "Montré en survolant"
 				}
 			},
 			"enable-indicator-pc": {
-				"name": "(PJs) Activer les indicateurs de Tokens",
-				"hint": "Ajouter un indicateur de direction aux Tokens PJs."
+				"name": "Indicateurs de jetons PJ",
+				"hint": "Ajoute un indicateur de direction aux jetons contrôlés par les joueurs."
 			},
 			"flip-or-rotate": {
 				"choices": {
