@@ -54,7 +54,7 @@ export function onPreCreateToken(document, data, options, userId) {
 }
 
 export function onPreUpdateToken(tokenDocument, updates, options, userId) {
-	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) return;
+	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled") || options?.mlt_bypass) return;
 
 	const durations = [];
 	let position = {};
