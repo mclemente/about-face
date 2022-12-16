@@ -32,9 +32,6 @@ export function onPreCreateToken(document, data, options, userId) {
 	if (canvas.scene.getFlag(MODULE_ID, "lockRotation")) {
 		updates.lockRotation = true;
 	}
-	if (document.rotation && document.flags?.[MODULE_ID]?.rotationOffset === undefined) {
-		updates.flags[MODULE_ID].rotationOffset = document.rotation;
-	}
 	if (facingDirection) {
 		const flipMode = game.settings.get(MODULE_ID, "flip-or-rotate");
 		const gridType = getGridType();
@@ -54,7 +51,11 @@ export function onPreCreateToken(document, data, options, userId) {
 }
 
 export function onPreUpdateToken(tokenDocument, updates, options, userId) {
-	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled") || options?.mlt_bypass) return;
+	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) return;
+	if (game.modules.get("multilevel-tokens")?.active) {
+		// Ignore animation if movement is from a MLT teleporter
+		if (!game.multilevel._isReplicatedToken(tokenDocument) && options?.mlt_bypass) return;
+	}
 
 	const durations = [];
 	let position = {};
