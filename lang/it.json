@@ -1,1 +1,13 @@
-{}
+{
+	"about-face": {
+		"keybindings": {
+			"lockRotation": {
+				"name": "Blocca Rotazione",
+				"tooltip": {
+					"true": "Blocco Rotazione attivo.",
+					"false": "Blocco Rotazione inattivo."
+				}
+			}
+		}
+	}
+}
