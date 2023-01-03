@@ -24,6 +24,7 @@ Two options are available in the game settings module config. Otherwise, with ev
 
 -   If a token is not facing down just edit the rotation in Token Config > Image.
 -   Closing the Token Configuration will erase a token's indicator. This is due to Foundry redrawing the token whenever its configuration is changed.
+-   If you are using Mirroring and Vision Angles, use the Lock Rotation setting for the vision to stick to the token's facing. This is due to Foundry drawing the token's vision based on its rotation, which isn't specifically changed when mirroring.
 
 ## Troubleshooting
 

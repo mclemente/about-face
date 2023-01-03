@@ -108,7 +108,12 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 		}
 	}
 	// update the rotation of the token
-	else if (dir !== undefined && ("rotation" in updates || !(tokenDocument.lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation")))) {
+	if (
+		dir !== undefined &&
+		("rotation" in updates ||
+			(flipOrRotate == "rotate" && !(tokenDocument.lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation"))) ||
+			(tokenDocument.lockRotation && flipOrRotate != "rotate"))
+	) {
 		updates.rotation = dir - 90 + (tokenDocument.flags[MODULE_ID]?.rotationOffset ?? 0);
 	}
 	if (durations.length) {
