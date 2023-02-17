@@ -120,7 +120,7 @@
 				}
 			},
 			"indicator-sprite": {
-				"name": "Indicator Icon",
+				"name": "Indicator's Size",
 				"hint": "Change the indicator icon's size."
 			}
 		}
