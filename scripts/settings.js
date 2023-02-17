@@ -126,7 +126,39 @@ export function registerSettings() {
 			max: 2.0,
 			step: 0.05,
 		},
-		onChange: () => {
+		onChange: (value) => {
+			game.aboutFace.indicatorSize = value;
+			if (canvas == null) return;
+			const tokens = getAllTokens();
+			for (const token of tokens) {
+				drawAboutFaceIndicator(token);
+			}
+		},
+	});
+
+	game.settings.register(MODULE_ID, "indicatorDrawingType", {
+		name: "about-face.options.indicatorDrawingType.name",
+		hint: "about-face.options.indicatorDrawingType.hint",
+		scope: "world",
+		config: true,
+		default: 0,
+		type: Number,
+		choices: {
+			0: "Arrow",
+			1: "Line",
+		},
+		requiresReload: true,
+	});
+
+	game.settings.register(MODULE_ID, "hideIndicatorOnDead", {
+		name: "about-face.options.hideIndicatorOnDead.name",
+		hint: "about-face.options.hideIndicatorOnDead.hint",
+		scope: "world",
+		config: true,
+		default: false,
+		type: Boolean,
+		onChange: (value) => {
+			game.aboutFace.hideIndicatorOnDead = value;
 			if (canvas == null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {

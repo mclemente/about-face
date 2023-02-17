@@ -62,6 +62,14 @@
 					"all": "When mirroring or rotating"
 				}
 			},
+			"hideIndicatorOnDead": {
+				"name": "Hide Indicator On Dead Tokens",
+				"hint": "Hides the indicator from tokens marked as defeated on the combat tracker (e.g. the big skull marker on most systems)."
+			},
+			"indicatorDrawingType": {
+				"name": "Indicator Drawing Type",
+				"hint": "Changes how the indicator is drawn."
+			},
 			"lockArrowRotation": {
 				"name": "Lock Indicator Rotation",
 				"hint": "Every scene will be created with the About Face's Lock Indicator Rotation setting toggled on. The indicator won't change when a token moves in such a scene. Use SHIFT + direction key to rotate the indicator."

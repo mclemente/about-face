@@ -8,6 +8,9 @@ export class AboutFace {
 		this.disableAnimations = game.settings.get(MODULE_ID, "disableAnimations");
 		this.indicatorColor = game.settings.get(MODULE_ID, "arrowColor");
 		this.indicatorDistance = game.settings.get(MODULE_ID, "arrowDistance");
+		this.hideIndicatorOnDead = game.settings.get("about-face", "hideIndicatorOnDead");
+		this.indicatorDrawingType = game.settings.get("about-face", "indicatorDrawingType");
+		this.indicatorSize = game.settings.get("about-face", "sprite-type");
 		if (this.disableAnimations) this.toggleAnimateFrame(this.disableAnimations);
 	}
 
@@ -127,6 +130,13 @@ export function drawAboutFaceIndicator(token) {
 		if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = false;
 	} else {
 		try {
+			if (
+				game.aboutFace.hideIndicatorOnDead &&
+				(token.actor.effects.find((el) => el._statusId == "dead") || token.document.overlayEffect == CONFIG.statusEffects.find((x) => x.id === "dead")?.icon)
+			) {
+				if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) token.aboutFaceIndicator.graphics.visible = false;
+				return;
+			}
 			//get the rotation of the token
 			let dir = token.document.flags[MODULE_ID]?.direction ?? getIndicatorDirection(token.document) ?? 90;
 			//calc distance
@@ -134,7 +144,7 @@ export function drawAboutFaceIndicator(token) {
 			//calc scale
 			const scale =
 				((Math.max(token.document.width, token.document.height) * (Math.abs(token.document.texture.scaleX) + Math.abs(token.document.texture.scaleY))) / 2) *
-				(game.settings.get(MODULE_ID, "sprite-type") || 1);
+				(game.aboutFace.indicatorSize || 1);
 			if (!token.aboutFaceIndicator || token.aboutFaceIndicator._destroyed) {
 				const container = new PIXI.Container();
 				container.name = "aboutFaceIndicator";
@@ -146,7 +156,12 @@ export function drawAboutFaceIndicator(token) {
 				//draw an arrow indicator
 				// drawArrow(graphics);
 				const color = `0x${game.aboutFace.indicatorColor.substring(1, 7)}` || ``;
-				graphics.beginFill(color, 0.5).lineStyle(2, color, 1).moveTo(0, 0).lineTo(0, -10).lineTo(10, 0).lineTo(0, 10).lineTo(0, 0).closePath().endFill();
+				graphics.beginFill(color, 0.5).lineStyle(2, color, 1).moveTo(0, 0);
+				if (game.aboutFace.indicatorDrawingType == 0) {
+					graphics.lineTo(0, -10).lineTo(10, 0).lineTo(0, 10).lineTo(0, 0).closePath().endFill();
+				} else if (game.aboutFace.indicatorDrawingType == 1) {
+					graphics.lineTo(-10, -20).lineTo(0, 0).lineTo(-10, 20).lineTo(0, 0).closePath().endFill();
+				}
 				//place the arrow in the correct position
 				container.angle = dir;
 				graphics.x = r;
