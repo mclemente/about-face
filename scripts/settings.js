@@ -36,6 +36,20 @@ function getAllTokens() {
 }
 
 export function registerSettings() {
+	const SYSTEM_DEFAULTS = {};
+	let system = /gurps/.exec(game.system.id);
+	if (system) {
+		switch (system[0]) {
+			case "gurps":
+				SYSTEM_DEFAULTS.lockArrowToFace = true;
+				SYSTEM_DEFAULTS.lockRotation = true;
+				SYSTEM_DEFAULTS["flip-or-rotate"] = "rotate";
+				break;
+			default:
+				console.error(`About Face | Somehow, this happened.`);
+		}
+	}
+
 	game.settings.register(MODULE_ID, "arrowColor", {
 		name: "about-face.options.arrowColor.name",
 		hint: "about-face.options.arrowColor.hint",
@@ -197,7 +211,7 @@ export function registerSettings() {
 		hint: "about-face.options.lockArrowToFace.hint",
 		scope: "world",
 		config: true,
-		default: false,
+		default: SYSTEM_DEFAULTS.lockArrowToFace || false,
 		type: Boolean,
 	});
 
@@ -224,7 +238,7 @@ export function registerSettings() {
 		hint: "about-face.options.lockRotation.hint",
 		scope: "world",
 		config: true,
-		default: false,
+		default: SYSTEM_DEFAULTS.lockRotation || false,
 		type: Boolean,
 		onChange: (value) => {
 			new Dialog({
@@ -250,7 +264,7 @@ export function registerSettings() {
 		hint: "about-face.options.flip-or-rotate.hint",
 		scope: "world",
 		config: true,
-		default: "flip-h",
+		default: SYSTEM_DEFAULTS["flip-or-rotate"] || "flip-h",
 		type: String,
 		choices: {
 			rotate: "about-face.options.flip-or-rotate.choices.rotate",
