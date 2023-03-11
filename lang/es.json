@@ -34,11 +34,11 @@
 				"name": "Bloquear Rotación del Indicator",
 				"hint": "El indicador no cambiará cuando el icono se mueve. Use SHIFT + tecla de dirección para rotar el indicador."
 			},
-			"enable-indicator.name": "Activar el indicador de orientación del icono",
+			"enable-indicator.name": "Indicadores de Fichas PNJ",
 			"enable-indicator.hint": "Añade un indicador de la orientación actual a los iconos de los PNJ.",
-			"enable-indicator.choices.0": "No mostrar nunca",
-			"enable-indicator.choices.1": "Al pasar por encima",
-			"enable-indicator.choices.2": "Siempre",
+			"enable-indicator.choices.0": "No Mostrar Nunca",
+			"enable-indicator.choices.1": "Mostrar Al Pasar Por Encima",
+			"enable-indicator.choices.2": "Mostrar Siempre",
 			"lockRotation": {
 				"name": "Bloquear Rotación",
 				"hint": "Todas las escenas se crearán con el ajuste de About Face 'Bloquear Rotación' activado. Los iconos creados en estas escenas tendrán este ajuste activado por defecto, lo que impedirá que el icono rote al moverse."
@@ -82,6 +82,14 @@
 					"rotation": "Cuando se rota",
 					"all": "Cuando se refleja o se rota"
 				}
+			},
+			"indicatorDrawingType": {
+				"name": "Tipo de Dibujo para el Indicador",
+				"hint": "Cambia la manera en que se dibuja el indicador."
+			},
+			"hideIndicatorOnDead": {
+				"name": "Ocultar el Indicador en Fichas Muertas",
+				"hint": "Oculta el indicador de las fichas marcadas como derrotadas en el rastreador de combate (por ejemplo, el marcador grande de calavera en la mayoría de sistemas)."
 			}
 		},
 		"keybindings": {

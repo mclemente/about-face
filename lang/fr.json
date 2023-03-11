@@ -99,7 +99,7 @@
 				}
 			},
 			"indicator-sprite": {
-				"name": "Icône de l'Indicateur",
+				"name": "Taille de l'Indicateur",
 				"hint": "Changer la taille de l'icône d'indicateur."
 			},
 			"lockArrowToFace": {
@@ -109,6 +109,14 @@
 			"lockVisionToRotation": {
 				"name": "Verrouiller la vision à la rotation",
 				"hint": "La vision du jeton suivra sa rotation au lieu de son indicateur. Utile pour les jeux avec des angles de vision. SHIFT + touche de direction outrepasse ce paramètre. Ce paramètre est ignoré si \"Miroir ou Faire tourner le jeton\" n'est pas défini sur \"Faire tourner\"."
+			},
+			"indicatorDrawingType": {
+				"name": "Type de dessin de l'indicateur",
+				"hint": "Modifie la façon dont l'indicateur est dessiné."
+			},
+			"hideIndicatorOnDead": {
+				"name": "Cacher l'indicateur sur les jetons morts",
+				"hint": "Cache l'indicateur sur les jetons marqués comme vaincus sur le compteur de rencontre (ex : le marqueur crâne pour la plupart des systèmes)."
 			}
 		},
 		"tokenConfig": {
