@@ -70,8 +70,8 @@
 			},
 			"changeEverySceneDialog": "¿Quieres cambiar este ajuste en todas las escenas?",
 			"enable-indicator-pc": {
-				"name": "(PJ) Habilitar indicadores en los iconos",
-				"hint": "Añade un indicador de dirección a los iconos de los PJ."
+				"name": "Indicadores de token de PJ",
+				"hint": "Añade un indicador de dirección a los tokens controlados por los jugadores."
 			},
 			"disableAnimations": {
 				"name": "Desactivar Animaciones",
