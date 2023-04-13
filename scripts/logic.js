@@ -14,10 +14,10 @@ export class AboutFace {
 		if (this.disableAnimations) this.toggleAnimateFrame(this.disableAnimations);
 	}
 
-	get toggleTokenRotation() {
+	get tokenRotation() {
 		return _tokenRotation;
 	}
-	set toggleTokenRotation(value) {
+	set tokenRotation(value) {
 		_tokenRotation = value;
 	}
 
@@ -55,28 +55,34 @@ export function onPreCreateToken(document, data, options, userId) {
 
 export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) return;
-	if (game.modules.get("multilevel-tokens")?.active) {
-		// Ignore animation if movement is from a MLT teleporter
-		if (!game.multilevel._isReplicatedToken(tokenDocument) && options?.mlt_bypass) return;
-	}
+
+	if (game.modules.get("multilevel-tokens")?.active && !game.multilevel._isReplicatedToken(tokenDocument) && options?.mlt_bypass) return;
 
 	const durations = [];
 	let position = {};
 	// store the direction in the token data
 	if (!updates.flags) updates.flags = {};
-	if ("rotation" in updates) {
-		var dir = updates.rotation + 90;
-		updates.flags[MODULE_ID] = { direction: dir };
+
+	let tokenDirection;
+	const { x, y, rotation } = updates;
+	const { x: tokenX, y: tokenY } = tokenDocument;
+
+	if (rotation) {
+		tokenDirection = rotation + 90;
+		updates.flags[MODULE_ID] = { direction: tokenDirection };
 		durations.push(1000 / 6);
-	} else if (!game.aboutFace.toggleTokenRotation && ("x" in updates || "y" in updates) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
+	} else if (!game.aboutFace.tokenRotation && (x || y) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
 		//get previous and new positions
-		const prevPos = { x: tokenDocument.x, y: tokenDocument.y };
-		const newPos = { x: updates.x ?? tokenDocument.x, y: updates.y ?? tokenDocument.y };
+		const prevPos = { x: tokenX, y: tokenY };
+		const newPos = { x: x ?? tokenX, y: y ?? tokenY };
 		//get the direction in degrees of the movement
 		let diffY = newPos.y - prevPos.y;
 		let diffX = newPos.x - prevPos.x;
-		if (diffX || diffY) durations.push((Math.hypot(diffX, diffY) * 1000) / (canvas.dimensions.size * 6));
-		dir = (Math.atan2(diffY, diffX) * 180) / Math.PI;
+		const distance = Math.hypot(diffX, diffY);
+
+		if (distance) durations.push((distance * 1000) / (canvas.dimensions.size * 6));
+		tokenDirection = (Math.atan2(diffY, diffX) * 180) / Math.PI;
+
 		if (canvas.grid.type && game.settings.get(MODULE_ID, "lockArrowToFace")) {
 			const directions = [
 				[45, 90, 135, 180, 225, 270, 315, 360], //Square
@@ -85,108 +91,121 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 			];
 			const gridType = getGridType();
 			const facings = directions[gridType];
-			if (facings) {
+			if (facings && facings.length) {
 				// convert negative dirs into a range from 0-360
-				let normalizedDir = Math.round(dir < 0 ? 360 + dir : dir);
+				let normalizedDir = ((tokenDirection % 360) + 360) % 360; //Math.round(tokenDirection < 0 ? 360 + tokenDirection : tokenDirection);
 				// find the largest normalized angle
-				let secondAngle = facings.find((e) => e > normalizedDir);
+				let secondAngle = facings.reduce((prev, curr) => (curr > prev && curr <= normalizedDir ? curr : prev), facings[0]); //facings.find((e) => e > normalizedDir);
 				// and assume the facing is 60 degrees (hexes) or 45 (square) to the counter clockwise
-				dir = gridType ? secondAngle - 60 : secondAngle - 45;
+				tokenDirection = gridType ? secondAngle - 60 : secondAngle - 45;
 				// unless the largest angle was closer
-				if (secondAngle - normalizedDir < normalizedDir - dir) dir = secondAngle;
-				// return to the range 180 to -180
-				if (dir > 180) dir = dir - 360;
+				if (secondAngle - normalizedDir < normalizedDir - tokenDirection) tokenDirection = secondAngle;
+				// return tokenDirection to the range 180 to -180
+				if (tokenDirection > 180) tokenDirection -= 360;
 			}
 		}
-		updates.flags[MODULE_ID] = { direction: dir, prevPos: prevPos };
+		updates.flags[MODULE_ID] = { direction: tokenDirection, prevPos: prevPos };
 		position = { x: diffX, y: diffY };
 	}
 
-	const flipOrRotate = getFlipOrRotation(tokenDocument);
-	if (flipOrRotate != "rotate") {
+	const { texture, lockRotation, flags } = tokenDocument;
+	const flipOrRotate = getTokenFlipOrRotate(tokenDocument);
+	const isRotationLocked = lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation");
+
+	if (flipOrRotate !== "rotate") {
 		const [mirrorKey, mirrorVal] = getMirror(tokenDocument, position);
-		if ((tokenDocument.texture[mirrorKey] < 0 && !mirrorVal) || (tokenDocument.texture[mirrorKey] > 0 && mirrorVal)) {
+		if ((texture[mirrorKey] < 0 && !mirrorVal) || (texture[mirrorKey] > 0 && mirrorVal)) {
 			const source = tokenDocument.toObject();
 			updates[`texture.${mirrorKey}`] = source.texture[mirrorKey] * -1;
 		}
 	}
+
 	// update the rotation of the token
-	if (
-		dir !== undefined &&
-		("rotation" in updates ||
-			(flipOrRotate == "rotate" && !(tokenDocument.lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation"))) ||
-			(tokenDocument.lockRotation && flipOrRotate != "rotate"))
-	) {
-		updates.rotation = dir - 90 + (tokenDocument.flags[MODULE_ID]?.rotationOffset ?? 0);
+	const isRotationUpdateNeeded =
+		tokenDirection !== undefined && ("rotation" in updates || (flipOrRotate === "rotate" && !isRotationLocked) || (isRotationLocked && flipOrRotate !== "rotate"));
+	if (isRotationUpdateNeeded) {
+		const rotationOffset = flags[MODULE_ID]?.rotationOffset ?? 0;
+		updates.rotation = tokenDirection - 90 + rotationOffset;
 	}
-	if (durations.length) {
-		if (!options.animation) options.animation = { duration: Math.max(...durations) };
-		else options.animation.duration = Math.max(...durations);
-	}
+
+	const maxDuration = Math.max(...durations);
+	if (durations.length && !options.animation) options.animation = { duration: maxDuration };
+	else if (durations.length) options.animation.duration = maxDuration;
 }
 
 export function drawAboutFaceIndicator(token) {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) {
 		if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = false;
-	} else {
-		try {
-			if (
-				game.aboutFace.hideIndicatorOnDead &&
-				(token.actor?.effects.find((el) => el._statusId == "dead") || token.document?.overlayEffect == CONFIG.statusEffects.find((x) => x.id === "dead")?.icon)
-			) {
-				if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) token.aboutFaceIndicator.graphics.visible = false;
-				return;
+		return;
+	}
+	const isDead = token.actor?.effects.find((el) => el._statusId === "dead") || token.document?.overlayEffect === CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
+	if (game.aboutFace.hideIndicatorOnDead && isDead) {
+		if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) token.aboutFaceIndicator.graphics.visible = false;
+		return;
+	}
+	try {
+		//get the rotation of the token
+		let tokenDirection = token.document.flags[MODULE_ID]?.direction ?? getIndicatorDirection(token.document) ?? 90;
+
+		// Calculate indicator's distance
+		const indicatorDistance = game.aboutFace.indicatorDistance;
+		const maxTokenSize = Math.max(token.w, token.h);
+		const distance = (maxTokenSize / 2) * indicatorDistance;
+
+		// Calculate indicator's scale
+		const tokenSize = Math.max(token.document.width, token.document.height);
+		const tokenScale = Math.abs(token.document.texture.scaleX) + Math.abs(token.document.texture.scaleY);
+		const indicatorSize = game.aboutFace.indicatorSize || 1;
+		const scale = ((tokenSize * tokenScale) / 2) * indicatorSize;
+
+		// Create or update the about face indicator
+		// updateAboutFaceIndicator(token, tokenDirection, distance, scale);
+		if (!token.aboutFaceIndicator || token.aboutFaceIndicator._destroyed) {
+			const { w: width, h: height } = token;
+			const container = new PIXI.Container({ name: "aboutFaceIndicator", width, height });
+			container.name = "aboutFaceIndicator";
+			container.width = width;
+			container.height = height;
+			container.x = width / 2;
+			container.y = height / 2;
+			const graphics = new PIXI.Graphics();
+			//draw an arrow indicator
+			// drawArrow(graphics);
+			const color = `0x${game.aboutFace.indicatorColor.substring(1, 7)}` || ``;
+			graphics.beginFill(color, 0.5).lineStyle(2, color, 1).moveTo(0, 0);
+			if (game.aboutFace.indicatorDrawingType == 0) {
+				graphics.lineTo(0, -10).lineTo(10, 0).lineTo(0, 10).lineTo(0, 0).closePath().endFill();
+			} else if (game.aboutFace.indicatorDrawingType == 1) {
+				graphics.lineTo(-10, -20).lineTo(0, 0).lineTo(-10, 20).lineTo(0, 0).closePath().endFill();
 			}
-			//get the rotation of the token
-			let dir = token.document.flags[MODULE_ID]?.direction ?? getIndicatorDirection(token.document) ?? 90;
-			//calc distance
-			const r = (Math.max(token.w, token.h) / 2) * game.aboutFace.indicatorDistance;
-			//calc scale
-			const scale =
-				((Math.max(token.document.width, token.document.height) * (Math.abs(token.document.texture.scaleX) + Math.abs(token.document.texture.scaleY))) / 2) *
-				(game.aboutFace.indicatorSize || 1);
-			if (!token.aboutFaceIndicator || token.aboutFaceIndicator._destroyed) {
-				const container = new PIXI.Container();
-				container.name = "aboutFaceIndicator";
-				container.width = token.w;
-				container.height = token.h;
-				container.x = token.w / 2;
-				container.y = token.h / 2;
-				const graphics = new PIXI.Graphics();
-				//draw an arrow indicator
-				// drawArrow(graphics);
-				const color = `0x${game.aboutFace.indicatorColor.substring(1, 7)}` || ``;
-				graphics.beginFill(color, 0.5).lineStyle(2, color, 1).moveTo(0, 0);
-				if (game.aboutFace.indicatorDrawingType == 0) {
-					graphics.lineTo(0, -10).lineTo(10, 0).lineTo(0, 10).lineTo(0, 0).closePath().endFill();
-				} else if (game.aboutFace.indicatorDrawingType == 1) {
-					graphics.lineTo(-10, -20).lineTo(0, 0).lineTo(-10, 20).lineTo(0, 0).closePath().endFill();
-				}
-				//place the arrow in the correct position
-				container.angle = dir;
-				graphics.x = r;
-				graphics.scale.set(scale, scale);
-				//add the graphics to the container
-				container.addChild(graphics);
-				container.graphics = graphics;
-				token.aboutFaceIndicator = container;
-				//add the container to the token
-				token.addChild(container);
-			} else {
-				let container = token.aboutFaceIndicator;
-				let graphics = container.graphics;
-				graphics.x = r;
-				graphics.scale.set(scale, scale);
-				//update the rotation of the arrow
-				container.angle = dir;
-			}
-			const indicatorState = token?.actor?.hasPlayerOwner ? game.settings.get(MODULE_ID, "indicator-state-pc") : game.settings.get(MODULE_ID, "indicator-state");
-			if (indicatorState == IndicatorMode.OFF || token.document.getFlag(MODULE_ID, "indicatorDisabled")) token.aboutFaceIndicator.graphics.visible = false;
-			else if (indicatorState == IndicatorMode.HOVER) token.aboutFaceIndicator.graphics.visible = token.hover;
-			else if (indicatorState == IndicatorMode.ALWAYS) token.aboutFaceIndicator.graphics.visible = true;
-		} catch (error) {
-			console.error(`About Face | Error drawing the indicator for token ${token.name} (ID: ${token.id}, Type: ${token.document?.actor?.type ?? null})`, error);
+			//place the arrow in the correct position
+			container.angle = tokenDirection;
+			graphics.x = distance;
+			graphics.scale.set(scale, scale);
+			//add the graphics to the container
+			container.addChild(graphics);
+			container.graphics = graphics;
+			token.aboutFaceIndicator = container;
+			//add the container to the token
+			token.addChild(container);
+		} else {
+			let container = token.aboutFaceIndicator;
+			let graphics = container.graphics;
+			graphics.x = distance;
+			graphics.scale.set(scale, scale);
+			//update the rotation of the arrow
+			container.angle = tokenDirection;
 		}
+
+		// Set the visibility of the indicator based on the current indicator mode
+		const indicatorState = token?.actor?.hasPlayerOwner ? game.settings.get(MODULE_ID, "indicator-state-pc") : game.settings.get(MODULE_ID, "indicator-state");
+		const indicatorDisabled = token.document.getFlag(MODULE_ID, "indicatorDisabled");
+
+		if (indicatorState == IndicatorMode.OFF || indicatorDisabled) token.aboutFaceIndicator.graphics.visible = false;
+		else if (indicatorState == IndicatorMode.HOVER) token.aboutFaceIndicator.graphics.visible = token.hover;
+		else if (indicatorState == IndicatorMode.ALWAYS) token.aboutFaceIndicator.graphics.visible = true;
+	} catch (error) {
+		console.error(`About Face | Error drawing the indicator for token ${token.name} (ID: ${token.id}, Type: ${token.document?.actor?.type ?? null})`, error);
 	}
 }
 
@@ -207,11 +226,17 @@ function getIndicatorDirection(tokenDocument) {
 	return IndicatorDirections[direction];
 }
 
-function getFlipOrRotation(tokenDocument) {
+function getTokenFlipOrRotate(tokenDocument) {
 	const tokenFlipOrRotate = tokenDocument.getFlag(MODULE_ID, "flipOrRotate") || "global";
 	return tokenFlipOrRotate != "global" ? tokenFlipOrRotate : game.settings.get(MODULE_ID, "flip-or-rotate");
 }
 
+/**
+ *
+ * @param {TokenDocument} tokenDocument
+ * @param {Object} position
+ * @returns {Array}
+ */
 function getMirror(tokenDocument, position = {}) {
 	if (!Object.keys(position).length) {
 		// Taken from ClientKeybindings._handleMovement
@@ -228,22 +253,23 @@ function getMirror(tokenDocument, position = {}) {
 
 		position = { x: dx, y: dy };
 	}
+	const { x, y } = position;
 	const tokenFacingDirection = tokenDocument.getFlag(MODULE_ID, "facingDirection") || "global";
 	const facingDirection = tokenFacingDirection == "global" ? game.settings.get(MODULE_ID, "facing-direction") : tokenFacingDirection;
 	const mirrorX = "scaleX";
 	const mirrorY = "scaleY";
 	if (facingDirection === "right") {
-		if (position.x < 0) return [mirrorX, true];
-		if (position.x > 0) return [mirrorX, false];
+		if (x < 0) return [mirrorX, true];
+		if (x > 0) return [mirrorX, false];
 	} else if (facingDirection === "left") {
-		if (position.x < 0) return [mirrorX, false];
-		if (position.x > 0) return [mirrorX, true];
+		if (x < 0) return [mirrorX, false];
+		if (x > 0) return [mirrorX, true];
 	} else if (facingDirection === "up") {
-		if (position.y < 0) return [mirrorY, false];
-		if (position.y > 0) return [mirrorY, true];
+		if (y < 0) return [mirrorY, false];
+		if (y > 0) return [mirrorY, true];
 	} else if (facingDirection === "down") {
-		if (position.y < 0) return [mirrorY, true];
-		if (position.y > 0) return [mirrorY, false];
+		if (y < 0) return [mirrorY, true];
+		if (y > 0) return [mirrorY, false];
 	}
 	return [];
 }
