@@ -64,12 +64,12 @@
 				"hint": "A visão do token irá seguir a sua rotação em vez do indicador. Útil para jogos com Ângulos de Visão. SHIFT + tecla de direção ignore esta configuração. Esta configuração é ignorada se \"Espelhar ou rotacionar o token\" não for \"Rotacionar\"."
 			},
 			"enable-indicator": {
-				"name": "(PNJs) Habilitar indicadores de token",
+				"name": "Indicadores de Token NPC",
 				"hint": "Adiciona um indicador para a direção dos tokens de PNJs.",
 				"choices": {
-					"0": "Nunca Mostrar",
-					"1": "Ao passar o mouse por cima",
-					"2": "Sempre"
+					"0": "Nunca mostrado",
+					"1": "Mostrado ao passar o mouse",
+					"2": "Sempre mostrado"
 				}
 			},
 			"flip-or-rotate": {
@@ -93,12 +93,12 @@
 				}
 			},
 			"indicator-sprite": {
-				"name": "Ícone do Indicador",
+				"name": "Tamanho do Indicador",
 				"hint": "Altere o tamanho do ícone do indicador."
 			},
 			"enable-indicator-pc": {
-				"name": "(PJs) Habilitar indicadores de token",
-				"hint": "Adiciona um indicador para a direção dos tokens de PJs."
+				"name": "Indicadores de token de PC",
+				"hint": "Adiciona um indicador de direção aos tokens controlados pelo jogador."
 			},
 			"disableAnimations": {
 				"name": "Desativar animações",
@@ -109,6 +109,14 @@
 					"rotation": "Ao girar",
 					"all": "Ao espelhar ou girar"
 				}
+			},
+			"hideIndicatorOnDead": {
+				"hint": "Oculta o indicador de tokens marcados como derrotados no rastreador de combate (por exemplo, o grande marcador de caveira na maioria dos sistemas).",
+				"name": "Ocultar indicador em tokens mortos"
+			},
+			"indicatorDrawingType": {
+				"name": "Tipo de desenho do indicador",
+				"hint": "Altera como o indicador é desenhado."
 			}
 		},
 		"tokenConfig": {
