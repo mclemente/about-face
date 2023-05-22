@@ -7,8 +7,8 @@
 
 import { AboutFace, drawAboutFaceIndicator, onPreCreateToken, onPreUpdateToken } from "./scripts/logic.js";
 import {
-	asyncRenderSceneConfigHandler,
 	MODULE_ID,
+	asyncRenderSceneConfigHandler,
 	registerSettings,
 	renderSceneConfigHandler,
 	renderSettingsConfigHandler,
@@ -22,11 +22,11 @@ Hooks.once("init", () => {
 		name: "about-face.keybindings.toggleTokenRotation.name",
 		hint: "about-face.keybindings.toggleTokenRotation.hint",
 		onDown: () => {
-			game.aboutFace.toggleTokenRotation = !game.aboutFace.toggleTokenRotation;
+			game.aboutFace.tokenRotation = !game.aboutFace.tokenRotation;
 			ui.notifications.info(
 				"About Face: " +
 					game.i18n.localize(
-						`about-face.keybindings.toggleTokenRotation.tooltip.${game.aboutFace.toggleTokenRotation}`
+						`about-face.keybindings.toggleTokenRotation.tooltip.${game.aboutFace.tokenRotation}`
 					),
 				{
 					console: false,
@@ -55,8 +55,9 @@ Hooks.once("init", () => {
 });
 Hooks.on("canvasReady", async () => {
 	if (canvas.scene?.flags?.[MODULE_ID] == null) await canvas.scene.setFlag(MODULE_ID, "sceneEnabled", true);
-	if (canvas.scene?.flags?.[MODULE_ID].sceneEnabled)
+	if (canvas.scene?.flags?.[MODULE_ID].sceneEnabled) {
 		canvas.scene.tokens.forEach((tokenDocument) => drawAboutFaceIndicator(tokenDocument.object));
+	}
 });
 Hooks.on("preCreateToken", onPreCreateToken);
 Hooks.on("preUpdateToken", onPreUpdateToken);

@@ -1,8 +1,6 @@
 import { IndicatorMode, MODULE_ID } from "./settings.js";
 import { libWrapper } from "./shim.js";
 
-let _tokenRotation = false;
-
 export class AboutFace {
 	constructor() {
 		this.disableAnimations = game.settings.get(MODULE_ID, "disableAnimations");
@@ -11,14 +9,15 @@ export class AboutFace {
 		this.hideIndicatorOnDead = game.settings.get("about-face", "hideIndicatorOnDead");
 		this.indicatorDrawingType = game.settings.get("about-face", "indicatorDrawingType");
 		this.indicatorSize = game.settings.get("about-face", "sprite-type");
+		this._tokenRotation = false;
 		if (this.disableAnimations) this.toggleAnimateFrame(this.disableAnimations);
 	}
 
 	get tokenRotation() {
-		return _tokenRotation;
+		return this._tokenRotation;
 	}
 	set tokenRotation(value) {
-		_tokenRotation = value;
+		this._tokenRotation = value;
 	}
 
 	toggleAnimateFrame(value) {
