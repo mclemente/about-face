@@ -3,24 +3,34 @@
 	<input type="checkbox" name="flags.about-face.indicatorDisabled" data-dtype="Boolean" {{indicatorDisabled}} />
 </div>
 <div class="form-group">
-  <label>{{localize "about-face.options.flip-or-rotate.name"}}</label>  
-  <div class="form-fields">    
-      <select name="flags.about-face.flipOrRotate" class="token-config-select-flip-or-rotate" data-dtype="String"/>
-        {{ selectOptions flipOrRotates selected=flipOrRotate localize=true }}
-      </select>
-  </div>  
+	<label>{{localize "about-face.options.flip-or-rotate.name"}}</label>
+	<div class="form-fields">
+		<select name="flags.about-face.flipOrRotate" class="token-config-select-flip-or-rotate" data-dtype="String">
+			{{ selectOptions flipOrRotates selected=flipOrRotate localize=true }}
+		</select>
+	</div>
 </div>
 <div class="form-group">
-  <label>{{localize "about-face.options.facing-direction.name"}}</label>  
-  <div class="form-fields">    
-      <select name="flags.about-face.facingDirection" class="token-config-select-facing-direction" data-dtype="String"/>
-        {{ selectOptions facingDirections selected=facingDirection localize=true}}
-      </select>
-  </div>  
+	<label>{{localize "about-face.options.facing-direction.name"}}</label>
+	<div class="form-fields">
+		<select
+			name="flags.about-face.facingDirection"
+			class="token-config-select-facing-direction"
+			data-dtype="String"
+		>
+			{{ selectOptions facingDirections selected=facingDirection localize=true}}
+		</select>
+	</div>
 </div>
 <div class="form-group">
-  <label>{{localize "about-face.tokenConfig.rotationOffset.name"}}</label>  
-  <div class="form-fields">    
-    <input type="number" name="flags.about-face.rotationOffset" data-dtype="Number" value="{{rotationOffset}}" placeholder="0" />
-  </div>  
+	<label>{{localize "about-face.tokenConfig.rotationOffset.name"}}</label>
+	<div class="form-fields">
+		<input
+			type="number"
+			name="flags.about-face.rotationOffset"
+			data-dtype="Number"
+			value="{{rotationOffset}}"
+			placeholder="0"
+		/>
+	</div>
 </div>

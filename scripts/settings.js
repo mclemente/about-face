@@ -343,7 +343,9 @@ function replaceSelectChoices(select, choices) {
 	for (const [key, value] of Object.entries(choices)) {
 		if (key == "global") {
 			hasGlobal = true;
-			select.append($("<option></option>").attr("value", key).attr("selected", true).text(game.i18n.localize(value)));
+			select.append(
+				$("<option></option>").attr("value", key).attr("selected", true).text(game.i18n.localize(value))
+			);
 		} else {
 			select.append(
 				$("<option></option>")
@@ -425,9 +427,9 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 		const flipOrRotate = event.target.value != "global" ? event.target.value : flipOrRotateSetting;
 		if (event.target.value == "global") {
 			var facingDirections = {
-				global: `${game.i18n.localize("about-face.options.flip-or-rotate.choices.global")} (${game.i18n.localize(
-					"about-face.options.facing-direction.choices." + facingDirectionSetting
-				)})`,
+				global: `${game.i18n.localize(
+					"about-face.options.flip-or-rotate.choices.global"
+				)} (${game.i18n.localize("about-face.options.facing-direction.choices." + facingDirectionSetting)})`,
 			};
 		} else facingDirections = {};
 		facingDirections = {
@@ -460,17 +462,22 @@ export function renderSceneConfigHandler(app, html) {
 		},
 		lockRotationButton: {
 			type: "custom",
-			html: `<button type="button" id="lockRotationButton">${game.i18n.localize("about-face.sceneConfig.apply")}</button>`,
+			html: `<button type="button" id="lockRotationButton">${game.i18n.localize(
+				"about-face.sceneConfig.apply"
+			)}</button>`,
 		},
 		lockArrowRotation: {
 			type: "checkbox",
 			label: game.i18n.localize("about-face.sceneConfig.lockArrowRotation.name"),
 			notes: game.i18n.localize("about-face.sceneConfig.lockArrowRotation.hint"),
-			default: app.object?.flags?.[MODULE_ID]?.lockArrowRotation ?? game.settings.get(MODULE_ID, "lockArrowRotation"),
+			default:
+				app.object?.flags?.[MODULE_ID]?.lockArrowRotation ?? game.settings.get(MODULE_ID, "lockArrowRotation"),
 		},
 		lockArrowRotationButton: {
 			type: "custom",
-			html: `<button type="button" id="lockArrowRotationButton">${game.i18n.localize("about-face.sceneConfig.apply")}</button>`,
+			html: `<button type="button" id="lockArrowRotationButton">${game.i18n.localize(
+				"about-face.sceneConfig.apply"
+			)}</button>`,
 		},
 	};
 	injectConfig.inject(app, html, data, app.object);
@@ -515,6 +522,7 @@ function toggleAllIndicators(state, playerOwner = false) {
 	if (canvas == null) return;
 	const tokens = getAllTokens();
 	tokens.forEach((token) => {
-		if (token.actor.hasPlayerOwner == playerOwner && token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = state;
+		if (token.actor.hasPlayerOwner == playerOwner && token.aboutFaceIndicator)
+			token.aboutFaceIndicator.graphics.visible = state;
 	});
 }

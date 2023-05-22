@@ -58,7 +58,9 @@ Hooks.once("init", () => {
 				iObj = Object.getPrototypeOf(iObj);
 			}
 			if (!descriptor || descriptor?.configurable === false)
-				throw new Error(`libWrapper Shim: '${target}' does not exist, could not be found, or has a non-configurable descriptor.`);
+				throw new Error(
+					`libWrapper Shim: '${target}' does not exist, could not be found, or has a non-configurable descriptor.`
+				);
 
 			let original = null;
 			const wrapper =
@@ -97,14 +99,20 @@ Hooks.once("init", () => {
 			const match = (import.meta?.url ?? Error().stack)?.match(/\/(worlds|systems|modules)\/(.+)(?=\/)/i);
 			if (match?.length !== 3) return [null, null];
 			const dirs = match[2].split("/");
-			if (match[1] === "worlds") return dirs.find((n) => n && game.world.id === n) ? [game.world.id, game.world.title] : [null, null];
-			if (match[1] === "systems") return dirs.find((n) => n && game.system.id === n) ? [game.system.id, game.system.data.title] : [null, null];
+			if (match[1] === "worlds")
+				return dirs.find((n) => n && game.world.id === n) ? [game.world.id, game.world.title] : [null, null];
+			if (match[1] === "systems")
+				return dirs.find((n) => n && game.system.id === n)
+					? [game.system.id, game.system.data.title]
+					: [null, null];
 			const id = dirs.find((n) => n && game.modules.has(n));
 			return [id, game.modules.get(id)?.data?.title];
 		})();
 
 		if (!PACKAGE_ID || !PACKAGE_TITLE) {
-			console.error("libWrapper Shim: Could not auto-detect package ID and/or title. The libWrapper fallback warning dialog will be disabled.");
+			console.error(
+				"libWrapper Shim: Could not auto-detect package ID and/or title. The libWrapper fallback warning dialog will be disabled."
+			);
 			return;
 		}
 
@@ -124,7 +132,13 @@ Hooks.once("init", () => {
 
 			// Dialog code
 			console.warn(`${PACKAGE_TITLE}: libWrapper not present, using fallback implementation.`);
-			game.settings.register(PACKAGE_ID, DONT_REMIND_AGAIN_KEY, { name: "", default: false, type: Boolean, scope: "world", config: false });
+			game.settings.register(PACKAGE_ID, DONT_REMIND_AGAIN_KEY, {
+				name: "",
+				default: false,
+				type: Boolean,
+				scope: "world",
+				config: false,
+			});
 			if (game.user.isGM && !game.settings.get(PACKAGE_ID, DONT_REMIND_AGAIN_KEY)) {
 				new Dialog({
 					title: FALLBACK_MESSAGE_TITLE,

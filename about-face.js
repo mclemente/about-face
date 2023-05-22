@@ -6,7 +6,14 @@
  */
 
 import { AboutFace, drawAboutFaceIndicator, onPreCreateToken, onPreUpdateToken } from "./scripts/logic.js";
-import { asyncRenderSceneConfigHandler, MODULE_ID, registerSettings, renderSceneConfigHandler, renderSettingsConfigHandler, renderTokenConfigHandler } from "./scripts/settings.js";
+import {
+	asyncRenderSceneConfigHandler,
+	MODULE_ID,
+	registerSettings,
+	renderSceneConfigHandler,
+	renderSettingsConfigHandler,
+	renderTokenConfigHandler,
+} from "./scripts/settings.js";
 
 Hooks.once("init", () => {
 	registerSettings();
@@ -16,9 +23,15 @@ Hooks.once("init", () => {
 		hint: "about-face.keybindings.toggleTokenRotation.hint",
 		onDown: () => {
 			game.aboutFace.toggleTokenRotation = !game.aboutFace.toggleTokenRotation;
-			ui.notifications.info("About Face: " + game.i18n.localize(`about-face.keybindings.toggleTokenRotation.tooltip.${game.aboutFace.toggleTokenRotation}`), {
-				console: false,
-			});
+			ui.notifications.info(
+				"About Face: " +
+					game.i18n.localize(
+						`about-face.keybindings.toggleTokenRotation.tooltip.${game.aboutFace.toggleTokenRotation}`
+					),
+				{
+					console: false,
+				}
+			);
 		},
 		restricted: false,
 		precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
@@ -31,7 +44,10 @@ Hooks.once("init", () => {
 				var lockRotation = !token.document.lockRotation;
 				token.document.update({ lockRotation: lockRotation });
 			}
-			ui.notifications.info("About Face: " + game.i18n.localize(`about-face.keybindings.lockRotation.tooltip.${lockRotation}`), { console: false });
+			ui.notifications.info(
+				"About Face: " + game.i18n.localize(`about-face.keybindings.lockRotation.tooltip.${lockRotation}`),
+				{ console: false }
+			);
 		},
 		restricted: true,
 		precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
@@ -39,7 +55,8 @@ Hooks.once("init", () => {
 });
 Hooks.on("canvasReady", async () => {
 	if (canvas.scene?.flags?.[MODULE_ID] == null) await canvas.scene.setFlag(MODULE_ID, "sceneEnabled", true);
-	if (canvas.scene?.flags?.[MODULE_ID].sceneEnabled) canvas.scene.tokens.forEach((tokenDocument) => drawAboutFaceIndicator(tokenDocument.object));
+	if (canvas.scene?.flags?.[MODULE_ID].sceneEnabled)
+		canvas.scene.tokens.forEach((tokenDocument) => drawAboutFaceIndicator(tokenDocument.object));
 });
 Hooks.on("preCreateToken", onPreCreateToken);
 Hooks.on("preUpdateToken", onPreUpdateToken);

@@ -31,7 +31,8 @@ export class AboutFace {
 
 export function onPreCreateToken(document, data, options, userId) {
 	const updates = { flags: { [MODULE_ID]: {} } };
-	const facingDirection = document.flags?.[MODULE_ID]?.facingDirection ?? game.settings.get(MODULE_ID, "facing-direction");
+	const facingDirection =
+		document.flags?.[MODULE_ID]?.facingDirection ?? game.settings.get(MODULE_ID, "facing-direction");
 	if (canvas.scene.getFlag(MODULE_ID, "lockRotation")) {
 		updates.lockRotation = true;
 	}
@@ -56,7 +57,12 @@ export function onPreCreateToken(document, data, options, userId) {
 export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) return;
 
-	if (game.modules.get("multilevel-tokens")?.active && !game.multilevel._isReplicatedToken(tokenDocument) && options?.mlt_bypass) return;
+	if (
+		game.modules.get("multilevel-tokens")?.active &&
+		!game.multilevel._isReplicatedToken(tokenDocument) &&
+		options?.mlt_bypass
+	)
+		return;
 
 	const durations = [];
 	let position = {};
@@ -95,7 +101,10 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 				// convert negative dirs into a range from 0-360
 				let normalizedDir = ((tokenDirection % 360) + 360) % 360; //Math.round(tokenDirection < 0 ? 360 + tokenDirection : tokenDirection);
 				// find the largest normalized angle
-				let secondAngle = facings.reduce((prev, curr) => (curr > prev && curr <= normalizedDir ? curr : prev), facings[0]); //facings.find((e) => e > normalizedDir);
+				let secondAngle = facings.reduce(
+					(prev, curr) => (curr > prev && curr <= normalizedDir ? curr : prev),
+					facings[0]
+				); //facings.find((e) => e > normalizedDir);
 				// and assume the facing is 60 degrees (hexes) or 45 (square) to the counter clockwise
 				tokenDirection = gridType ? secondAngle - 60 : secondAngle - 45;
 				// unless the largest angle was closer
@@ -122,7 +131,10 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 
 	// update the rotation of the token
 	const isRotationUpdateNeeded =
-		tokenDirection !== undefined && ("rotation" in updates || (flipOrRotate === "rotate" && !isRotationLocked) || (isRotationLocked && flipOrRotate !== "rotate"));
+		tokenDirection !== undefined &&
+		("rotation" in updates ||
+			(flipOrRotate === "rotate" && !isRotationLocked) ||
+			(isRotationLocked && flipOrRotate !== "rotate"));
 	if (isRotationUpdateNeeded) {
 		const rotationOffset = flags[MODULE_ID]?.rotationOffset ?? 0;
 		updates.rotation = tokenDirection - 90 + rotationOffset;
@@ -138,9 +150,12 @@ export function drawAboutFaceIndicator(token) {
 		if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = false;
 		return;
 	}
-	const isDead = token.actor?.effects.find((el) => el._statusId === "dead") || token.document?.overlayEffect === CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
+	const isDead =
+		token.actor?.effects.find((el) => el._statusId === "dead") ||
+		token.document?.overlayEffect === CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
 	if (game.aboutFace.hideIndicatorOnDead && isDead) {
-		if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) token.aboutFaceIndicator.graphics.visible = false;
+		if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed)
+			token.aboutFaceIndicator.graphics.visible = false;
 		return;
 	}
 	try {
@@ -198,14 +213,21 @@ export function drawAboutFaceIndicator(token) {
 		}
 
 		// Set the visibility of the indicator based on the current indicator mode
-		const indicatorState = token?.actor?.hasPlayerOwner ? game.settings.get(MODULE_ID, "indicator-state-pc") : game.settings.get(MODULE_ID, "indicator-state");
+		const indicatorState = token?.actor?.hasPlayerOwner
+			? game.settings.get(MODULE_ID, "indicator-state-pc")
+			: game.settings.get(MODULE_ID, "indicator-state");
 		const indicatorDisabled = token.document.getFlag(MODULE_ID, "indicatorDisabled");
 
 		if (indicatorState == IndicatorMode.OFF || indicatorDisabled) token.aboutFaceIndicator.graphics.visible = false;
 		else if (indicatorState == IndicatorMode.HOVER) token.aboutFaceIndicator.graphics.visible = token.hover;
 		else if (indicatorState == IndicatorMode.ALWAYS) token.aboutFaceIndicator.graphics.visible = true;
 	} catch (error) {
-		console.error(`About Face | Error drawing the indicator for token ${token.name} (ID: ${token.id}, Type: ${token.document?.actor?.type ?? null})`, error);
+		console.error(
+			`About Face | Error drawing the indicator for token ${token.name} (ID: ${token.id}, Type: ${
+				token.document?.actor?.type ?? null
+			})`,
+			error
+		);
 	}
 }
 
@@ -222,7 +244,8 @@ function getIndicatorDirection(tokenDocument) {
 		down: 90,
 		left: 180,
 	};
-	const direction = tokenDocument.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
+	const direction =
+		tokenDocument.getFlag(MODULE_ID, "facingDirection") || game.settings.get(MODULE_ID, "facing-direction");
 	return IndicatorDirections[direction];
 }
 
@@ -255,7 +278,8 @@ function getMirror(tokenDocument, position = {}) {
 	}
 	const { x, y } = position;
 	const tokenFacingDirection = tokenDocument.getFlag(MODULE_ID, "facingDirection") || "global";
-	const facingDirection = tokenFacingDirection == "global" ? game.settings.get(MODULE_ID, "facing-direction") : tokenFacingDirection;
+	const facingDirection =
+		tokenFacingDirection == "global" ? game.settings.get(MODULE_ID, "facing-direction") : tokenFacingDirection;
 	const mirrorX = "scaleX";
 	const mirrorY = "scaleY";
 	if (facingDirection === "right") {
@@ -299,7 +323,8 @@ function _animateFrame(deltaTime, animation) {
 				const da =
 					a.delta *
 					((a.attribute == "rotation" && [2, 3].includes(game.aboutFace.disableAnimations)) ||
-					((a.attribute == "scaleX" || a.attribute == "scaleY") && [1, 3].includes(game.aboutFace.disableAnimations))
+					((a.attribute == "scaleX" || a.attribute == "scaleY") &&
+						[1, 3].includes(game.aboutFace.disableAnimations))
 						? 1
 						: pa);
 				a.parent[a.attribute] = a.from + da;

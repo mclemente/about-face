@@ -15,9 +15,7 @@
 			"name": "Edzillion"
 		}
 	],
-	"esmodules": [
-		"about-face.js"
-	],
+	"esmodules": ["about-face.js"],
 	"compatibility": {
 		"minimum": "10",
 		"verified": "10"
