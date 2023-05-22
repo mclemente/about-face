@@ -38,6 +38,7 @@
 			"changeEverySceneDialog": "Você gostaria de alterar esta configuração para todas as cenas?",
 			"disable-indicator": "Desabilitar Indicador de Direção",
 			"individual-token-text": "Exibir indicador para os tokens?",
+			"facing": "Direção",
 			"arrowColor": {
 				"name": "Cor do Indicador",
 				"hint": "Selecione uma cor para o indicador.",

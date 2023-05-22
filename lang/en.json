@@ -43,6 +43,7 @@
 			"changeEverySceneDialog": "Would you like to change this setting on every scene?",
 			"disable-indicator": "Disable Direction Indicator",
 			"individual-token-text": "Show indicator for this token?",
+			"facing": "Facing",
 			"arrowColor": {
 				"name": "Indicator Color",
 				"hint": "Select a color for the indicator.",

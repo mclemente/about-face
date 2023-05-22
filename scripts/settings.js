@@ -372,7 +372,7 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 			moduleId: MODULE_ID,
 			tab: {
 				name: MODULE_ID,
-				label: "About Face",
+				label: game.i18n.localize("about-face.options.facing"),
 				icon: "fas fa-caret-down fa-fw",
 			},
 		},
