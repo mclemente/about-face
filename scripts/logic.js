@@ -67,7 +67,7 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	const { x, y, rotation } = updates;
 	const { x: tokenX, y: tokenY } = tokenDocument;
 
-	if (rotation) {
+	if (rotation !== undefined) {
 		tokenDirection = rotation + 90;
 		updates.flags[MODULE_ID] = { direction: tokenDirection };
 		durations.push(1000 / 6);
