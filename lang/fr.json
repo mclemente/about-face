@@ -117,7 +117,8 @@
 			"hideIndicatorOnDead": {
 				"name": "Cacher l'indicateur sur les jetons morts",
 				"hint": "Cache l'indicateur sur les jetons marqués comme vaincus sur le compteur de rencontre (ex : le marqueur crâne pour la plupart des systèmes)."
-			}
+			},
+			"facing": "En face"
 		},
 		"tokenConfig": {
 			"rotationOffset": {
