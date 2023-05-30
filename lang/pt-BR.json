@@ -117,13 +117,19 @@
 			},
 			"indicatorDrawingType": {
 				"name": "Tipo de desenho do indicador",
-				"hint": "Altera como o indicador é desenhado."
+				"hint": "Altera como o indicador é desenhado.",
+				"options": {
+					"line": "Linha",
+					"arrow": "Flecha"
+				}
 			}
 		},
 		"tokenConfig": {
 			"rotationOffset": {
 				"name": "Compensação de Rotação"
 			}
-		}
+		},
+		"no": "Não",
+		"yes": "Sim"
 	}
 }
