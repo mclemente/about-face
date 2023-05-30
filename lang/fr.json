@@ -112,7 +112,11 @@
 			},
 			"indicatorDrawingType": {
 				"name": "Type de dessin de l'indicateur",
-				"hint": "Modifie la façon dont l'indicateur est dessiné."
+				"hint": "Modifie la façon dont l'indicateur est dessiné.",
+				"options": {
+					"arrow": "Flèche",
+					"line": "Ligne"
+				}
 			},
 			"hideIndicatorOnDead": {
 				"name": "Cacher l'indicateur sur les jetons morts",
@@ -124,6 +128,8 @@
 			"rotationOffset": {
 				"name": "Décalage de rotation"
 			}
-		}
+		},
+		"yes": "Oui",
+		"no": "Non"
 	}
 }
