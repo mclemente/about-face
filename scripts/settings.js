@@ -158,8 +158,8 @@ export function registerSettings() {
 		default: 0,
 		type: Number,
 		choices: {
-			0: "Arrow",
-			1: "Line",
+			0: game.i18n.localize("about-face.options.indicatorDrawingType.options.arrow"),
+			1: game.i18n.localize("about-face.options.indicatorDrawingType.options.line"),
 		},
 		requiresReload: true,
 	});
@@ -194,13 +194,13 @@ export function registerSettings() {
 				content: game.i18n.localize("about-face.options.changeEverySceneDialog"),
 				buttons: {
 					yes: {
-						label: "Yes",
+						label: game.i18n.localize("about-face", "yes"),
 						callback: (html) => {
 							game.scenes.updateAll({ flags: { [MODULE_ID]: { lockArrowRotation: value } } });
 						},
 					},
 					no: {
-						label: "No",
+						label: game.i18n.localize("about-face", "no"),
 					},
 				},
 			}).render(true);
@@ -215,24 +215,6 @@ export function registerSettings() {
 		type: Boolean,
 	});
 
-	game.settings.register(MODULE_ID, "disableAnimations", {
-		name: "about-face.options.disableAnimations.name",
-		hint: "about-face.options.disableAnimations.hint",
-		scope: "world",
-		config: true,
-		default: 0,
-		type: Number,
-		choices: {
-			0: "about-face.options.disableAnimations.choices.none",
-			1: "about-face.options.disableAnimations.choices.mirror",
-			2: "about-face.options.disableAnimations.choices.rotation",
-			3: "about-face.options.disableAnimations.choices.all",
-		},
-		onChange: (value) => {
-			if (!(game.aboutFace.disableAnimations && value)) game.aboutFace.toggleAnimateFrame(value);
-			game.aboutFace.disableAnimations = value;
-		},
-	});
 	game.settings.register(MODULE_ID, "lockRotation", {
 		name: "about-face.options.lockRotation.name",
 		hint: "about-face.options.lockRotation.hint",
@@ -246,13 +228,13 @@ export function registerSettings() {
 				content: game.i18n.localize("about-face.options.changeEverySceneDialog"),
 				buttons: {
 					yes: {
-						label: "Yes",
+						label: game.i18n.localize("about-face", "yes"),
 						callback: (html) => {
 							game.scenes.updateAll({ flags: { [MODULE_ID]: { lockRotation: value } } });
 						},
 					},
 					no: {
-						label: "No",
+						label: game.i18n.localize("about-face", "no"),
 					},
 				},
 			}).render(true);

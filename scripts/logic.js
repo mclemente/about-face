@@ -1,16 +1,13 @@
 import { IndicatorMode, MODULE_ID } from "./settings.js";
-import { libWrapper } from "./shim.js";
 
 export class AboutFace {
 	constructor() {
-		this.disableAnimations = game.settings.get(MODULE_ID, "disableAnimations");
 		this.indicatorColor = game.settings.get(MODULE_ID, "arrowColor");
 		this.indicatorDistance = game.settings.get(MODULE_ID, "arrowDistance");
 		this.hideIndicatorOnDead = game.settings.get("about-face", "hideIndicatorOnDead");
 		this.indicatorDrawingType = game.settings.get("about-face", "indicatorDrawingType");
 		this.indicatorSize = game.settings.get("about-face", "sprite-type");
 		this._tokenRotation = false;
-		if (this.disableAnimations) this.toggleAnimateFrame(this.disableAnimations);
 	}
 
 	get tokenRotation() {
@@ -18,11 +15,6 @@ export class AboutFace {
 	}
 	set tokenRotation(value) {
 		this._tokenRotation = value;
-	}
-
-	toggleAnimateFrame(value) {
-		if (value) libWrapper.register(MODULE_ID, "CanvasAnimation._animateFrame", _animateFrame, "OVERRIDE");
-		else libWrapper.unregister(MODULE_ID, "CanvasAnimation._animateFrame");
 	}
 }
 
@@ -295,49 +287,4 @@ function getMirror(tokenDocument, position = {}) {
 		if (y > 0) return [mirrorY, false];
 	}
 	return [];
-}
-
-// WRAPPERS
-function _animateFrame(deltaTime, animation) {
-	const { attributes, duration, ontick } = animation;
-
-	// Compute animation timing and progress
-	const dt = this.ticker.elapsedMS; // Delta time in MS
-	animation.time += dt; // Total time which has elapsed
-	const pt = animation.time / duration; // Proportion of total duration
-	const complete = animation.time >= duration;
-	const pa = complete ? 1 : animation.easing ? animation.easing(pt) : pt;
-
-	// Update each attribute
-	try {
-		for (let a of attributes) {
-			// Snap to final target
-			if (complete) {
-				a.parent[a.attribute] = a.to;
-				a.done = a.delta;
-			}
-
-			// Continue animating
-			else {
-				const da =
-					a.delta *
-					((a.attribute == "rotation" && [2, 3].includes(game.aboutFace.disableAnimations)) ||
-					((a.attribute == "scaleX" || a.attribute == "scaleY") &&
-						[1, 3].includes(game.aboutFace.disableAnimations))
-						? 1
-						: pa);
-				a.parent[a.attribute] = a.from + da;
-				a.done = da;
-			}
-		}
-
-		// Callback function
-		if (ontick) ontick(dt, animation);
-	} catch (err) {
-		// Terminate the animation if any errors occur
-		animation.reject(err);
-	}
-
-	// Resolve the original promise once the animation is complete
-	if (complete) animation.resolve(true);
 }

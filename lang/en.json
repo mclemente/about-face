@@ -1,5 +1,7 @@
 {
 	"about-face": {
+		"yes": "Yes",
+		"no": "No",
 		"keybindings": {
 			"lockRotation": {
 				"name": "Lock Rotation",
@@ -53,23 +55,17 @@
 				"name": "Indicator Distance",
 				"hint": "Set the multiplier for the indicator's distance. Math: Largest Size × (Multiplier / 2)."
 			},
-			"disableAnimations": {
-				"name": "Disable Animations",
-				"hint": "Disables the animations whenever the chosen movement is made.",
-				"choices": {
-					"none": "None",
-					"mirror": "When mirroring",
-					"rotation": "When rotating",
-					"all": "When mirroring or rotating"
-				}
-			},
 			"hideIndicatorOnDead": {
 				"name": "Hide Indicator On Dead Tokens",
 				"hint": "Hides the indicator from tokens marked as defeated on the combat tracker (e.g. the big skull marker on most systems)."
 			},
 			"indicatorDrawingType": {
 				"name": "Indicator Drawing Type",
-				"hint": "Changes how the indicator is drawn."
+				"hint": "Changes how the indicator is drawn.",
+				"options": {
+					"arrow": "Arrow",
+					"line": "Line"
+				}
 			},
 			"lockArrowRotation": {
 				"name": "Lock Indicator Rotation",
