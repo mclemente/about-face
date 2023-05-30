@@ -17,7 +17,7 @@
 	],
 	"esmodules": ["about-face.js"],
 	"compatibility": {
-		"minimum": "10",
+		"minimum": "11",
 		"verified": "11"
 	},
 	"manifest": "https://github.com/mclemente/about-face/releases/latest/download/module.json",
