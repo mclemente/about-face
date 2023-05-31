@@ -524,14 +524,20 @@ function toggleAllIndicators(state, playerOwner = false) {
 }
 
 export function tokenHover(token, hovered) {
-	if (hovered) drawAboutFaceIndicator(token);
-	else token.aboutFaceIndicator.graphics.visible = false;
+	if (hovered) {
+		drawAboutFaceIndicator(token);
+	} else if (token.aboutFaceIndicator) {
+		token.aboutFaceIndicator.graphics.visible = false;
+	}
 }
 export function highlightObjects(highlighted) {
 	if (canvas.scene?.flags?.[MODULE_ID].sceneEnabled) {
 		canvas.scene.tokens.forEach((tokenDocument) => {
-			if (highlighted) drawAboutFaceIndicator(tokenDocument.object);
-			else token.aboutFaceIndicator.graphics.visible = false;
+			if (highlighted) {
+				drawAboutFaceIndicator(tokenDocument.object);
+			} else if (tokenDocument.object.aboutFaceIndicator) {
+				tokenDocument.object.aboutFaceIndicator.graphics.visible = false;
+			}
 		});
 	}
 }
