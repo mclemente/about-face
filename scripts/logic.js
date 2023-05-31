@@ -46,19 +46,23 @@ export function onPreCreateToken(document, data, options, userId) {
 }
 
 export function onPreUpdateToken(tokenDocument, updates, options, userId) {
-	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) return;
+	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) {
+		return;
+	}
 
 	if (
 		game.modules.get("multilevel-tokens")?.active &&
 		!game.multilevel._isReplicatedToken(tokenDocument) &&
 		options?.mlt_bypass
-	)
+	) {
 		return;
+	}
 
-	const durations = [];
 	let position = {};
 	// store the direction in the token data
-	if (!updates.flags) updates.flags = {};
+	if (!updates.flags) {
+		updates.flags = {};
+	}
 
 	let tokenDirection;
 	const { x, y, rotation } = updates;
@@ -67,7 +71,11 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	if (rotation !== undefined) {
 		tokenDirection = rotation + 90;
 		updates.flags[MODULE_ID] = { direction: tokenDirection };
-		durations.push(1000 / 6);
+		if (!options.animation) {
+			options.animation = { duration: 1000 / 6 };
+		} else {
+			options.animation.duration = 1000 / 6;
+		}
 	} else if (!game.aboutFace.tokenRotation && (x || y) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
 		//get previous and new positions
 		const prevPos = { x: tokenX, y: tokenY };
@@ -75,9 +83,6 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 		//get the direction in degrees of the movement
 		let diffY = newPos.y - prevPos.y;
 		let diffX = newPos.x - prevPos.x;
-		const distance = Math.hypot(diffX, diffY);
-
-		if (distance) durations.push((distance * 1000) / (canvas.dimensions.size * 6));
 		tokenDirection = (Math.atan2(diffY, diffX) * 180) / Math.PI;
 
 		if (canvas.grid.type && game.settings.get(MODULE_ID, "lockArrowToFace")) {
@@ -130,10 +135,6 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 		const rotationOffset = flags[MODULE_ID]?.rotationOffset ?? 0;
 		updates.rotation = tokenDirection - 90 + rotationOffset;
 	}
-
-	const maxDuration = Math.max(...durations);
-	if (durations.length && !options.animation) options.animation = { duration: maxDuration };
-	else if (durations.length) options.animation.duration = maxDuration;
 }
 
 export function drawAboutFaceIndicator(token) {
