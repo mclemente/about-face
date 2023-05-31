@@ -105,8 +105,15 @@ export function registerSettings() {
 			2: "about-face.options.enable-indicator.choices.2",
 		},
 		onChange: (value) => {
-			if (Number(value) !== IndicatorMode.ALWAYS) toggleAllIndicators(false);
-			else toggleAllIndicators(true);
+			value = Number(value);
+			if (value === IndicatorMode.HOVER) {
+				Hooks.on("hoverToken", tokenHover);
+				Hooks.on("highlightObjects", highlightObjects);
+			} else {
+				Hooks.off("hoverToken", tokenHover);
+				Hooks.off("highlightObjects", highlightObjects);
+			}
+			toggleAllIndicators(value === IndicatorMode.ALWAYS);
 		},
 	});
 
@@ -123,8 +130,15 @@ export function registerSettings() {
 			2: "about-face.options.enable-indicator.choices.2",
 		},
 		onChange: (value) => {
-			if (Number(value) !== IndicatorMode.ALWAYS) toggleAllIndicators(false, true);
-			else toggleAllIndicators(true, true);
+			value = Number(value);
+			if (value === IndicatorMode.HOVER) {
+				Hooks.on("hoverToken", tokenHover);
+				Hooks.on("highlightObjects", highlightObjects);
+			} else {
+				Hooks.off("hoverToken", tokenHover);
+				Hooks.off("highlightObjects", highlightObjects);
+			}
+			toggleAllIndicators(value === IndicatorMode.ALWAYS, true);
 		},
 	});
 
@@ -507,4 +521,17 @@ function toggleAllIndicators(state, playerOwner = false) {
 		if (token.actor.hasPlayerOwner == playerOwner && token.aboutFaceIndicator)
 			token.aboutFaceIndicator.graphics.visible = state;
 	});
+}
+
+export function tokenHover(token, hovered) {
+	if (hovered) drawAboutFaceIndicator(token);
+	else token.aboutFaceIndicator.graphics.visible = false;
+}
+export function highlightObjects(highlighted) {
+	if (canvas.scene?.flags?.[MODULE_ID].sceneEnabled) {
+		canvas.scene.tokens.forEach((tokenDocument) => {
+			if (highlighted) drawAboutFaceIndicator(tokenDocument.object);
+			else token.aboutFaceIndicator.graphics.visible = false;
+		});
+	}
 }

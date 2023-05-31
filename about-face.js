@@ -9,15 +9,21 @@ import { AboutFace, drawAboutFaceIndicator, onPreCreateToken, onPreUpdateToken }
 import {
 	MODULE_ID,
 	asyncRenderSceneConfigHandler,
+	highlightObjects,
 	registerSettings,
 	renderSceneConfigHandler,
 	renderSettingsConfigHandler,
 	renderTokenConfigHandler,
+	tokenHover,
 } from "./scripts/settings.js";
 
 Hooks.once("init", () => {
 	registerSettings();
 	game.aboutFace = new AboutFace();
+	if (game.settings.get("about-face", "indicator-state") === 1) {
+		Hooks.on("hoverToken", tokenHover);
+		Hooks.on("highlightObjects", highlightObjects);
+	}
 	game.keybindings.register(MODULE_ID, "toggleTokenRotation", {
 		name: "about-face.keybindings.toggleTokenRotation.name",
 		hint: "about-face.keybindings.toggleTokenRotation.hint",
