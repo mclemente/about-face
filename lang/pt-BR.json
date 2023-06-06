@@ -128,8 +128,6 @@
 			"rotationOffset": {
 				"name": "Compensação de Rotação"
 			}
-		},
-		"no": "Não",
-		"yes": "Sim"
+		}
 	}
 }

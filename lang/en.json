@@ -1,7 +1,5 @@
 {
 	"about-face": {
-		"yes": "Yes",
-		"no": "No",
 		"keybindings": {
 			"lockRotation": {
 				"name": "Lock Rotation",

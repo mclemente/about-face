@@ -208,13 +208,13 @@ export function registerSettings() {
 				content: game.i18n.localize("about-face.options.changeEverySceneDialog"),
 				buttons: {
 					yes: {
-						label: game.i18n.localize("about-face", "yes"),
+						label: game.i18n.localize("Yes"),
 						callback: (html) => {
 							game.scenes.updateAll({ flags: { [MODULE_ID]: { lockArrowRotation: value } } });
 						},
 					},
 					no: {
-						label: game.i18n.localize("about-face", "no"),
+						label: game.i18n.localize("No"),
 					},
 				},
 			}).render(true);
@@ -242,13 +242,13 @@ export function registerSettings() {
 				content: game.i18n.localize("about-face.options.changeEverySceneDialog"),
 				buttons: {
 					yes: {
-						label: game.i18n.localize("about-face", "yes"),
+						label: game.i18n.localize("Yes"),
 						callback: (html) => {
 							game.scenes.updateAll({ flags: { [MODULE_ID]: { lockRotation: value } } });
 						},
 					},
 					no: {
-						label: game.i18n.localize("about-face", "no"),
+						label: game.i18n.localize("No"),
 					},
 				},
 			}).render(true);
