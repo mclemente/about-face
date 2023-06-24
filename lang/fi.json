@@ -3,24 +3,26 @@
 		"keybindings": {
 			"lockRotation": {
 				"tooltip": {
-					"true": "Kierron lukitus on päällä",
-					"false": "Kierron lukitus on pois päältä"
+					"true": "Kierron lukitus on päällä.",
+					"false": "Kierron lukitus on pois päältä."
 				},
-				"name": "Lukitse kierto"
+				"name": "Lukitse kierto",
+				"hint": "Vaihtaa valittujen pelinappuloiden kierron lukituksen asetuksen. Kun kierto on lukittu, pelinappula ei pyöri liikkeen aikana tai kun käytät SHIFT + suuntanäppäimiä.\nJos haluat, että jokaisen pelinappulan kierto on oletusarvoisesti lukittu, tarkista Lukitse kiertosuunta -asetus About Facen asetuksissa."
 			},
 			"toggleTokenRotation": {
 				"tooltip": {
-					"false": "Pelinappulan kierto on pois päältä.",
-					"true": "Pelinappulan kierto on päällä."
+					"false": "Pelinappula voi kiertää liikkeen aikana.",
+					"true": "Pelinappulan kierto on lukittu liikkeen aikana."
 				},
-				"name": "Pelinappulan kierto päälle/pois päältä"
+				"name": "Pelinappulan kierto päälle/pois päältä",
+				"hint": "Merkit eivät pyöri liikkeen aikana. Hyödyllinen peleissä, joissa on rajattu näkökenttä."
 			}
 		},
 		"sceneConfig": {
 			"apply": "Käytä olemassa oleviin pelinappuloihin",
 			"scene-enabled": {
 				"name": "Käytä tässä kohtauksessa",
-				"hint": "Kiertää pelinappuloita kun niitä liikutetaan (paitsi jos ne on lukittu). Jos asetus ei ole käytössä, pelinappulaa voi silti kiertää tavalliseen tapaan"
+				"hint": "Kiertää pelinappuloita kun niitä liikutetaan (paitsi jos ne on lukittu). Jos asetus ei ole käytössä, pelinappulaa voi silti kiertää tavalliseen tapaan."
 			},
 			"lockRotation": {
 				"name": "Lukitse kierto",
@@ -49,23 +51,25 @@
 				"hint": "Jokainen kohtaus luodaan niin, että Lukitse ilmaisimen kierto -asetus on päällä. Ilmaisin ei muutu, kun pelinappula liikkuu tällaisessa kohtauksessa. Käytä SHIFT + suuntanäppäintä ilmaisimen kiertämiseen."
 			},
 			"lockRotation": {
-				"name": "Lukitse kierto"
+				"name": "Lukitse kierto",
+				"hint": "Jokainen kohtaus luodaan siten, että About Facen kierron lukitus on päällä. Tällaisessa kohtauksessa luodut pelinappulat eivät kierry liikkeen aikana."
 			},
 			"lockVisionToRotation": {
-				"name": "Lukitse näkökyky kiertoon"
+				"name": "Lukitse näkökyky kiertoon",
+				"hint": "Pelinappulan näkökyky seuraa sen kiertoa ilmaisimen sijasta. Hyödyllinen peleissä, joissa on rajattu näkökenttä. SHIFT + suuntanäppäin kumoaa tämän asetuksen. Tätä asetusta ei oteta huomioon, jos \"Peilaa tai kierrä pelinappulaa\" asetus ei ole arvossa \"Kierrä\"."
 			},
 			"enable-indicator": {
-				"name": "(EPH:t) Ota pelinappuloiden ilmaisimet käyttöön",
+				"name": "EPH:n pelinappuloiden ilmaisimet",
 				"choices": {
-					"0": "Ei koskaan",
-					"1": "Kun osoitin kohdistetaan",
-					"2": "Aina"
+					"0": "Ei näytetä koskaan",
+					"1": "Näytetään, kun osoitin kohdistetaan",
+					"2": "Näytetään aina"
 				},
-				"hint": "Lisää suunnan ilmaisimen ei-pelaajahahmojen pelinappuloihin"
+				"hint": "Lisää suunnan ilmaisimen ei-pelaajahahmojen pelinappuloihin."
 			},
 			"enable-indicator-pc": {
-				"name": "(PH:t) Ota pelinappuloiden ilmaisimet käyttöön",
-				"hint": "Lisää suunnan ilmaisimen pelaajahahmojen pelinappuloihin"
+				"name": "PH:n pelinappuloiden ilmaisimet",
+				"hint": "Lisää suunnan ilmaisimen pelaajien hallitsemiin pelinappuloihin."
 			},
 			"flip-or-rotate": {
 				"choices": {
@@ -75,11 +79,11 @@
 					"flip-h": "Peilaa vaakasuunnassa"
 				},
 				"name": "Peilaa tai kierrä pelinappulaa",
-				"hint": "Peilaa pelinappula sen kiertämisen sijaan"
+				"hint": "Peilaa pelinappula sen kiertämisen sijaan."
 			},
 			"facing-direction": {
 				"name": "Katselusuunta",
-				"hint": "Oletussuunta, johon pelinappulat katsovat",
+				"hint": "Oletussuunta, johon pelinappulat katsovat.",
 				"choices": {
 					"right": "Oikealle",
 					"left": "Vasemmalle",
@@ -88,10 +92,32 @@
 				}
 			},
 			"indicator-sprite": {
-				"name": "Ilmaisimen kuvake",
-				"hint": "Vaihda ilmaisimen kuvake (vaatii uudelleenlataamisen)"
+				"name": "Ilmaisimen koko",
+				"hint": "Vaihda ilmaisimen kuvakkeen koko."
 			},
-			"changeEverySceneDialog": "Haluatko vaihtaa tämän asetuksen jokaisessa kohtauksessa?"
+			"changeEverySceneDialog": "Haluatko vaihtaa tämän asetuksen jokaisessa kohtauksessa?",
+			"indicatorDrawingType": {
+				"options": {
+					"arrow": "Nuoli",
+					"line": "Viiva"
+				},
+				"name": "Ilmaisimen piirtotyyppi",
+				"hint": "Muuttaa ilmaisimen piirtotapaa."
+			},
+			"facing": "Etusuunta",
+			"hideIndicatorOnDead": {
+				"name": "Piilota kuolleiden pelinappuloiden ilmaisin",
+				"hint": "Piilottaa taistelunseuraimessa (esim. ison kallomerkki useimmissa järjestelmissä) kukistetuiksi merkittyjen pelinappuloiden ilmaisimet."
+			},
+			"lockArrowToFace": {
+				"hint": "Napsauttaa ilmaisimen suunnan lähimpään laattaan, johon se olisi suunnattu, liikkeen todellisen suunnan sijasta. Tätä asetusta ei oteta huomioon, jos \"Lukitse ilmaisimen kierto\" on käytössä.",
+				"name": "Napsauta ilmaisin lähimpään laattaan"
+			}
+		},
+		"tokenConfig": {
+			"rotationOffset": {
+				"name": "Kierron poikkeama"
+			}
 		}
 	}
 }
