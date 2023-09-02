@@ -85,12 +85,17 @@
 			},
 			"indicatorDrawingType": {
 				"name": "Tipo de Dibujo para el Indicador",
-				"hint": "Cambia la manera en que se dibuja el indicador."
+				"hint": "Cambia la manera en que se dibuja el indicador.",
+				"options": {
+					"arrow": "Flecha",
+					"line": "Línea"
+				}
 			},
 			"hideIndicatorOnDead": {
 				"name": "Ocultar el Indicador en Fichas Muertas",
 				"hint": "Oculta el indicador de las fichas marcadas como derrotadas en el rastreador de combate (por ejemplo, el marcador grande de calavera en la mayoría de sistemas)."
-			}
+			},
+			"facing": "Mirando en dirección"
 		},
 		"keybindings": {
 			"lockRotation": {
@@ -105,8 +110,8 @@
 				"hint": "Las fichas no rotarán mientras se mueven. Útil para juegos con Ángulos de Visión.",
 				"name": "Alternar la Rotación del Icono",
 				"tooltip": {
-					"false": "La Rotación del Icono en movimiento está desactivada.",
-					"true": "La Rotación del Icono en movimiento está desactivada."
+					"false": "La rotación en movimiento del token está desbloqueada.",
+					"true": "La rotación en movimiento del token está bloqueada."
 				}
 			}
 		},
