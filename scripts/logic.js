@@ -115,7 +115,6 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 
 	const { texture, lockRotation, flags, sight } = tokenDocument;
 	const flipOrRotate = getTokenFlipOrRotate(tokenDocument);
-	const isRotationLocked = lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation");
 
 	if (flipOrRotate !== "rotate") {
 		const [mirrorKey, mirrorVal] = getMirror(tokenDocument, position);
@@ -126,14 +125,20 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	}
 
 	// update the rotation of the token
-	const isRotation = flipOrRotate === "rotate";
+	if (tokenDirection === undefined) return;
+
+	// Determine if a rotation update is needed
+	const hasRotationUpdate = "rotation" in updates;
+	const isRotationAction = flipOrRotate === "rotate";
+	const isRotationLocked = lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation");
+
+	// Check conditions for rotation and sight angle updates
+	const shouldUpdateRotation = hasRotationUpdate || isRotationAction !== isRotationLocked;
 	const hasSightAngle = sight.enabled && sight.angle !== 360;
-	const isRotationUpdateNeeded =
-		tokenDirection !== undefined &&
-		("rotation" in updates ||
-			(isRotation && !isRotationLocked && hasSightAngle) ||
-			(isRotationLocked && !isRotation));
-	if (isRotationUpdateNeeded) {
+	const shouldUpdateSightAngle = !isRotationLocked && hasSightAngle;
+
+	// If any update is needed, calculate the rotation offset and update the rotation
+	if (shouldUpdateRotation || shouldUpdateSightAngle) {
 		const rotationOffset = flags[MODULE_ID]?.rotationOffset ?? 0;
 		updates.rotation = tokenDirection - 90 + rotationOffset;
 	}
