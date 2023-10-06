@@ -76,7 +76,11 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 		} else {
 			options.animation.duration = 1000 / 6;
 		}
-	} else if (!game.aboutFace.tokenRotation && (Number.isNumeric(x) || Number.isNumeric(y)) && !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")) {
+	} else if (
+		!game.aboutFace.tokenRotation &&
+		(Number.isNumeric(x) || Number.isNumeric(y)) &&
+		!canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")
+	) {
 		//get previous and new positions
 		const prevPos = { x: tokenX, y: tokenY };
 		const newPos = { x: x ?? tokenX, y: y ?? tokenY };
