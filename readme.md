@@ -1,7 +1,5 @@
 ![GitHub release](https://img.shields.io/github/release-date/mclemente/about-face)
-![all versions](https://img.shields.io/github/downloads/mclemente/about-face/total)
-![the latest version](https://img.shields.io/github/downloads/mclemente/about-face/latest/total)
-![Forge installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fabout-face)
+![the latest version](https://img.shields.io/github/downloads/mclemente/about-face/latest/module.zip)
 
 # About Face -- FoundryVTT Module
 
