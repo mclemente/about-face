@@ -1,4 +1,5 @@
 import { IndicatorMode, MODULE_ID } from "./settings.js";
+import { libWrapper } from "./shim.js";
 
 export class AboutFace {
 	constructor() {
