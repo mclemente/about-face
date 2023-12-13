@@ -1,15 +1,49 @@
 {
 	"about-face": {
+		"keybindings": {
+			"lockRotation": {
+				"name": "回転を固定",
+				"hint": "新規に作成されたコマは「回転を固定」設定が有効化された状態で作成されます。回転が固定されたコマは移動や、SHIFT + 矢印キーを押したときも回転しません。\nもしコマの回転を固定した状態をデフォルトにしたい場合、About Face設定の「回転を固定」を確認してください。",
+				"tooltip": {
+					"true": "回転の固定は有効です。",
+					"false": "回転の固定は無効です。"
+				}
+			},
+			"toggleTokenRotation": {
+				"name": "コマの回転を無効化",
+				"hint": "コマが移動の際に回転しません。視野角のあるゲームに有用です。",
+				"tooltip": {
+					"false": "コマは移動の際に回転します。",
+					"true": "コマは移動の際に回転しません。"
+				}
+			}
+		},
 		"sceneConfig": {
 			"hint": "このシーンのAbout Faceの設定を行います。",
+			"apply": "存在するコマに適用する",
 			"scene-enabled": {
 				"name": "このシーンで有効化",
 				"hint": "このシーン内でコマが移動するたびに向きを変えます（ロック時除く）。無効化しても、Shiftを押しながらその場で向きを変えることもできます。"
+			},
+			"lockRotation": {
+				"name": "回転を固定",
+				"hint": "このシーンで生成されるコマは、「回転を固定」が有効化された状態で生成されます。"
+			},
+			"lockArrowRotation": {
+				"name": "方向矢印の回転を固定",
+				"hint": "コマが移動する際、方向矢印が変わりません。SHIFT + 矢印キーで方向矢印を回転できます。"
+			}
+		},
+		"tokenConfig": {
+			"rotationOffset": {
+				"name": "回転オフセット"
 			}
 		},
 		"options": {
+			"changeEverySceneDialog": "全シーンでこの設定を変更しますか？",
 			"disable-indicator": "方向矢印を無効化",
-			"individual-token-text": "このコマの向きを示す矢印を非表示にします。",
+			"individual-token-text": "このコマの向きを示す矢印を表示しますか？",
+			"facing": "Facing",
 			"arrowColor": {
 				"name": "方向矢印の色",
 				"hint": "矢印の色を選択します。",
@@ -18,6 +52,18 @@
 			"arrowDistance": {
 				"name": "方向矢印の間隔",
 				"hint": "コマから表示される方向矢印の間隔を設定します。計算式：大きい辺 x （倍率÷2）。"
+			},
+			"hideIndicatorOnDead": {
+				"name": "死亡したコマの方向矢印を非表示",
+				"hint": "Hides the indicator from tokens marked as defeated on the combat tracker (e.g. the big skull marker on most systems)."
+			},
+			"indicatorDrawingType": {
+				"name": "方向矢印の形",
+				"hint": "方向矢印の表示形式を変更します。",
+				"options": {
+					"arrow": "Arrow",
+					"line": "Line"
+				}
 			},
 			"lockArrowRotation": {
 				"name": "方向矢印を固定化",
@@ -31,6 +77,13 @@
 				"name": "回転を固定",
 				"hint": "新規に作成されたコマは「回転を固定」設定が有効化された状態で作成されます。"
 			},
+			"lockRotation": {
+				"hint": "このシーンで作成されたコマは「回転を固定」設定が有効化され、移動した際に回転しなくなります。"
+			},
+			"lockVisionToRotation": {
+				"name": "視野をコマの回転に固定",
+				"hint": "コマの視野は方向矢印の代わりに回転を追従します。視野角のあるゲームに有用です。SHIFT + 方向キーを押下中はこの設定は無効化されます。この設定は\"Mirror or Rotate Token\" が \"Rotate\"でないと無視されます。"
+			},
 			"enable-indicator": {
 				"name": "コマ方向矢印の有効化",
 				"hint": "コマに方向矢印を表示します。",
@@ -39,6 +92,10 @@
 					"1": "ホバー時",
 					"2": "常に"
 				}
+			},
+			"enable-indicator-pc": {
+				"name": "PCコマ方向矢印の有効化",
+				"hint": "プレイヤー権限のあるコマに方向矢印を表示します。"
 			},
 			"flip-or-rotate": {
 				"name": "コマの反転・回転",
@@ -63,11 +120,6 @@
 			"indicator-sprite": {
 				"name": "方向矢印のアイコン",
 				"hint": "方向矢印のアイコンを変更します",
-				"choices": {
-					"normal": "標準",
-					"large": "大きめ",
-					"hex": "へクス用 （へクス使用時のみ）"
-				}
 			}
 		}
 	}
