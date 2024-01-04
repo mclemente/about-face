@@ -154,7 +154,7 @@ export function drawAboutFaceIndicator(token) {
 		return;
 	}
 	const isDead =
-		token.actor?.effects.find((el) => el._statusId === "dead") ||
+		token.actor?.effects.some((el) => el.statuses.has("dead")) ||
 		token.document?.overlayEffect === CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
 	if (game.aboutFace.hideIndicatorOnDead && isDead) {
 		if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed)
