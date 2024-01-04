@@ -3,6 +3,8 @@
  * Rotates tokens based on the direction the token is moved
  *
  * by Eadorin, edzillion
+ * 
+ * Edited by Fligo11 to add more targeting functionality 9/17/2023
  */
 
 import { AboutFace, drawAboutFaceIndicator, onPreCreateToken, onPreUpdateToken } from "./scripts/logic.js";
@@ -73,3 +75,62 @@ Hooks.on("renderSceneConfig", renderSceneConfigHandler);
 Hooks.on("renderSceneConfig", asyncRenderSceneConfigHandler);
 Hooks.on("renderTokenConfig", renderTokenConfigHandler);
 Hooks.on("renderSettingsConfig", renderSettingsConfigHandler);
+
+
+
+// Main function which gets the users cursor coordinates and updates the selected tokens "direction" arrow points it at those coordinates.
+function targetAndRotateToCursor() {
+    console.log(canvas);
+    console.log(canvas.app);
+    console.log(canvas.app.renderer);
+    console.log(canvas.app.renderer.plugins);
+    console.log(canvas.app.renderer.plugins.interaction);
+    console.log(canvas.app.renderer.plugins.interaction.mouse);
+
+	const globalMousePos = new PIXI.Point(canvas.app.renderer.plugins.interaction.rootPointerEvent.client.x, canvas.app.renderer.plugins.interaction.rootPointerEvent.client.y);    const localMousePos = canvas.app.stage.toLocal(globalMousePos);
+
+    // Iterate over all controlled tokens, this is useful for changing a group direction.
+    for (const sourceToken of canvas.tokens.controlled) {
+        if (!sourceToken) continue;
+
+        const sourceX = sourceToken.x + sourceToken.width / 2;
+        const sourceY = sourceToken.y + sourceToken.height / 2;
+
+        // Calculate the angle between the source token and the mouse cursor
+        const angleDeg = calculateAngle(sourceX, sourceY, localMousePos.x, localMousePos.y);
+        
+        // Update the token's direction
+        sourceToken.document.update({
+            "flags.about-face.direction": angleDeg
+        });
+    }
+}
+
+// 'T' key event listener, this listens for when the T key is pressed and turns the token that direction, also works wih groups.
+document.addEventListener("keydown", (event) => {
+    if (event.code === "KeyT" && !event.altKey && !event.ctrlKey && !event.shiftKey && !event.metaKey) {
+        targetAndRotateToCursor();
+    }
+});
+
+// Makes the mousewheel perform the same function as if you had pressed t, added this since you cant map keys to mouse inputs yet
+// the mousewheel targeting setting can be changed in the settings.
+document.addEventListener("mousedown", (event) => {
+	const mousewheelTargetingEnabled = game.settings.get(MODULE_ID, "use-mousewheel-targeting");
+    if (event.button === 1) {  // Middle mouse button
+        // Call the _onTarget method with the appropriate context
+		if (mousewheelTargetingEnabled) {
+			const context = {
+				isShift: event.shiftKey
+			};
+			ClientKeybindings._onTarget(context);
+			targetAndRotateToCursor();
+		}
+    }
+});
+
+// Function to calculate the angle in degrees between two points
+function calculateAngle(x1, y1, x2, y2) {
+    const angleRad = Math.atan2(y2 - y1, x2 - x1);
+    return (angleRad * (180 / Math.PI) + 360) % 360;
+}

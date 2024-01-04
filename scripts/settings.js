@@ -288,6 +288,19 @@ export function registerSettings() {
 		default: true,
 		type: Boolean,
 	});
+	game.settings.register(MODULE_ID, "use-mousewheel-targeting", {
+        name: "Use Mousewheel for Targeting",
+        hint: "Enable or disable the use of the mousewheel button for targeting tokens.",
+        scope: "world",
+        config: true,
+        default: true,
+        type: Boolean,
+        onChange: value => {
+            console.log(`Mousewheel targeting is now ${value ? "enabled" : "disabled"}.`);
+            // Optionally, add any immediate actions to be taken when this setting changes.
+            // For example, enabling/disabling event listeners related to mousewheel targeting.
+        }
+    });
 }
 
 /**
