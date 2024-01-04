@@ -80,12 +80,12 @@ Hooks.on("renderSettingsConfig", renderSettingsConfigHandler);
 
 // Main function which gets the users cursor coordinates and updates the selected tokens "direction" arrow points it at those coordinates.
 function targetAndRotateToCursor() {
-    console.log(canvas);
-    console.log(canvas.app);
-    console.log(canvas.app.renderer);
-    console.log(canvas.app.renderer.plugins);
-    console.log(canvas.app.renderer.plugins.interaction);
-    console.log(canvas.app.renderer.plugins.interaction.mouse);
+    // console.log(canvas);
+    // console.log(canvas.app);
+    // console.log(canvas.app.renderer);
+    // console.log(canvas.app.renderer.plugins);
+    // console.log(canvas.app.renderer.plugins.interaction);
+    // console.log(canvas.app.renderer.plugins.interaction.mouse);
 
 	const globalMousePos = new PIXI.Point(canvas.app.renderer.plugins.interaction.rootPointerEvent.client.x, canvas.app.renderer.plugins.interaction.rootPointerEvent.client.y);    const localMousePos = canvas.app.stage.toLocal(globalMousePos);
 
