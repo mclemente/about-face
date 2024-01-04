@@ -164,15 +164,17 @@ export function drawAboutFaceIndicator(token) {
 	try {
 		//get the rotation of the token
 		let tokenDirection = token.document.flags[MODULE_ID]?.direction ?? getIndicatorDirection(token.document) ?? 90;
-
+	
+		// Calculate token's scale
+		const tokenScale = (Math.abs(token.document.texture.scaleX) + Math.abs(token.document.texture.scaleY)) / 2;
+	
 		// Calculate indicator's distance
 		const indicatorDistance = game.aboutFace.indicatorDistance;
 		const maxTokenSize = Math.max(token.w, token.h);
-		const distance = (maxTokenSize / 2) * indicatorDistance;
-
+		const distance = (maxTokenSize / 2) * indicatorDistance * tokenScale;
+	
 		// Calculate indicator's scale
 		const tokenSize = Math.max(token.document.width, token.document.height);
-		const tokenScale = Math.abs(token.document.texture.scaleX) + Math.abs(token.document.texture.scaleY);
 		const indicatorSize = game.aboutFace.indicatorSize || 1;
 		const scale = ((tokenSize * tokenScale) / 2) * indicatorSize;
 
