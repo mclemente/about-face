@@ -67,8 +67,12 @@ Hooks.on("canvasReady", async () => {
 });
 Hooks.on("preCreateToken", onPreCreateToken);
 Hooks.on("preUpdateToken", onPreUpdateToken);
-Hooks.on("createToken", (tokenDocument, options, userId) => drawAboutFaceIndicator(tokenDocument.object));
-Hooks.on("updateToken", (tokenDocument, changes, options, userId) => drawAboutFaceIndicator(tokenDocument.object));
+Hooks.on("createToken", (tokenDocument, options, userId) => {
+	if (tokenDocument.object) drawAboutFaceIndicator(tokenDocument.object);
+});
+Hooks.on("updateToken", (tokenDocument, changes, options, userId) => {
+	if (tokenDocument.object) drawAboutFaceIndicator(tokenDocument.object);
+});
 Hooks.on("refreshToken", (token, options) => {
 	if (options.redrawEffects) drawAboutFaceIndicator(token);
 });
