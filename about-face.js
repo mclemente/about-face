@@ -80,6 +80,7 @@ Hooks.on("renderSettingsConfig", renderSettingsConfigHandler);
 
 // Main function which gets the users cursor coordinates and updates the selected tokens "direction" arrow points it at those coordinates.
 function targetAndRotateToCursor() {
+	// test logs for PIXI stuff
     // console.log(canvas);
     // console.log(canvas.app);
     // console.log(canvas.app.renderer);
@@ -113,7 +114,7 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-// Makes the mousewheel perform the same function as if you had pressed t, added this since you cant map keys to mouse inputs yet
+// Allows the mousewheel to perform the same function as if you had pressed t, added this since you cant map keys to mouse inputs yet.
 // the mousewheel targeting setting can be changed in the settings.
 document.addEventListener("mousedown", (event) => {
 	const mousewheelTargetingEnabled = game.settings.get(MODULE_ID, "use-mousewheel-targeting");
