@@ -4,7 +4,7 @@
  *
  * by Eadorin, edzillion
  * 
- * Edited by Somedude5 to add more targeting functionality 9/17/2023
+ * Edited by Somedude5 to add more targeting functionality 1/3/2023
  */
 
 import { AboutFace, drawAboutFaceIndicator, onPreCreateToken, onPreUpdateToken } from "./scripts/logic.js";
