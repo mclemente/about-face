@@ -53,6 +53,16 @@
 				"name": "Indicator Distance",
 				"hint": "Set the multiplier for the indicator's distance. Math: Largest Size × (Multiplier / 2)."
 			},
+			"disableAnimations": {
+				"name": "Disable Animations",
+				"hint": "Disables the animations of mirroring and rotations whenever it is done along with a movement animation.",
+				"choices": {
+					"none": "None",
+					"mirror": "When mirroring",
+					"rotation": "When rotating",
+					"all": "When mirroring or rotating"
+				}
+			},
 			"hideIndicatorOnDead": {
 				"name": "Hide Indicator On Dead Tokens",
 				"hint": "Hides the indicator from tokens marked as defeated on the combat tracker (e.g. the big skull marker on most systems)."

@@ -229,6 +229,18 @@ export function registerSettings() {
 		type: Boolean,
 	});
 
+	game.settings.register(MODULE_ID, "disableAnimations", {
+		name: "about-face.options.disableAnimations.name",
+		hint: "about-face.options.disableAnimations.hint",
+		scope: "world",
+		config: true,
+		default: false,
+		type: Boolean,
+		onChange: (value) => {
+			game.aboutFace._prepareAnimation(value);
+		},
+	});
+
 	game.settings.register(MODULE_ID, "lockRotation", {
 		name: "about-face.options.lockRotation.name",
 		hint: "about-face.options.lockRotation.hint",

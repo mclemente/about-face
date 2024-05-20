@@ -8,6 +8,7 @@ export class AboutFace {
 		this.indicatorDrawingType = game.settings.get("about-face", "indicatorDrawingType");
 		this.indicatorSize = game.settings.get("about-face", "sprite-type");
 		this._tokenRotation = false;
+		if (game.settings.get("about-face", "disableAnimations")) this._prepareAnimation();
 	}
 
 	get tokenRotation() {
@@ -15,6 +16,46 @@ export class AboutFace {
 	}
 	set tokenRotation(value) {
 		this._tokenRotation = value;
+	}
+
+	_prepareAnimation(value = true) {
+		if (value) {
+			libWrapper.register(
+				MODULE_ID,
+				"CONFIG.Token.objectClass.prototype._getAnimationDuration",
+				(from, to, { movementSpeed = 6 } = {}) => {
+					let duration = 0;
+					const dx = from.x - (to.x ?? from.x);
+					const dy = from.y - (to.y ?? from.y);
+					if (dx || dy)
+						duration = Math.max(
+							duration,
+							(Math.hypot(dx, dy) / canvas.dimensions.size / movementSpeed) * 1000
+						);
+					const dr = ((Math.abs(from.rotation - (to.rotation ?? from.rotation)) + 180) % 360) - 180;
+					if (dr && !(dx || dy)) duration = Math.max(duration, (Math.abs(dr) / (movementSpeed * 60)) * 1000);
+					if (!duration) duration = 1000; // The default animation duration is 1 second
+					return duration;
+				},
+				"OVERRIDE"
+			);
+			libWrapper.register(
+				MODULE_ID,
+				"CONFIG.Token.objectClass.prototype._prepareAnimation",
+				(wrapped, from, changes, context, options = {}) => {
+					if ("x" in changes || "y" in changes) {
+						if ("rotation" in changes) delete changes.rotation;
+						if (changes.texture?.scaleX) delete changes.texture.scaleX;
+						if (changes.texture?.scaleY) delete changes.texture.scaleY;
+					}
+					return wrapped(from, changes, context, options);
+				},
+				"WRAPPER"
+			);
+		} else {
+			libWrapper.unregister(MODULE_ID, "CONFIG.Token.objectClass.prototype._getAnimationDuration");
+			libWrapper.unregister(MODULE_ID, "CONFIG.Token.objectClass.prototype._prepareAnimation");
+		}
 	}
 }
 
@@ -153,9 +194,8 @@ export function drawAboutFaceIndicator(token) {
 		if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = false;
 		return;
 	}
-	const isDead =
-		token.actor?.effects.some((el) => el.statuses.has("dead")) ||
-		token.document?.overlayEffect === CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
+	const deadIcon = CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
+	const isDead = token.actor?.effects.some((el) => el.statuses.has("dead") || el.img === deadIcon);
 	if (game.aboutFace.hideIndicatorOnDead && isDead) {
 		if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed)
 			token.aboutFaceIndicator.graphics.visible = false;

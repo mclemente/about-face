@@ -20,7 +20,7 @@ import {
 Hooks.once("init", () => {
 	registerSettings();
 	game.aboutFace = new AboutFace();
-	if (game.settings.get("about-face", "indicator-state") === 1) {
+	if (game.settings.get(MODULE_ID, "indicator-state") === 1) {
 		Hooks.on("hoverToken", tokenHover);
 		Hooks.on("highlightObjects", highlightObjects);
 	}
