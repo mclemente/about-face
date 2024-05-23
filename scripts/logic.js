@@ -99,6 +99,10 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 		return;
 	}
 
+	if (tokenDocument.x === updates.x && tokenDocument.y === updates.y && !("rotation" in updates)) {
+		return;
+	}
+
 	let position = {};
 	// store the direction in the token data
 	if (!updates.flags) {
