@@ -1,6 +1,5 @@
 import { colorPicker } from "./colorPicker.js";
 import { injectConfig } from "./injectConfig.js";
-import { drawAboutFaceIndicator } from "./logic.js";
 
 export const MODULE_ID = "about-face";
 export const IndicatorMode = {
@@ -64,7 +63,7 @@ export function registerSettings() {
 			for (const token of tokens) {
 				if (token.aboutFaceIndicator) {
 					token.aboutFaceIndicator.destroy();
-					drawAboutFaceIndicator(token);
+					game.aboutFace.drawAboutFaceIndicator(token);
 				}
 			}
 		},
@@ -87,7 +86,7 @@ export function registerSettings() {
 			if (canvas === null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
-				if (token.aboutFaceIndicator) drawAboutFaceIndicator(token);
+				if (token.aboutFaceIndicator) game.aboutFace.drawAboutFaceIndicator(token);
 			}
 		},
 	});
@@ -159,7 +158,7 @@ export function registerSettings() {
 			if (canvas === null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
-				drawAboutFaceIndicator(token);
+				game.aboutFace.drawAboutFaceIndicator(token);
 			}
 		},
 	});
@@ -190,7 +189,7 @@ export function registerSettings() {
 			if (canvas === null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
-				drawAboutFaceIndicator(token);
+				game.aboutFace.drawAboutFaceIndicator(token);
 			}
 		},
 	});
@@ -534,7 +533,7 @@ function toggleAllIndicators(state, playerOwner = false) {
 
 export function tokenHover(token, hovered) {
 	if (hovered) {
-		drawAboutFaceIndicator(token);
+		game.aboutFace.drawAboutFaceIndicator(token);
 	} else if (token.aboutFaceIndicator) {
 		token.aboutFaceIndicator.graphics.visible = false;
 	}
@@ -543,7 +542,7 @@ export function highlightObjects(highlighted) {
 	if (canvas.scene?.flags?.[MODULE_ID].sceneEnabled) {
 		canvas.scene.tokens.forEach((tokenDocument) => {
 			if (highlighted) {
-				drawAboutFaceIndicator(tokenDocument.object);
+				game.aboutFace.drawAboutFaceIndicator(tokenDocument.object);
 			} else if (tokenDocument.object.aboutFaceIndicator) {
 				tokenDocument.object.aboutFaceIndicator.graphics.visible = false;
 			}

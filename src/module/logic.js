@@ -57,6 +57,94 @@ export class AboutFace {
 			libWrapper.unregister(MODULE_ID, "CONFIG.Token.objectClass.prototype._prepareAnimation");
 		}
 	}
+
+	drawAboutFaceIndicator(token) {
+		if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) {
+			if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = false;
+			return;
+		}
+		const deadIcon = CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
+		const isDead = token.actor?.effects.some((el) => el.statuses.has("dead") || el.img === deadIcon);
+		if (this.hideIndicatorOnDead && isDead) {
+			if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) {
+				token.aboutFaceIndicator.graphics.visible = false;
+			}
+			return;
+		}
+		try {
+			// get the rotation of the token
+			let tokenDirection = token.document.flags[MODULE_ID]?.direction
+				?? getIndicatorDirection(token.document) ?? 90;
+
+			// Calculate indicator's distance
+			const indicatorDistance = this.indicatorDistance;
+			const maxTokenSize = Math.max(token.w, token.h);
+			const distance = (maxTokenSize / 2) * indicatorDistance;
+
+			// Calculate indicator's scale
+			const tokenSize = Math.max(token.document.width, token.document.height);
+			const tokenScale = Math.abs(token.document.texture.scaleX) + Math.abs(token.document.texture.scaleY);
+			const indicatorSize = this.indicatorSize || 1;
+			const scale = ((tokenSize * tokenScale) / 2) * indicatorSize;
+
+			// Create or update the about face indicator
+			// updateAboutFaceIndicator(token, tokenDirection, distance, scale);
+			if (!token.aboutFaceIndicator || token.aboutFaceIndicator._destroyed) {
+				const { w: width, h: height } = token;
+				const container = new PIXI.Container({ name: "aboutFaceIndicator", width, height });
+				container.name = "aboutFaceIndicator";
+				container.width = width;
+				container.height = height;
+				container.x = width / 2;
+				container.y = height / 2;
+				const graphics = new PIXI.Graphics();
+				// draw an arrow indicator
+				// drawArrow(graphics);
+				const color = `0x${this.indicatorColor.substring(1, 7)}` || "";
+				graphics.beginFill(color, 0.5).lineStyle(2, color, 1).moveTo(0, 0);
+				if (this.indicatorDrawingType === 0) {
+					graphics.lineTo(0, -10).lineTo(10, 0).lineTo(0, 10).lineTo(0, 0).closePath().endFill();
+				} else if (this.indicatorDrawingType === 1) {
+					graphics.lineTo(-10, -20).lineTo(0, 0).lineTo(-10, 20).lineTo(0, 0).closePath().endFill();
+				}
+				// place the arrow in the correct position
+				container.angle = tokenDirection;
+				graphics.x = distance;
+				graphics.scale.set(scale, scale);
+				// add the graphics to the container
+				container.addChild(graphics);
+				container.graphics = graphics;
+				token.aboutFaceIndicator = container;
+				// add the container to the token
+				token.addChild(container);
+			} else {
+				let container = token.aboutFaceIndicator;
+				let graphics = container.graphics;
+				graphics.x = distance;
+				graphics.scale.set(scale, scale);
+				// update the rotation of the arrow
+				container.angle = tokenDirection;
+			}
+
+			// Set the visibility of the indicator based on the current indicator mode
+			const indicatorState = token?.actor?.hasPlayerOwner
+				? game.settings.get(MODULE_ID, "indicator-state-pc")
+				: game.settings.get(MODULE_ID, "indicator-state");
+			const indicatorDisabled = token.document.getFlag(MODULE_ID, "indicatorDisabled");
+
+			if (indicatorState === IndicatorMode.OFF || indicatorDisabled) {
+				token.aboutFaceIndicator.graphics.visible = false;
+			} else if (indicatorState === IndicatorMode.HOVER) token.aboutFaceIndicator.graphics.visible = token.hover;
+			else if (indicatorState === IndicatorMode.ALWAYS) token.aboutFaceIndicator.graphics.visible = true;
+		} catch(error) {
+			console.error(
+				`About Face | Error drawing the indicator for token ${token.name} (ID: ${token.id}, Type: ${
+					token.document?.actor?.type ?? null
+				})`,
+				error
+			);
+		}
+	}
 }
 
 // HOOKS
@@ -190,93 +278,6 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	if (shouldUpdateRotation || shouldUpdateSightAngle) {
 		const rotationOffset = flags[MODULE_ID]?.rotationOffset ?? 0;
 		updates.rotation = tokenDirection - 90 + rotationOffset;
-	}
-}
-
-export function drawAboutFaceIndicator(token) {
-	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) {
-		if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = false;
-		return;
-	}
-	const deadIcon = CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
-	const isDead = token.actor?.effects.some((el) => el.statuses.has("dead") || el.img === deadIcon);
-	if (game.aboutFace.hideIndicatorOnDead && isDead) {
-		if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) {
-			token.aboutFaceIndicator.graphics.visible = false;
-		}
-		return;
-	}
-	try {
-		// get the rotation of the token
-		let tokenDirection = token.document.flags[MODULE_ID]?.direction ?? getIndicatorDirection(token.document) ?? 90;
-
-		// Calculate indicator's distance
-		const indicatorDistance = game.aboutFace.indicatorDistance;
-		const maxTokenSize = Math.max(token.w, token.h);
-		const distance = (maxTokenSize / 2) * indicatorDistance;
-
-		// Calculate indicator's scale
-		const tokenSize = Math.max(token.document.width, token.document.height);
-		const tokenScale = Math.abs(token.document.texture.scaleX) + Math.abs(token.document.texture.scaleY);
-		const indicatorSize = game.aboutFace.indicatorSize || 1;
-		const scale = ((tokenSize * tokenScale) / 2) * indicatorSize;
-
-		// Create or update the about face indicator
-		// updateAboutFaceIndicator(token, tokenDirection, distance, scale);
-		if (!token.aboutFaceIndicator || token.aboutFaceIndicator._destroyed) {
-			const { w: width, h: height } = token;
-			const container = new PIXI.Container({ name: "aboutFaceIndicator", width, height });
-			container.name = "aboutFaceIndicator";
-			container.width = width;
-			container.height = height;
-			container.x = width / 2;
-			container.y = height / 2;
-			const graphics = new PIXI.Graphics();
-			// draw an arrow indicator
-			// drawArrow(graphics);
-			const color = `0x${game.aboutFace.indicatorColor.substring(1, 7)}` || "";
-			graphics.beginFill(color, 0.5).lineStyle(2, color, 1).moveTo(0, 0);
-			if (game.aboutFace.indicatorDrawingType === 0) {
-				graphics.lineTo(0, -10).lineTo(10, 0).lineTo(0, 10).lineTo(0, 0).closePath().endFill();
-			} else if (game.aboutFace.indicatorDrawingType === 1) {
-				graphics.lineTo(-10, -20).lineTo(0, 0).lineTo(-10, 20).lineTo(0, 0).closePath().endFill();
-			}
-			// place the arrow in the correct position
-			container.angle = tokenDirection;
-			graphics.x = distance;
-			graphics.scale.set(scale, scale);
-			// add the graphics to the container
-			container.addChild(graphics);
-			container.graphics = graphics;
-			token.aboutFaceIndicator = container;
-			// add the container to the token
-			token.addChild(container);
-		} else {
-			let container = token.aboutFaceIndicator;
-			let graphics = container.graphics;
-			graphics.x = distance;
-			graphics.scale.set(scale, scale);
-			// update the rotation of the arrow
-			container.angle = tokenDirection;
-		}
-
-		// Set the visibility of the indicator based on the current indicator mode
-		const indicatorState = token?.actor?.hasPlayerOwner
-			? game.settings.get(MODULE_ID, "indicator-state-pc")
-			: game.settings.get(MODULE_ID, "indicator-state");
-		const indicatorDisabled = token.document.getFlag(MODULE_ID, "indicatorDisabled");
-
-		if (indicatorState === IndicatorMode.OFF || indicatorDisabled) {
-			token.aboutFaceIndicator.graphics.visible = false;
-		} else if (indicatorState === IndicatorMode.HOVER) token.aboutFaceIndicator.graphics.visible = token.hover;
-		else if (indicatorState === IndicatorMode.ALWAYS) token.aboutFaceIndicator.graphics.visible = true;
-	} catch(error) {
-		console.error(
-			`About Face | Error drawing the indicator for token ${token.name} (ID: ${token.id}, Type: ${
-				token.document?.actor?.type ?? null
-			})`,
-			error
-		);
 	}
 }
 

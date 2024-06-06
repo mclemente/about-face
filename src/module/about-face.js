@@ -5,7 +5,7 @@
  * by Eadorin, edzillion
  */
 
-import { AboutFace, drawAboutFaceIndicator, onPreCreateToken, onPreUpdateToken } from "./logic.js";
+import { AboutFace, onPreCreateToken, onPreUpdateToken } from "./logic.js";
 import {
 	MODULE_ID,
 	asyncRenderSceneConfigHandler,
@@ -64,19 +64,19 @@ Hooks.once("init", () => {
 Hooks.on("canvasReady", async () => {
 	if (canvas.scene?.flags?.[MODULE_ID] == null) await canvas.scene.setFlag(MODULE_ID, "sceneEnabled", true);
 	if (canvas.scene?.flags?.[MODULE_ID].sceneEnabled) {
-		canvas.scene.tokens.forEach((tokenDocument) => drawAboutFaceIndicator(tokenDocument.object));
+		canvas.scene.tokens.forEach((tokenDocument) => game.aboutFace.drawAboutFaceIndicator(tokenDocument.object));
 	}
 });
 Hooks.on("preCreateToken", onPreCreateToken);
 Hooks.on("preUpdateToken", onPreUpdateToken);
 Hooks.on("createToken", (tokenDocument, options, userId) => {
-	if (tokenDocument.object) drawAboutFaceIndicator(tokenDocument.object);
+	if (tokenDocument.object) game.aboutFace.drawAboutFaceIndicator(tokenDocument.object);
 });
 Hooks.on("updateToken", (tokenDocument, changes, options, userId) => {
-	if (tokenDocument.object) drawAboutFaceIndicator(tokenDocument.object);
+	if (tokenDocument.object) game.aboutFace.drawAboutFaceIndicator(tokenDocument.object);
 });
 Hooks.on("refreshToken", (token, options) => {
-	if (options.redrawEffects) drawAboutFaceIndicator(token);
+	if (options.redrawEffects) game.aboutFace.drawAboutFaceIndicator(token);
 });
 Hooks.on("renderSceneConfig", renderSceneConfigHandler);
 Hooks.on("renderSceneConfig", asyncRenderSceneConfigHandler);
