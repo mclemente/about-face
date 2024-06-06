@@ -14,6 +14,7 @@ export class AboutFace {
 	get tokenRotation() {
 		return this._tokenRotation;
 	}
+
 	set tokenRotation(value) {
 		this._tokenRotation = value;
 	}
@@ -27,11 +28,10 @@ export class AboutFace {
 					let duration = 0;
 					const dx = from.x - (to.x ?? from.x);
 					const dy = from.y - (to.y ?? from.y);
-					if (dx || dy)
-						duration = Math.max(
-							duration,
-							(Math.hypot(dx, dy) / canvas.dimensions.size / movementSpeed) * 1000
-						);
+					if (dx || dy) duration = Math.max(
+						duration,
+						(Math.hypot(dx, dy) / canvas.dimensions.size / movementSpeed) * 1000
+					);
 					const dr = ((Math.abs(from.rotation - (to.rotation ?? from.rotation)) + 180) % 360) - 180;
 					if (dr && !(dx || dy)) duration = Math.max(duration, (Math.abs(dr) / (movementSpeed * 60)) * 1000);
 					if (!duration) duration = 1000; // The default animation duration is 1 second
@@ -92,9 +92,9 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	}
 
 	if (
-		game.modules.get("multilevel-tokens")?.active &&
-		!game.multilevel._isReplicatedToken(tokenDocument) &&
-		options?.mlt_bypass
+		game.modules.get("multilevel-tokens")?.active
+		&& !game.multilevel._isReplicatedToken(tokenDocument)
+		&& options?.mlt_bypass
 	) {
 		return;
 	}
@@ -122,34 +122,34 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 			options.animation.duration = 1000 / 6;
 		}
 	} else if (
-		!game.aboutFace.tokenRotation &&
-		(Number.isNumeric(x) || Number.isNumeric(y)) &&
-		!canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")
+		!game.aboutFace.tokenRotation
+		&& (Number.isNumeric(x) || Number.isNumeric(y))
+		&& !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")
 	) {
-		//get previous and new positions
+		// get previous and new positions
 		const prevPos = { x: tokenX, y: tokenY };
 		const newPos = { x: x ?? tokenX, y: y ?? tokenY };
-		//get the direction in degrees of the movement
+		// get the direction in degrees of the movement
 		let diffY = newPos.y - prevPos.y;
 		let diffX = newPos.x - prevPos.x;
 		tokenDirection = (Math.atan2(diffY, diffX) * 180) / Math.PI;
 
 		if (canvas.grid.type && game.settings.get(MODULE_ID, "lockArrowToFace")) {
 			const directions = [
-				[45, 90, 135, 180, 225, 270, 315, 360], //Square
-				[0, 60, 120, 180, 240, 300, 360], //Hex Rows
-				[30, 90, 150, 210, 270, 330, 390], //Hex Columns
+				[45, 90, 135, 180, 225, 270, 315, 360], // Square
+				[0, 60, 120, 180, 240, 300, 360], // Hex Rows
+				[30, 90, 150, 210, 270, 330, 390], // Hex Columns
 			];
 			const gridType = getGridType();
 			const facings = directions[gridType];
 			if (facings && facings.length) {
 				// convert negative dirs into a range from 0-360
-				let normalizedDir = ((tokenDirection % 360) + 360) % 360; //Math.round(tokenDirection < 0 ? 360 + tokenDirection : tokenDirection);
+				let normalizedDir = ((tokenDirection % 360) + 360) % 360; // Math.round(tokenDirection < 0 ? 360 + tokenDirection : tokenDirection);
 				// find the largest normalized angle
 				let secondAngle = facings.reduce(
 					(prev, curr) => (curr > prev && curr <= normalizedDir ? curr : prev),
 					facings[0]
-				); //facings.find((e) => e > normalizedDir);
+				); // facings.find((e) => e > normalizedDir);
 				// and assume the facing is 60 degrees (hexes) or 45 (square) to the counter clockwise
 				tokenDirection = gridType ? secondAngle - 60 : secondAngle - 45;
 				// unless the largest angle was closer
@@ -201,12 +201,11 @@ export function drawAboutFaceIndicator(token) {
 	const deadIcon = CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
 	const isDead = token.actor?.effects.some((el) => el.statuses.has("dead") || el.img === deadIcon);
 	if (game.aboutFace.hideIndicatorOnDead && isDead) {
-		if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed)
-			token.aboutFaceIndicator.graphics.visible = false;
+		if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) token.aboutFaceIndicator.graphics.visible = false;
 		return;
 	}
 	try {
-		//get the rotation of the token
+		// get the rotation of the token
 		let tokenDirection = token.document.flags[MODULE_ID]?.direction ?? getIndicatorDirection(token.document) ?? 90;
 
 		// Calculate indicator's distance
@@ -231,31 +230,31 @@ export function drawAboutFaceIndicator(token) {
 			container.x = width / 2;
 			container.y = height / 2;
 			const graphics = new PIXI.Graphics();
-			//draw an arrow indicator
+			// draw an arrow indicator
 			// drawArrow(graphics);
-			const color = `0x${game.aboutFace.indicatorColor.substring(1, 7)}` || ``;
+			const color = `0x${game.aboutFace.indicatorColor.substring(1, 7)}` || "";
 			graphics.beginFill(color, 0.5).lineStyle(2, color, 1).moveTo(0, 0);
 			if (game.aboutFace.indicatorDrawingType == 0) {
 				graphics.lineTo(0, -10).lineTo(10, 0).lineTo(0, 10).lineTo(0, 0).closePath().endFill();
 			} else if (game.aboutFace.indicatorDrawingType == 1) {
 				graphics.lineTo(-10, -20).lineTo(0, 0).lineTo(-10, 20).lineTo(0, 0).closePath().endFill();
 			}
-			//place the arrow in the correct position
+			// place the arrow in the correct position
 			container.angle = tokenDirection;
 			graphics.x = distance;
 			graphics.scale.set(scale, scale);
-			//add the graphics to the container
+			// add the graphics to the container
 			container.addChild(graphics);
 			container.graphics = graphics;
 			token.aboutFaceIndicator = container;
-			//add the container to the token
+			// add the container to the token
 			token.addChild(container);
 		} else {
 			let container = token.aboutFaceIndicator;
 			let graphics = container.graphics;
 			graphics.x = distance;
 			graphics.scale.set(scale, scale);
-			//update the rotation of the arrow
+			// update the rotation of the arrow
 			container.angle = tokenDirection;
 		}
 
@@ -268,7 +267,7 @@ export function drawAboutFaceIndicator(token) {
 		if (indicatorState == IndicatorMode.OFF || indicatorDisabled) token.aboutFaceIndicator.graphics.visible = false;
 		else if (indicatorState == IndicatorMode.HOVER) token.aboutFaceIndicator.graphics.visible = token.hover;
 		else if (indicatorState == IndicatorMode.ALWAYS) token.aboutFaceIndicator.graphics.visible = true;
-	} catch (error) {
+	} catch(error) {
 		console.error(
 			`About Face | Error drawing the indicator for token ${token.name} (ID: ${token.id}, Type: ${
 				token.document?.actor?.type ?? null

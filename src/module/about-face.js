@@ -5,7 +5,7 @@
  * by Eadorin, edzillion
  */
 
-import { AboutFace, drawAboutFaceIndicator, onPreCreateToken, onPreUpdateToken } from "./scripts/logic.js";
+import { AboutFace, drawAboutFaceIndicator, onPreCreateToken, onPreUpdateToken } from "./logic.js";
 import {
 	MODULE_ID,
 	asyncRenderSceneConfigHandler,
@@ -15,7 +15,7 @@ import {
 	renderSettingsConfigHandler,
 	renderTokenConfigHandler,
 	tokenHover,
-} from "./scripts/settings.js";
+} from "./settings.js";
 
 Hooks.once("init", () => {
 	registerSettings();
@@ -30,10 +30,9 @@ Hooks.once("init", () => {
 		onDown: () => {
 			game.aboutFace.tokenRotation = !game.aboutFace.tokenRotation;
 			ui.notifications.info(
-				"About Face: " +
-					game.i18n.localize(
-						`about-face.keybindings.toggleTokenRotation.tooltip.${game.aboutFace.tokenRotation}`
-					),
+				`About Face: ${game.i18n.localize(
+					`about-face.keybindings.toggleTokenRotation.tooltip.${game.aboutFace.tokenRotation}`
+				)}`,
 				{
 					console: false,
 				}
@@ -46,14 +45,17 @@ Hooks.once("init", () => {
 		name: "about-face.keybindings.lockRotation.name",
 		hint: "about-face.keybindings.lockRotation.hint",
 		onDown: () => {
+			let lockRotation;
 			for (let token of canvas.tokens.controlled) {
-				var lockRotation = !token.document.lockRotation;
+				lockRotation = !token.document.lockRotation;
 				token.document.update({ lockRotation: lockRotation });
 			}
-			ui.notifications.info(
-				"About Face: " + game.i18n.localize(`about-face.keybindings.lockRotation.tooltip.${lockRotation}`),
-				{ console: false }
-			);
+			if (lockRotation !== undefined) {
+				ui.notifications.info(
+					`About Face: ${game.i18n.localize(`about-face.keybindings.lockRotation.tooltip.${lockRotation}`)}`,
+					{ console: false }
+				);
+			}
 		},
 		restricted: true,
 		precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,

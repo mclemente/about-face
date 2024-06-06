@@ -46,7 +46,7 @@ export function registerSettings() {
 				SYSTEM_DEFAULTS["flip-or-rotate"] = "rotate";
 				break;
 			default:
-				console.error(`About Face | Somehow, this happened.`);
+				console.error("About Face | Somehow, this happened.");
 		}
 	}
 
@@ -405,14 +405,14 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 	const flipOrRotateSetting = game.settings.get(MODULE_ID, "flip-or-rotate");
 	const flipOrRotates = {
 		global: `${game.i18n.localize("about-face.options.flip-or-rotate.choices.global")} (${game.i18n.localize(
-			"about-face.options.flip-or-rotate.choices." + flipOrRotateSetting
+			`about-face.options.flip-or-rotate.choices.${flipOrRotateSetting}`
 		)})`,
 		...game.settings.settings.get("about-face.flip-or-rotate").choices,
 	};
 	const facingDirectionSetting = game.settings.get(MODULE_ID, "facing-direction");
 	const facingDirections = {
 		global: `${game.i18n.localize("about-face.options.flip-or-rotate.choices.global")} (${game.i18n.localize(
-			"about-face.options.facing-direction.choices." + facingDirectionSetting
+			`about-face.options.facing-direction.choices.${facingDirectionSetting}`
 		)})`,
 		...facingOptions[flipOrRotateSetting],
 	};
@@ -425,7 +425,7 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 		rotationOffset: rotationOffset,
 	};
 
-	const insertHTML = await renderTemplate("modules/" + MODULE_ID + "/templates/token-config.html", data);
+	const insertHTML = await renderTemplate(`modules/${MODULE_ID}/templates/token-config.html`, data);
 	posTab.append(insertHTML);
 
 	const selectFlipOrRotate = posTab.find(".token-config-select-flip-or-rotate");
@@ -437,7 +437,7 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 			var facingDirections = {
 				global: `${game.i18n.localize(
 					"about-face.options.flip-or-rotate.choices.global"
-				)} (${game.i18n.localize("about-face.options.facing-direction.choices." + facingDirectionSetting)})`,
+				)} (${game.i18n.localize(`about-face.options.facing-direction.choices.${facingDirectionSetting}`)})`,
 			};
 		} else facingDirections = {};
 		facingDirections = {
@@ -530,8 +530,7 @@ function toggleAllIndicators(state, playerOwner = false) {
 	if (canvas == null) return;
 	const tokens = getAllTokens();
 	tokens.forEach((token) => {
-		if (token.actor.hasPlayerOwner == playerOwner && token.aboutFaceIndicator)
-			token.aboutFaceIndicator.graphics.visible = state;
+		if (token.actor.hasPlayerOwner == playerOwner && token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = state;
 	});
 }
 

@@ -9,7 +9,7 @@
 			"discord": "mclemente"
 		}
 	],
-	"esmodules": ["about-face.js"],
+	"esmodules": ["module/about-face.js"],
 	"compatibility": {
 		"minimum": "12",
 		"verified": "12"
