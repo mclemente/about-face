@@ -71,7 +71,7 @@ export function onPreCreateToken(document, data, options, userId) {
 	if (facingDirection) {
 		const flipMode = game.settings.get(MODULE_ID, "flip-or-rotate");
 		const gridType = getGridType();
-		if (gridType == 0 || (gridType == 1 && flipMode == "flip-h") || (gridType == 2 && flipMode == "flip-v")) {
+		if (gridType === 0 || (gridType === 1 && flipMode === "flip-h") || (gridType === 2 && flipMode === "flip-v")) {
 			const TokenDirections = {
 				down: 90,
 				right: 360,
@@ -201,7 +201,9 @@ export function drawAboutFaceIndicator(token) {
 	const deadIcon = CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
 	const isDead = token.actor?.effects.some((el) => el.statuses.has("dead") || el.img === deadIcon);
 	if (game.aboutFace.hideIndicatorOnDead && isDead) {
-		if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) token.aboutFaceIndicator.graphics.visible = false;
+		if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) {
+			token.aboutFaceIndicator.graphics.visible = false;
+		}
 		return;
 	}
 	try {
@@ -234,9 +236,9 @@ export function drawAboutFaceIndicator(token) {
 			// drawArrow(graphics);
 			const color = `0x${game.aboutFace.indicatorColor.substring(1, 7)}` || "";
 			graphics.beginFill(color, 0.5).lineStyle(2, color, 1).moveTo(0, 0);
-			if (game.aboutFace.indicatorDrawingType == 0) {
+			if (game.aboutFace.indicatorDrawingType === 0) {
 				graphics.lineTo(0, -10).lineTo(10, 0).lineTo(0, 10).lineTo(0, 0).closePath().endFill();
-			} else if (game.aboutFace.indicatorDrawingType == 1) {
+			} else if (game.aboutFace.indicatorDrawingType === 1) {
 				graphics.lineTo(-10, -20).lineTo(0, 0).lineTo(-10, 20).lineTo(0, 0).closePath().endFill();
 			}
 			// place the arrow in the correct position
@@ -264,9 +266,10 @@ export function drawAboutFaceIndicator(token) {
 			: game.settings.get(MODULE_ID, "indicator-state");
 		const indicatorDisabled = token.document.getFlag(MODULE_ID, "indicatorDisabled");
 
-		if (indicatorState == IndicatorMode.OFF || indicatorDisabled) token.aboutFaceIndicator.graphics.visible = false;
-		else if (indicatorState == IndicatorMode.HOVER) token.aboutFaceIndicator.graphics.visible = token.hover;
-		else if (indicatorState == IndicatorMode.ALWAYS) token.aboutFaceIndicator.graphics.visible = true;
+		if (indicatorState === IndicatorMode.OFF || indicatorDisabled) {
+			token.aboutFaceIndicator.graphics.visible = false;
+		} else if (indicatorState === IndicatorMode.HOVER) token.aboutFaceIndicator.graphics.visible = token.hover;
+		else if (indicatorState === IndicatorMode.ALWAYS) token.aboutFaceIndicator.graphics.visible = true;
 	} catch(error) {
 		console.error(
 			`About Face | Error drawing the indicator for token ${token.name} (ID: ${token.id}, Type: ${
@@ -297,7 +300,7 @@ function getIndicatorDirection(tokenDocument) {
 
 function getTokenFlipOrRotate(tokenDocument) {
 	const tokenFlipOrRotate = tokenDocument.getFlag(MODULE_ID, "flipOrRotate") || "global";
-	return tokenFlipOrRotate != "global" ? tokenFlipOrRotate : game.settings.get(MODULE_ID, "flip-or-rotate");
+	return tokenFlipOrRotate !== "global" ? tokenFlipOrRotate : game.settings.get(MODULE_ID, "flip-or-rotate");
 }
 
 /**
@@ -325,7 +328,7 @@ function getMirror(tokenDocument, position = {}) {
 	const { x, y } = position;
 	const tokenFacingDirection = tokenDocument.getFlag(MODULE_ID, "facingDirection") || "global";
 	const facingDirection =
-		tokenFacingDirection == "global" ? game.settings.get(MODULE_ID, "facing-direction") : tokenFacingDirection;
+		tokenFacingDirection === "global" ? game.settings.get(MODULE_ID, "facing-direction") : tokenFacingDirection;
 	const mirrorX = "scaleX";
 	const mirrorY = "scaleY";
 	if (facingDirection === "right") {

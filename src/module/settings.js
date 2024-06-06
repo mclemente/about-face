@@ -59,7 +59,7 @@ export function registerSettings() {
 		type: String,
 		onChange: (value) => {
 			game.aboutFace.indicatorColor = value;
-			if (canvas == null) return;
+			if (canvas === null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
 				if (token.aboutFaceIndicator) {
@@ -84,7 +84,7 @@ export function registerSettings() {
 		},
 		onChange: (value) => {
 			game.aboutFace.indicatorDistance = value;
-			if (canvas == null) return;
+			if (canvas === null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
 				if (token.aboutFaceIndicator) drawAboutFaceIndicator(token);
@@ -156,7 +156,7 @@ export function registerSettings() {
 		},
 		onChange: (value) => {
 			game.aboutFace.indicatorSize = value;
-			if (canvas == null) return;
+			if (canvas === null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
 				drawAboutFaceIndicator(token);
@@ -187,7 +187,7 @@ export function registerSettings() {
 		type: Boolean,
 		onChange: (value) => {
 			game.aboutFace.hideIndicatorOnDead = value;
-			if (canvas == null) return;
+			if (canvas === null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
 				drawAboutFaceIndicator(token);
@@ -349,7 +349,7 @@ function replaceSelectChoices(select, choices) {
 	select.empty();
 	let hasGlobal = false;
 	for (const [key, value] of Object.entries(choices)) {
-		if (key == "global") {
+		if (key === "global") {
 			hasGlobal = true;
 			select.append(
 				$("<option></option>").attr("value", key).attr("selected", true).text(game.i18n.localize(value))
@@ -358,7 +358,7 @@ function replaceSelectChoices(select, choices) {
 			select.append(
 				$("<option></option>")
 					.attr("value", key)
-					.attr("selected", !hasGlobal && facing == key)
+					.attr("selected", !hasGlobal && facing === key)
 					.text(game.i18n.localize(value))
 			);
 		}
@@ -432,18 +432,14 @@ export async function renderTokenConfigHandler(tokenConfig, html) {
 	const selectFacingDirection = posTab.find(".token-config-select-facing-direction");
 
 	selectFlipOrRotate.on("change", (event) => {
-		const flipOrRotate = event.target.value != "global" ? event.target.value : flipOrRotateSetting;
-		if (event.target.value == "global") {
-			var facingDirections = {
-				global: `${game.i18n.localize(
-					"about-face.options.flip-or-rotate.choices.global"
-				)} (${game.i18n.localize(`about-face.options.facing-direction.choices.${facingDirectionSetting}`)})`,
-			};
-		} else facingDirections = {};
-		facingDirections = {
-			...facingDirections,
-			...facingOptions[flipOrRotate],
-		};
+		const flipOrRotate = event.target.value !== "global" ? event.target.value : flipOrRotateSetting;
+		const facingDirections = {};
+		if (event.target.value === "global") {
+			facingDirections.global = `${game.i18n.localize(
+				"about-face.options.flip-or-rotate.choices.global"
+			)} (${game.i18n.localize(`about-face.options.facing-direction.choices.${facingDirectionSetting}`)})`;
+		}
+		foundry.utils.mergeObject(facingDirections, facingOptions[flipOrRotate]);
 		replaceSelectChoices(selectFacingDirection, facingDirections);
 	});
 }
@@ -498,7 +494,7 @@ export async function asyncRenderSceneConfigHandler(app, html) {
 		const state = lockRotationCheckbox[0].checked;
 		const updates = [];
 		canvas.scene.tokens.forEach((token) => {
-			if (token.lockRotation != state) {
+			if (token.lockRotation !== state) {
 				updates.push({
 					_id: token.id,
 					lockRotation: state,
@@ -513,7 +509,7 @@ export async function asyncRenderSceneConfigHandler(app, html) {
 		const state = lockArrowRotationCheckbox[0].checked;
 		const updates = [];
 		canvas.scene.tokens.forEach((token) => {
-			if ("token.flags.about-face.lockArrowRotation" != state) {
+			if ("token.flags.about-face.lockArrowRotation" !== state) {
 				updates.push({
 					_id: token.id,
 					flags: {
@@ -527,10 +523,12 @@ export async function asyncRenderSceneConfigHandler(app, html) {
 }
 
 function toggleAllIndicators(state, playerOwner = false) {
-	if (canvas == null) return;
+	if (canvas === null) return;
 	const tokens = getAllTokens();
 	tokens.forEach((token) => {
-		if (token.actor.hasPlayerOwner == playerOwner && token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = state;
+		if (token.actor.hasPlayerOwner === playerOwner && token.aboutFaceIndicator) {
+			token.aboutFaceIndicator.graphics.visible = state;
+		}
 	});
 }
 
