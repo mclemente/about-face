@@ -149,10 +149,10 @@ export class AboutFace {
 
 // HOOKS
 
-export function onPreCreateToken(document, data, options, userId) {
+export function onPreCreateToken(tokenDocument, data, options, userId) {
 	const updates = { flags: { [MODULE_ID]: {} } };
 	const facingDirection =
-		document.flags?.[MODULE_ID]?.facingDirection ?? game.settings.get(MODULE_ID, "facing-direction");
+		tokenDocument.flags?.[MODULE_ID]?.facingDirection ?? game.settings.get(MODULE_ID, "facing-direction");
 	if (canvas.scene.getFlag(MODULE_ID, "lockRotation")) {
 		updates.lockRotation = true;
 	}
@@ -166,12 +166,12 @@ export function onPreCreateToken(document, data, options, userId) {
 				up: 270,
 				left: 180,
 			};
-			if (document.flags?.[MODULE_ID]?.direction === undefined) {
+			if (tokenDocument.flags?.[MODULE_ID]?.direction === undefined) {
 				updates.flags[MODULE_ID].direction = TokenDirections[facingDirection];
 			}
 		}
 	}
-	if (Object.keys(updates).length) document.updateSource(updates);
+	if (Object.keys(updates).length) tokenDocument.updateSource(updates);
 }
 
 export function onPreUpdateToken(tokenDocument, updates, options, userId) {
@@ -187,14 +187,25 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 		return;
 	}
 
-	if (tokenDocument.x === updates.x && tokenDocument.y === updates.y && !("rotation" in updates)) {
+	if (
+		tokenDocument.x === updates.x
+		&& tokenDocument.y === updates.y
+		&& (
+			!("rotation" in updates)
+			|| tokenDocument.rotation === updates.rotation
+		)
+	) {
 		return;
 	}
 
 	let position = {};
 	// store the direction in the token data
 	if (!updates.flags) {
-		updates.flags = {};
+		updates.flags = {
+			[MODULE_ID]: {}
+		};
+	} else if (!updates.flags[MODULE_ID]) {
+		updates.flags[MODULE_ID] = {};
 	}
 
 	let tokenDirection;
@@ -203,7 +214,7 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 
 	if (rotation !== undefined) {
 		tokenDirection = rotation + 90;
-		updates.flags[MODULE_ID] = { direction: tokenDirection };
+		foundry.utils.mergeObject(updates.flags[MODULE_ID], { direction: tokenDirection });
 		if (!options.animation) {
 			options.animation = { duration: 1000 / 6 };
 		} else {
@@ -246,7 +257,7 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 				if (tokenDirection > 180) tokenDirection -= 360;
 			}
 		}
-		updates.flags[MODULE_ID] = { direction: tokenDirection, prevPos: prevPos };
+		foundry.utils.mergeObject(updates.flags[MODULE_ID], { direction: tokenDirection, prevPos });
 		position = { x: diffX, y: diffY };
 	}
 
