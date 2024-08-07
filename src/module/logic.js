@@ -200,13 +200,6 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 
 	let position = {};
 	// store the direction in the token data
-	if (!updates.flags) {
-		updates.flags = {
-			[MODULE_ID]: {}
-		};
-	} else if (!updates.flags[MODULE_ID]) {
-		updates.flags[MODULE_ID] = {};
-	}
 
 	let tokenDirection;
 	const { x, y, rotation } = updates;
@@ -214,7 +207,7 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 
 	if (rotation !== undefined) {
 		tokenDirection = rotation + 90;
-		foundry.utils.mergeObject(updates.flags[MODULE_ID], { direction: tokenDirection });
+		foundry.utils.setProperty(updates, `flags.${MODULE_ID}.direction`, tokenDirection);
 		if (!options.animation) {
 			options.animation = { duration: 1000 / 6 };
 		} else {
@@ -257,7 +250,8 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 				if (tokenDirection > 180) tokenDirection -= 360;
 			}
 		}
-		foundry.utils.mergeObject(updates.flags[MODULE_ID], { direction: tokenDirection, prevPos });
+		foundry.utils.setProperty(updates, `flags.${MODULE_ID}.direction`, tokenDirection);
+		foundry.utils.setProperty(updates, `flags.${MODULE_ID}.prevPos`, prevPos);
 		position = { x: diffX, y: diffY };
 	}
 
