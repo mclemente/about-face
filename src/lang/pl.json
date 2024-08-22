@@ -1,1 +1,133 @@
-{}
+{
+	"about-face": {
+		"options": {
+			"lockRotation": {
+				"name": "Blokada obrotu",
+				"hint": "Każda scena będzie tworzona z włączoną opcją blokady obrotu w ustawieniach About Face. Tokeny stworzone w takiej scenie będą miały włączoną konfigurację blokady obrotu tokena, co spowoduje, że token nie będzie się obracał podczas ruchu."
+			},
+			"arrowColor": {
+				"colorPicker": "Wybór koloru",
+				"name": "Kolor wskaźnika",
+				"hint": "Wybierz kolor dla wskaźnika."
+			},
+			"arrowDistance": {
+				"hint": "Ustaw mnożnik dla odległości wskaźnika. Obliczenia: Największy rozmiar × (Mnożnik / 2).",
+				"name": "Odległość wskaźnika"
+			},
+			"hideIndicatorOnDead": {
+				"hint": "Ukrywa wskaźnik dla tokenów oznaczonych jako pokonane w śledzeniu walki (np. duży znacznik czaszki w większości systemów).",
+				"name": "Ukryj wskaźnik na martwych tokenach"
+			},
+			"changeEverySceneDialog": "Czy chcesz zmienić to ustawienie we wszystkich scenach?",
+			"disable-indicator": "Wyłącz wskaźnik kierunku",
+			"individual-token-text": "Pokazywać wskaźnik dla tego tokena?",
+			"facing": "Kierunek",
+			"disableAnimations": {
+				"name": "Wyłącz animacje",
+				"hint": "Wyłącza animacje lustrzane i obrotowe, gdy są one wykonywane razem z animacją ruchu.",
+				"choices": {
+					"none": "Brak",
+					"mirror": "Podczas lustrzanego odbicia",
+					"rotation": "Podczas obracania",
+					"all": "Podczas lustrzanego odbicia lub obracania"
+				}
+			},
+			"indicatorDrawingType": {
+				"name": "Typ rysowania wskaźnika",
+				"hint": "Zmienia sposób rysowania wskaźnika.",
+				"options": {
+					"arrow": "Strzałka",
+					"line": "Linia"
+				}
+			},
+			"lockArrowRotation": {
+				"name": "Blokada obrotu wskaźnika",
+				"hint": "Każda scena będzie tworzona z włączoną opcją blokady obrotu wskaźnika w ustawieniach About Face. Wskaźnik nie zmieni się, gdy token porusza się w takiej scenie. Użyj klawisza SHIFT + strzałki, aby obrócić wskaźnik."
+			},
+			"lockArrowToFace": {
+				"name": "Przypnij wskaźnik do najbliższego kafelka",
+				"hint": "Przypina kierunek wskaźnika do najbliższego kafelka, w który by wskazywał, zamiast do kąta ruchu. To ustawienie jest ignorowane, jeśli opcja „Blokada obrotu wskaźnika” jest włączona."
+			},
+			"lockVisionToRotation": {
+				"name": "Blokada wizji do obrotu",
+				"hint": "Wizja tokena będzie podążać za jego obrotem, zamiast za wskaźnikiem. Przydatne w grach z kątami widzenia. Klawisz SHIFT + strzałka nadpisuje to ustawienie. Ustawienie to jest ignorowane, jeśli opcja „Odbicie lustrzane lub obrót tokena” nie jest ustawiona na „Obrót”."
+			},
+			"enable-indicator": {
+				"name": "Wskaźniki tokenów NPC",
+				"hint": "Dodaje wskaźnik kierunku do tokenów NPC.",
+				"choices": {
+					"0": "Nigdy nie pokazywane",
+					"1": "Pokazywane po najechaniu myszką",
+					"2": "Zawsze pokazywane"
+				}
+			},
+			"enable-indicator-pc": {
+				"name": "Wskaźniki tokenów PC",
+				"hint": "Dodaje wskaźnik kierunku do tokenów sterowanych przez graczy."
+			},
+			"flip-or-rotate": {
+				"name": "Odbicie lustrzane lub obrót tokena",
+				"hint": "Zamiast obracać token, odbij go lustrzanie.",
+				"choices": {
+					"global": "Globalnie",
+					"rotate": "Obróć",
+					"flip-h": "Odbicie lustrzane w poziomie",
+					"flip-v": "Odbicie lustrzane w pionie"
+				}
+			},
+			"facing-direction": {
+				"name": "Kierunek zwrócenia",
+				"hint": "Domyślny kierunek, w który zwrócone są tokeny.",
+				"choices": {
+					"right": "Zwrócony w prawo",
+					"left": "Zwrócony w lewo",
+					"down": "Zwrócony w dół",
+					"up": "Zwrócony w górę"
+				}
+			},
+			"indicator-sprite": {
+				"name": "Rozmiar wskaźnika",
+				"hint": "Zmień rozmiar ikony wskaźnika."
+			}
+		},
+		"sceneConfig": {
+			"lockRotation": {
+				"hint": "Tokeny stworzone w tej scenie będą miały włączoną konfigurację blokady obrotu tokena.",
+				"name": "Blokada obrotu"
+			},
+			"hint": "Skonfiguruj ustawienia About Face dla tej sceny.",
+			"apply": "Zastosuj do istniejących tokenów",
+			"scene-enabled": {
+				"name": "Włącz na tej scenie",
+				"hint": "Rotuje tokeny podczas ich przesuwania (z wyjątkiem tych zablokowanych). Jeśli opcja jest wyłączona, nadal można przytrzymać SHIFT, aby obracać tokeny w miejscu."
+			},
+			"lockArrowRotation": {
+				"name": "Blokada obrotu wskaźnika",
+				"hint": "Wskaźnik nie zmieni się, gdy token się porusza. Użyj klawisza SHIFT + strzałki, aby obrócić wskaźnik."
+			}
+		},
+		"keybindings": {
+			"lockRotation": {
+				"name": "Blokada obrotu",
+				"tooltip": {
+					"true": "Blokada obrotu włączona.",
+					"false": "Blokada obrotu wyłączona."
+				},
+				"hint": "Przełącza ustawienie blokady obrotu wybranych tokenów. Token z włączoną blokadą obrotu nie będzie się obracał podczas ruchu ani przy użyciu klawiszy SHIFT + strzałki.\nJeśli chcesz, aby każdy token miał domyślnie zablokowany obrót, zaznacz opcję Blokada obrotu w ustawieniach About Face."
+			},
+			"toggleTokenRotation": {
+				"name": "Przełącz obrót tokena",
+				"hint": "Tokeny nie będą się obracać podczas ruchu. Przydatne w grach z kątami widzenia.",
+				"tooltip": {
+					"false": "Obrót tokena podczas ruchu jest odblokowany.",
+					"true": "Obrót tokena podczas ruchu jest zablokowany."
+				}
+			}
+		},
+		"tokenConfig": {
+			"rotationOffset": {
+				"name": "Przesunięcie obrotu"
+			}
+		}
+	}
+}
