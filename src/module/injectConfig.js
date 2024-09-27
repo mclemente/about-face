@@ -81,7 +81,7 @@ export var injectConfig = {
 				const fpType = elemData.type.split(".")[1] || "imagevideo";
 				injectHtml += `<div class="form-group">
                 <label for="${k}">${v.label || ""}</label>
-                <div class="form-fields">     
+                <div class="form-fields">
                     <button type="button" class="file-picker" data-extras="${
 	elemData.fpTypes ? elemData.fpTypes.join(",") : ""
 }" data-type="${fpType}" data-target="${flag}" title="Browse Files" tabindex="-1">
