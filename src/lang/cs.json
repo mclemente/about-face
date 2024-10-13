@@ -1,1 +1,133 @@
-{}
+{
+	"about-face": {
+		"options": {
+			"lockRotation": {
+				"hint": "Každá scéna bude vytvořena s nastavením About Face Uzamčení rotace na zapnuto. Tokeny vytvořené na takové scéně budou mít Uzamření rotace tokenu na zapnuto, což způsobí, že token nebude při pohybu rotovat.",
+				"name": "Uzamknout rotaci"
+			},
+			"changeEverySceneDialog": "Chcete změnit toto nastavení v každé scéně?",
+			"disable-indicator": "Potlačit indikátor směru",
+			"individual-token-text": "Zobrazit indikátor pro tento token?",
+			"facing": "Směřování",
+			"arrowColor": {
+				"name": "Barva indikátoru",
+				"colorPicker": "Výběr barev",
+				"hint": "Zvolte barvu indikátoru."
+			},
+			"arrowDistance": {
+				"name": "Vzdálenost indikátoru",
+				"hint": "Nastaví násobitel pro vzdálenost indikátoru. Matematicky: Největší velikost x (Násobitel /2)."
+			},
+			"disableAnimations": {
+				"name": "Potlačit animace",
+				"choices": {
+					"none": "Žádný",
+					"mirror": "Když zrcadlí",
+					"rotation": "Když rotuje",
+					"all": "Když zrcadlí nebo rotuje"
+				},
+				"hint": "Potlačí animace zrcadlení a rotace kdekoliv je prováděno současně s animací pohybu."
+			},
+			"hideIndicatorOnDead": {
+				"name": "Skrýt indikátor na mrtvých tokenech",
+				"hint": "Skryje indikátor z tokenů označených jako poražení v bojovém panelu (tj. značka lebky ve většině systémů)."
+			},
+			"indicatorDrawingType": {
+				"name": "Typ kresby indikátoru",
+				"hint": "Změní jak je indikátor kreslen.",
+				"options": {
+					"arrow": "Šipka",
+					"line": "Linie"
+				}
+			},
+			"lockArrowRotation": {
+				"name": "Uzamknout rotaci indikátoru",
+				"hint": "Každá scéna bude vytvořena s nastavením About Face Uzamčení rotace indikátoru na zapnuto. Indikátor se nezmění, když se token pohybuje po takové scéně. Použijte SHIFT + směrová klávesa k rotaci indikátoru."
+			},
+			"lockArrowToFace": {
+				"name": "Připnout indikátor k nejbližšímu poli",
+				"hint": "Nasměruje indikátor k nejbližší dlaždici k níž směruje namísto směru úhlu pohybu. Toto nastavení je ignorováno, pokud je zapnuto Uzamčení rotace indikátoru."
+			},
+			"lockVisionToRotation": {
+				"name": "Uzamknout vidění k rotaci",
+				"hint": "Vidění tokenu bude následovat jeho rotaci namísto jeho indikátoru. Užitečné pro hry s úhly vidění. SHIFT + směrová klávesa přepíše toto nastavení. Toto nastavení je ignorováno, pokud \"Zrcadlení nebo rotace tokenu\" není zapnuto na \"Rotace\"."
+			},
+			"enable-indicator": {
+				"name": "Indikátory tokenů NPC",
+				"hint": "Přidá indikátory pro směr NPC tokenům.",
+				"choices": {
+					"0": "Nikdy nezobrazovat",
+					"1": "Zobrazit při prohlížení",
+					"2": "Vždy zobrazit"
+				}
+			},
+			"enable-indicator-pc": {
+				"name": "Indikátory tokenů PC",
+				"hint": "Přidá indikátory směru hráči kontrolovaným tokenům."
+			},
+			"flip-or-rotate": {
+				"name": "Zrcadlit nebo rotovat token",
+				"choices": {
+					"global": "Globální",
+					"rotate": "Rotace",
+					"flip-h": "Zrcadlit horizontálně",
+					"flip-v": "Zrcadlit vertikálně"
+				},
+				"hint": "Namísto rotace tokenu je zrcadli."
+			},
+			"facing-direction": {
+				"name": "Směr směřování",
+				"hint": "Výchozí směr kterým tokeny směřují.",
+				"choices": {
+					"right": "Směřovat vpravo",
+					"left": "Směřovat vlevo",
+					"down": "Směřovat dolů",
+					"up": "Směřovat nahoru"
+				}
+			},
+			"indicator-sprite": {
+				"name": "Velikost indikátoru",
+				"hint": "Změnit velikost ikony indikátoru."
+			}
+		},
+		"keybindings": {
+			"lockRotation": {
+				"name": "Uzamknout rotaci",
+				"hint": "Přepne nastavení zámku otáčení vybraných tokenů. Token s uzamknutou rotací nebude rotovat při pohybu nebo při použití SHIFT + směrové klávesy. \nKdyž chcete aby jako výchozí byla rotace všech tokenů uzamčena, zatrhněte v nastavení About Face Uzamčení rotace.",
+				"tooltip": {
+					"true": "Uzamčení rotace je zapnuto.",
+					"false": "Uzamčení rotace je vypnuto."
+				}
+			},
+			"toggleTokenRotation": {
+				"name": "Přepínač rotace tokenu",
+				"hint": "Tokeny se během pohybu neotáčejí. Užitečné pro hry s úhly vidění.",
+				"tooltip": {
+					"false": "Rotace tokenu při pohybu je odemčena.",
+					"true": "Rotace tokenu při pohybu je uzamčena."
+				}
+			}
+		},
+		"sceneConfig": {
+			"hint": "Konfigurace About Face nastavení pro tuto scénu.",
+			"apply": "Aplikovat pro existující tokeny",
+			"scene-enabled": {
+				"name": "Povolit pro tuto scénu",
+				"hint": "Rotuje tokeny když se pohybují (pokud není uzamčeno). Pokud zakázáno, stále můžete držet SHIFT pro rotaci na místě."
+			},
+			"lockRotation": {
+				"name": "Uzamčení rotace",
+				"hint": "Tokeny vytvořené v této scéně budou mít zapnuto Uzamčení rotace v konfiguraci tokenu."
+			},
+			"lockArrowRotation": {
+				"name": "Uzamknout indikátor rotace",
+				"hint": "Indikátor se nezmění, když se token pohne. Použijte SHIFT + směrová klávesa k rotaci indikátoru."
+			}
+		},
+		"tokenConfig": {
+			"rotationOffset": {
+				"name": "Odsazení rotace"
+			}
+		}
+	}
+}
