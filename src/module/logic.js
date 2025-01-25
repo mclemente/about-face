@@ -238,9 +238,8 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 				// convert negative dirs into a range from 0-360
 				let normalizedDir = ((tokenDirection % 360) + 360) % 360; // Math.round(tokenDirection < 0 ? 360 + tokenDirection : tokenDirection);
 				// find the largest normalized angle
-				let secondAngle = facings.reduce(
-					(prev, curr) => (curr > prev && curr <= normalizedDir ? curr : prev),
-					facings[0]
+				let secondAngle = facings.reduceRight(
+					(prev, curr) => (curr < prev && curr > normalizedDir ? curr : prev)
 				); // facings.find((e) => e > normalizedDir);
 				// and assume the facing is 60 degrees (hexes) or 45 (square) to the counter clockwise
 				tokenDirection = gridType ? secondAngle - 60 : secondAngle - 45;
