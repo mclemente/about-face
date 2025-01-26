@@ -112,6 +112,16 @@
 			"lockArrowToFace": {
 				"hint": "Napsauttaa ilmaisimen suunnan lähimpään laattaan, johon se olisi suunnattu, liikkeen todellisen suunnan sijasta. Tätä asetusta ei oteta huomioon, jos \"Lukitse ilmaisimen kierto\" on käytössä.",
 				"name": "Napsauta ilmaisin lähimpään laattaan"
+			},
+			"disableAnimations": {
+				"name": "Poista Animaatiot Käytöstä",
+				"hint": "Poistaa käytöstä peilaamisen ja kiertämisen animaatiot, jos ne tehdään liikkumisen animaation yhteydessä.",
+				"choices": {
+					"rotation": "Kierto",
+					"all": "Peilaus ja kierto",
+					"none": "Ei mitään",
+					"mirror": "Peilaus"
+				}
 			}
 		},
 		"tokenConfig": {
