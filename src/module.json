@@ -10,8 +10,8 @@
 	],
 	"esmodules": ["module/about-face.js"],
 	"compatibility": {
-		"minimum": "12",
-		"verified": "12"
+		"minimum": "13",
+		"verified": "13"
 	},
 	"changelog": "https://github.com/mclemente/about-face/releases",
 	"languages": [

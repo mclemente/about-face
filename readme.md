@@ -32,15 +32,12 @@ Two options are available in the game settings module config. Otherwise, with ev
 
 ## Credit
 
-Eadorin & edzillion, for the original [About Face](https://github.com/League-of-Foundry-Developers/about-face).  
-Assistance from several Discord users, including @Forien and @Stan. Accepting translations for the few config options.  
-Assistance from theripper93 for the 3.0 update.  
-theripper93 for [injectConfig](https://github.com/theripper93/injectConfig) library.
+Eadorin & edzillion, for the original [About Face](https://github.com/League-of-Foundry-Developers/about-face).
+Assistance from several Discord users, including @Forien and @Stan. Accepting translations for the few config options.
+Assistance from theripper93 for the 3.0 update.
 
 ## License
 
 This Foundry VTT module is a fork of [About Face](https://github.com/League-of-Foundry-Developers/about-face) and is licensed under [GNU GPLv3.0](https://www.gnu.org/licenses/gpl-3.0.en.html), supplemented by [Commons Clause](https://commonsclause.com/).
-
-This work uses the [injectConfig](https://github.com/theripper93/injectConfig) library, which is licensed under the MIT license.
 
 This work is licensed under Foundry Virtual Tabletop [EULA - Limited License Agreement for Module Development](https://foundryvtt.com/article/license/).
