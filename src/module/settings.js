@@ -301,66 +301,51 @@ export function registerSettings() {
 	});
 }
 
-/**
- * Handler called when token configuration window is opened. Injects custom form html and deals
- * with updating token.
- * @category GMOnly
- * @function
- * @async
- * @param {TokenConfig} tokenConfig
- * @param {JQuery} html
- */
-export async function renderSettingsConfigHandler(tokenConfig, html) {
+export async function renderSettingsConfigHandler(app, html) {
+	if (!game.user.isGM) return;
 	const lockArrowRotation = game.settings.get(MODULE_ID, "lockArrowRotation");
-	const lockArrowRotationCheckbox = html.find('input[name="about-face.lockArrowRotation"]');
-	const lockArrowToFaceCheckbox = html.find('input[name="about-face.lockArrowToFace"]');
+	const lockArrowRotationCheckbox = html.querySelector('input[name="about-face.lockArrowRotation"]');
+	const lockArrowToFaceCheckbox = html.querySelector('input[name="about-face.lockArrowToFace"]');
 	disableCheckbox(lockArrowToFaceCheckbox, lockArrowRotation);
 
-	lockArrowRotationCheckbox.on("change", (event) => {
+	lockArrowRotationCheckbox.addEventListener("change", (event) => {
 		disableCheckbox(lockArrowToFaceCheckbox, event.target.checked);
 	});
 
 	const flipOrRotate = game.settings.get(MODULE_ID, "flip-or-rotate");
-	const flipOrRotateSelect = html.find('select[name="about-face.flip-or-rotate"]');
-	const flipDirectionSelect = html.find('select[name="about-face.facing-direction"]');
+	const flipOrRotateSelect = html.querySelector('select[name="about-face.flip-or-rotate"]');
+	const flipDirectionSelect = html.querySelector('select[name="about-face.facing-direction"]');
 	replaceSelectChoices(flipDirectionSelect, facingOptions[flipOrRotate]);
 
-	const lockVisionToRotationCheckbox = html.find('input[name="about-face.lockVisionToRotation"]');
+	const lockVisionToRotationCheckbox = html.querySelector('input[name="about-face.lockVisionToRotation"]');
 
 	disableCheckbox(lockVisionToRotationCheckbox, flipOrRotate !== "rotate");
-	flipOrRotateSelect.on("change", (event) => {
+	flipOrRotateSelect.addEventListener("change", (event) => {
 		const facingDirections = facingOptions[event.target.value];
 		replaceSelectChoices(flipDirectionSelect, facingDirections);
 		disableCheckbox(lockVisionToRotationCheckbox, event.target.value !== "rotate");
 	});
 
 	// Create color picker
-	const arrowColorInput = html.find('input[name="about-face.arrowColor"]');
+	const arrowColorInput = html.querySelector('input[name="about-face.arrowColor"]');
 	if (arrowColorInput.length) colorPicker("about-face.arrowColor", html, game.settings.get(MODULE_ID, "arrowColor"));
 }
 
 function disableCheckbox(checkbox, boolean) {
-	checkbox.prop("disabled", boolean);
+	checkbox.disabled = boolean;
 }
 
 function replaceSelectChoices(select, choices) {
 	const facing = game.settings.get(MODULE_ID, "facing-direction");
-	select.empty();
+	select.innerHTML = "";
 	let hasGlobal = false;
 	for (const [key, value] of Object.entries(choices)) {
-		if (key === "global") {
-			hasGlobal = true;
-			select.append(
-				$("<option></option>").attr("value", key).attr("selected", true).text(game.i18n.localize(value))
-			);
-		} else {
-			select.append(
-				$("<option></option>")
-					.attr("value", key)
-					.attr("selected", !hasGlobal && facing === key)
-					.text(game.i18n.localize(value))
-			);
-		}
+		if (key === "global") hasGlobal = true;
+		const option = document.createElement("option");
+		option.value = key;
+		option.textContent = game.i18n.localize(value);
+		option.selected = key === "global" || (!hasGlobal && facing === key);
+		select.appendChild(option);
 	}
 }
 
