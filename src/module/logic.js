@@ -49,8 +49,8 @@ export class AboutFace {
 
 			// Create or update the about face indicator
 			// updateAboutFaceIndicator(token, tokenDirection, distance, scale);
+			const { w: width, h: height } = token;
 			if (!token.aboutFaceIndicator || token.aboutFaceIndicator._destroyed) {
-				const { w: width, h: height } = token;
 				const container = new PIXI.Container({ name: "aboutFaceIndicator", width, height });
 				container.name = "aboutFaceIndicator";
 				container.width = width;
@@ -80,6 +80,8 @@ export class AboutFace {
 			} else {
 				let container = token.aboutFaceIndicator;
 				let graphics = container.graphics;
+				container.x = width / 2;
+				container.y = height / 2;
 				graphics.x = distance;
 				graphics.scale.set(scale, scale);
 				// update the rotation of the arrow
