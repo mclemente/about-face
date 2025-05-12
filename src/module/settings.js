@@ -271,13 +271,11 @@ export function tokenHover(token, hovered) {
 	}
 }
 export function highlightObjects(highlighted) {
-	if (canvas.scene?.flags?.[MODULE_ID].sceneEnabled) {
-		canvas.scene.tokens.forEach((tokenDocument) => {
-			if (highlighted) {
-				game.aboutFace.drawAboutFaceIndicator(tokenDocument.object);
-			} else if (tokenDocument.object.aboutFaceIndicator) {
-				tokenDocument.object.aboutFaceIndicator.graphics.visible = false;
-			}
-		});
-	}
+	canvas.scene.tokens.forEach((tokenDocument) => {
+		if (highlighted) {
+			game.aboutFace.drawAboutFaceIndicator(tokenDocument.object);
+		} else if (tokenDocument.object.aboutFaceIndicator) {
+			tokenDocument.object.aboutFaceIndicator.graphics.visible = false;
+		}
+	});
 }

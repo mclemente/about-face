@@ -81,10 +81,7 @@ Hooks.once("init", () => {
 	}
 });
 Hooks.on("canvasReady", async () => {
-	if (canvas.scene?.flags?.[MODULE_ID] == null) await canvas.scene.setFlag(MODULE_ID, "sceneEnabled", true);
-	if (canvas.scene?.flags?.[MODULE_ID].sceneEnabled) {
-		canvas.scene.tokens.forEach((tokenDocument) => game.aboutFace.drawAboutFaceIndicator(tokenDocument.object));
-	}
+	canvas.scene.tokens.forEach((tokenDocument) => game.aboutFace.drawAboutFaceIndicator(tokenDocument.object));
 });
 Hooks.on("preCreateToken", onPreCreateToken);
 Hooks.on("preUpdateToken", onPreUpdateToken);

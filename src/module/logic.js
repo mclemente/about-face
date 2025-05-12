@@ -19,10 +19,6 @@ export class AboutFace {
 	}
 
 	drawAboutFaceIndicator(token) {
-		if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) {
-			if (token.aboutFaceIndicator) token.aboutFaceIndicator.graphics.visible = false;
-			return;
-		}
 		const deadIcon = CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
 		const isDead = token.actor?.effects.some((el) => el.statuses.has("dead") || el.img === deadIcon);
 		if (this.hideIndicatorOnDead && isDead) {
@@ -134,10 +130,6 @@ export function onPreCreateToken(tokenDocument, data, options, userId) {
 }
 
 export function onPreUpdateToken(tokenDocument, updates, options, userId) {
-	if (!canvas.scene.getFlag(MODULE_ID, "sceneEnabled")) {
-		return;
-	}
-
 	if (
 		game.modules.get("multilevel-tokens")?.active
 		&& !game.multilevel._isReplicatedToken(tokenDocument)
