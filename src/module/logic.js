@@ -2,13 +2,12 @@ import { IndicatorMode, MODULE_ID } from "./settings.js";
 
 export class AboutFace {
 	constructor() {
-		this.indicatorColor = game.settings.get(MODULE_ID, "arrowColor");
+		this.indicatorColor = game.settings.get(MODULE_ID, "arrowColor").css;
 		this.indicatorDistance = game.settings.get(MODULE_ID, "arrowDistance");
 		this.hideIndicatorOnDead = game.settings.get("about-face", "hideIndicatorOnDead");
 		this.indicatorDrawingType = game.settings.get("about-face", "indicatorDrawingType");
 		this.indicatorSize = game.settings.get("about-face", "sprite-type");
 		this._tokenRotation = false;
-		if (game.settings.get("about-face", "disableAnimations")) this._prepareAnimation();
 	}
 
 	get tokenRotation() {
@@ -17,45 +16,6 @@ export class AboutFace {
 
 	set tokenRotation(value) {
 		this._tokenRotation = value;
-	}
-
-	_prepareAnimation(value = true) {
-		if (value) {
-			libWrapper.register(
-				MODULE_ID,
-				"CONFIG.Token.objectClass.prototype._getAnimationDuration",
-				(from, to, { movementSpeed = 6 } = {}) => {
-					let duration = 0;
-					const dx = from.x - (to.x ?? from.x);
-					const dy = from.y - (to.y ?? from.y);
-					if (dx || dy) duration = Math.max(
-						duration,
-						(Math.hypot(dx, dy) / canvas.dimensions.size / movementSpeed) * 1000
-					);
-					const dr = ((Math.abs(from.rotation - (to.rotation ?? from.rotation)) + 180) % 360) - 180;
-					if (dr && !(dx || dy)) duration = Math.max(duration, (Math.abs(dr) / (movementSpeed * 60)) * 1000);
-					if (!duration) duration = 1000; // The default animation duration is 1 second
-					return duration;
-				},
-				"OVERRIDE"
-			);
-			libWrapper.register(
-				MODULE_ID,
-				"CONFIG.Token.objectClass.prototype._prepareAnimation",
-				(wrapped, from, changes, context, options = {}) => {
-					if ("x" in changes || "y" in changes) {
-						if ("rotation" in changes) delete changes.rotation;
-						if (changes.texture?.scaleX) delete changes.texture.scaleX;
-						if (changes.texture?.scaleY) delete changes.texture.scaleY;
-					}
-					return wrapped(from, changes, context, options);
-				},
-				"WRAPPER"
-			);
-		} else {
-			libWrapper.unregister(MODULE_ID, "CONFIG.Token.objectClass.prototype._getAnimationDuration");
-			libWrapper.unregister(MODULE_ID, "CONFIG.Token.objectClass.prototype._prepareAnimation");
-		}
 	}
 
 	drawAboutFaceIndicator(token) {
@@ -153,9 +113,6 @@ export function onPreCreateToken(tokenDocument, data, options, userId) {
 	const updates = { flags: { [MODULE_ID]: {} } };
 	const facingDirection =
 		tokenDocument.flags?.[MODULE_ID]?.facingDirection ?? game.settings.get(MODULE_ID, "facing-direction");
-	if (canvas.scene.getFlag(MODULE_ID, "lockRotation")) {
-		updates.lockRotation = true;
-	}
 	if (facingDirection) {
 		const flipMode = game.settings.get(MODULE_ID, "flip-or-rotate");
 		const gridType = getGridType();
@@ -201,30 +158,17 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	let position = {};
 	// store the direction in the token data
 
-	let tokenDirection;
 	const { x, y, rotation } = updates;
 	const { x: tokenX, y: tokenY } = tokenDocument;
+	let tokenDirection = rotation + 90;
 
-	if (rotation !== undefined) {
-		tokenDirection = rotation + 90;
-		foundry.utils.setProperty(updates, `flags.${MODULE_ID}.direction`, tokenDirection);
-		if (!options.animation) {
-			options.animation = { duration: 1000 / 6 };
-		} else {
-			options.animation.duration = 1000 / 6;
-		}
-	} else if (
-		!game.aboutFace.tokenRotation
-		&& (Number.isNumeric(x) || Number.isNumeric(y))
-		&& !canvas.scene.getFlag(MODULE_ID, "lockArrowRotation")
-	) {
+	if ((Number.isNumeric(x) || Number.isNumeric(y))) {
 		// get previous and new positions
 		const prevPos = { x: tokenX, y: tokenY };
 		const newPos = { x: x ?? tokenX, y: y ?? tokenY };
 		// get the direction in degrees of the movement
 		let diffY = newPos.y - prevPos.y;
 		let diffX = newPos.x - prevPos.x;
-		tokenDirection = (Math.atan2(diffY, diffX) * 180) / Math.PI;
 
 		if (canvas.grid.type && game.settings.get(MODULE_ID, "lockArrowToFace")) {
 			const directions = [
@@ -249,12 +193,12 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 				if (tokenDirection > 180) tokenDirection -= 360;
 			}
 		}
-		foundry.utils.setProperty(updates, `flags.${MODULE_ID}.direction`, tokenDirection);
 		foundry.utils.setProperty(updates, `flags.${MODULE_ID}.prevPos`, prevPos);
 		position = { x: diffX, y: diffY };
 	}
+	foundry.utils.setProperty(updates, `flags.${MODULE_ID}.direction`, tokenDirection);
 
-	const { texture, lockRotation, flags, sight } = tokenDocument;
+	const { texture } = tokenDocument;
 	const flipOrRotate = getTokenFlipOrRotate(tokenDocument);
 
 	if (flipOrRotate !== "rotate") {
@@ -263,25 +207,6 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 			const source = tokenDocument.toObject();
 			updates[`texture.${mirrorKey}`] = source.texture[mirrorKey] * -1;
 		}
-	}
-
-	// update the rotation of the token
-	if (tokenDirection === undefined) return;
-
-	// Determine if a rotation update is needed
-	const hasRotationUpdate = "rotation" in updates;
-	const isRotationAction = flipOrRotate === "rotate";
-	const isRotationLocked = lockRotation && game.settings.get(MODULE_ID, "lockVisionToRotation");
-
-	// Check conditions for rotation and sight angle updates
-	const shouldUpdateRotation = hasRotationUpdate || isRotationAction !== isRotationLocked;
-	const hasSightAngle = sight.enabled && sight.angle !== 360;
-	const shouldUpdateSightAngle = !isRotationLocked && hasSightAngle;
-
-	// If any update is needed, calculate the rotation offset and update the rotation
-	if (shouldUpdateRotation || shouldUpdateSightAngle) {
-		const rotationOffset = flags[MODULE_ID]?.rotationOffset ?? 0;
-		updates.rotation = tokenDirection - 90 + rotationOffset;
 	}
 }
 

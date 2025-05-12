@@ -1,39 +1,5 @@
 {
 	"about-face": {
-		"keybindings": {
-			"lockRotation": {
-				"name": "Lock Rotation",
-				"hint": "Toggles the selected tokens' Rotation Lock setting. A rotation-locked token won't rotate with movement or when using SHIFT + direction keys.\nIf you want every token to be rotation-locked by default, check the Lock Rotation setting in the About Face settings.",
-				"tooltip": {
-					"true": "Lock Rotation is on.",
-					"false": "Lock Rotation is off."
-				}
-			},
-			"toggleTokenRotation": {
-				"name": "Toggle Token Rotation",
-				"hint": "Tokens won't rotate during movement. Useful for games with Vision Angles.",
-				"tooltip": {
-					"false": "Token's Rotation on movement is unlocked.",
-					"true": "Token's Rotation on movement is locked."
-				}
-			}
-		},
-		"sceneConfig": {
-			"hint": "Configure the About Face settings for this scene.",
-			"apply": "Apply to existing tokens",
-			"scene-enabled": {
-				"name": "Enable on this scene",
-				"hint": "Rotates tokens when moving them (except when locked). If disabled, can still hold SHIFT to rotate in place."
-			},
-			"lockRotation": {
-				"name": "Lock Rotation",
-				"hint": "Tokens created in this scene will have the Lock Rotation Token Configuration toggled on."
-			},
-			"lockArrowRotation": {
-				"name": "Lock Indicator Rotation",
-				"hint": "The indicator won't change when a token moves. Use SHIFT + direction key to rotate the indicator."
-			}
-		},
 		"tokenConfig": {
 			"rotationOffset": {
 				"name": "Rotation Offset"
@@ -53,16 +19,6 @@
 				"name": "Indicator Distance",
 				"hint": "Set the multiplier for the indicator's distance. Math: Largest Size × (Multiplier / 2)."
 			},
-			"disableAnimations": {
-				"name": "Disable Animations",
-				"hint": "Disables the animations of mirroring and rotations whenever it is done along with a movement animation.",
-				"choices": {
-					"none": "None",
-					"mirror": "When mirroring",
-					"rotation": "When rotating",
-					"all": "When mirroring or rotating"
-				}
-			},
 			"hideIndicatorOnDead": {
 				"name": "Hide Indicator On Dead Tokens",
 				"hint": "Hides the indicator from tokens marked as defeated on the combat tracker (e.g. the big skull marker on most systems)."
@@ -77,19 +33,11 @@
 			},
 			"lockArrowRotation": {
 				"name": "Lock Indicator Rotation",
-				"hint": "Every scene will be created with the About Face's Lock Indicator Rotation setting toggled on. The indicator won't change when a token moves in such a scene. Use SHIFT + direction key to rotate the indicator."
+				"hint": "The indicator won't change when a token moves in such a scene. Use SHIFT + direction key to rotate the indicator. Every scene will be created with the About Face's Lock Indicator Rotation setting toggled on."
 			},
 			"lockArrowToFace": {
 				"name": "Snap Indicator to Closest Tile",
 				"hint": "Snaps the indicator's direction to the closest tile it would be facing instead of the direction of the movement's angle. This setting is ignored if 'Lock Indicator Rotation' is on."
-			},
-			"lockRotation": {
-				"name": "Lock Rotation",
-				"hint": "Every scene will be created with the About Face's Lock Rotation setting toggled on. Tokens created in such a scene will have the Lock Rotation Token Configuration toggled on, which will make the token to not rotate when it moves."
-			},
-			"lockVisionToRotation": {
-				"name": "Lock Vision to Rotation",
-				"hint": "The token's vision will follow its rotation instead of its indicator. Useful for games with Vision Angles. SHIFT + direction key overrides this setting. This setting is ignored if \"Mirror or Rotate Token\" isn't set to \"Rotate\"."
 			},
 			"enable-indicator": {
 				"name": "NPC Token Indicators",
@@ -105,17 +53,17 @@
 				"hint": "Adds an indicator for direction to player-controlled tokens."
 			},
 			"flip-or-rotate": {
-				"name": "Mirror or Rotate Token",
-				"hint": "Instead of rotating a token, mirror it.",
+				"name": "Token Mirroring",
+				"hint": "Sets if tokens should be mirrored horizontally, vertically or not at all.",
 				"choices": {
 					"global": "Global",
-					"rotate": "Rotate",
+					"rotate": "Don't Mirror Tokens",
 					"flip-h": "Mirror Horizontally",
 					"flip-v": "Mirror Vertically"
 				}
 			},
 			"facing-direction": {
-				"name": "Facing Direction",
+				"name": "Default Facing Direction",
 				"hint": "The default direction tokens are facing.",
 				"choices": {
 					"right": "Facing Right",
@@ -125,7 +73,7 @@
 				}
 			},
 			"indicator-sprite": {
-				"name": "Indicator's Size",
+				"name": "Indicator Size",
 				"hint": "Change the indicator icon's size."
 			}
 		}
