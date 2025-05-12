@@ -19,6 +19,10 @@
 				"name": "Indicator Distance",
 				"hint": "Set the multiplier for the indicator's distance. Math: Largest Size × (Multiplier / 2)."
 			},
+			"combatOnly": {
+				"name": "Hide Indicator While Out Of Combat",
+				"hint": "Hides the indicator when no combat is active."
+			},
 			"hideIndicatorOnDead": {
 				"name": "Hide Indicator On Dead Tokens",
 				"hint": "Hides the indicator from tokens marked as defeated on the combat tracker (e.g. the big skull marker on most systems)."

@@ -68,6 +68,14 @@ function addTokenConfigTab(cls, document = "document") {
 	});
 }
 
+function updateCombat(combat, updateData) {
+	if (!game.aboutFace.combatOnly) return;
+	game.aboutFace.combatRunning = game.aboutFace.isCombatRunning();
+	canvas.tokens?.placeables.forEach((token) => {
+		game.aboutFace.drawAboutFaceIndicator(token);
+	});
+}
+
 Hooks.once("init", () => {
 	registerSettings();
 	game.aboutFace = new AboutFace();
@@ -80,9 +88,19 @@ Hooks.once("init", () => {
 		Hooks.on("highlightObjects", highlightObjects);
 	}
 });
+Hooks.on("canvasInit", () => game.aboutFace.combatRunning = game.aboutFace.isCombatRunning());
 Hooks.on("canvasReady", async () => {
 	canvas.scene.tokens.forEach((tokenDocument) => game.aboutFace.drawAboutFaceIndicator(tokenDocument.object));
 });
+Hooks.on("combatStart", (combat, updateData) => {
+	if (!game.aboutFace.combatOnly) return;
+	game.aboutFace.combatRunning = true;
+	canvas.tokens?.placeables.forEach((token) => {
+		game.aboutFace.drawAboutFaceIndicator(token);
+	});
+});
+Hooks.on("updateCombat", updateCombat);
+Hooks.on("deleteCombat", updateCombat);
 Hooks.on("preCreateToken", onPreCreateToken);
 Hooks.on("preUpdateToken", onPreUpdateToken);
 Hooks.on("createToken", (tokenDocument, options, userId) => {

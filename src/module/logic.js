@@ -2,6 +2,7 @@ import { IndicatorMode, MODULE_ID } from "./settings.js";
 
 export class AboutFace {
 	constructor() {
+		this.combatOnly = game.settings.get("about-face", "combatOnly");
 		this.indicatorColor = game.settings.get(MODULE_ID, "arrowColor").css;
 		this.indicatorDistance = game.settings.get(MODULE_ID, "arrowDistance");
 		this.hideIndicatorOnDead = game.settings.get("about-face", "hideIndicatorOnDead");
@@ -18,9 +19,19 @@ export class AboutFace {
 		this._tokenRotation = value;
 	}
 
+	isCombatRunning() {
+		return game.combats.some((combat) => combat.started);
+	}
+
 	drawAboutFaceIndicator(token) {
 		const deadIcon = CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
 		const isDead = token.actor?.effects.some((el) => el.statuses.has("dead") || el.img === deadIcon);
+		if (this.combatOnly && !this.combatRunning) {
+			if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) {
+				token.aboutFaceIndicator.graphics.visible = false;
+			}
+			return;
+		}
 		if (this.hideIndicatorOnDead && isDead) {
 			if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) {
 				token.aboutFaceIndicator.graphics.visible = false;

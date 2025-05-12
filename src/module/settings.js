@@ -174,6 +174,23 @@ export function registerSettings() {
 		requiresReload: true,
 	});
 
+	game.settings.register(MODULE_ID, "combatOnly", {
+		name: "about-face.options.combatOnly.name",
+		hint: "about-face.options.combatOnly.hint",
+		scope: "world",
+		config: true,
+		default: false,
+		type: Boolean,
+		onChange: (value) => {
+			game.aboutFace.combatOnly = value;
+			if (canvas === null) return;
+			const tokens = getAllTokens();
+			for (const token of tokens) {
+				game.aboutFace.drawAboutFaceIndicator(token);
+			}
+		},
+	});
+
 	game.settings.register(MODULE_ID, "hideIndicatorOnDead", {
 		name: "about-face.options.hideIndicatorOnDead.name",
 		hint: "about-face.options.hideIndicatorOnDead.hint",
