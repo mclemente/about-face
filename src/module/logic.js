@@ -153,7 +153,8 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	// store the direction in the token data
 
 	const { x, y, rotation } = updates;
-	const { x: tokenX, y: tokenY } = tokenDocument;
+	const { flags, texture, x: tokenX, y: tokenY } = tokenDocument;
+	const flipOrRotate = getTokenFlipOrRotate(tokenDocument);
 	let tokenDirection = rotation + 90;
 
 	if ((Number.isNumeric(x) || Number.isNumeric(y))) {
@@ -186,14 +187,14 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 				// return tokenDirection to the range 180 to -180
 				if (tokenDirection > 180) tokenDirection -= 360;
 			}
+			if (flipOrRotate === "rotate") {
+				updates.rotation = tokenDirection - 90 + (flags[MODULE_ID]?.rotationOffset ?? 0);
+			}
 		}
 		foundry.utils.setProperty(updates, `flags.${MODULE_ID}.prevPos`, prevPos);
 		position = { x: diffX, y: diffY };
 	}
 	foundry.utils.setProperty(updates, `flags.${MODULE_ID}.direction`, tokenDirection);
-
-	const { texture } = tokenDocument;
-	const flipOrRotate = getTokenFlipOrRotate(tokenDocument);
 
 	if (flipOrRotate !== "rotate") {
 		const [mirrorKey, mirrorVal] = getMirror(tokenDocument, position);
