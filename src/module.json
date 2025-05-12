@@ -10,6 +10,7 @@
 	],
 	"esmodules": ["module/about-face.js"],
 	"compatibility": {
+		"maximum": "12",
 		"minimum": "12",
 		"verified": "12"
 	},
