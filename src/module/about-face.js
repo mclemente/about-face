@@ -80,7 +80,7 @@ Hooks.once("init", () => {
 	registerSettings();
 	game.aboutFace = new AboutFace();
 
-	addTokenConfigTab(TokenConfig);
+	addTokenConfigTab(foundry.applications.sheets.TokenConfig);
 	addTokenConfigTab(foundry.applications.sheets.PrototypeTokenConfig, "actor");
 
 	if (game.settings.get(MODULE_ID, "indicator-state") === 1) {

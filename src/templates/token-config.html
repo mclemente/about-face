@@ -1,20 +1,21 @@
 <div class="tab {{#if tab.active}} active{{/if}}" data-group="sheet" data-tab="aboutFace">
 	<div class="form-group">
-		<label>{{localize "about-face.options.disable-indicator"}}</label>
-		<input type="checkbox" name="flags.about-face.indicatorDisabled" data-dtype="Boolean" {{checked indicatorDisabled}} />
+		<label for="{{rootId}}-indicatorDisabled">{{localize "about-face.options.disable-indicator"}}</label>
+		<input id="{{rootId}}-indicatorDisabled" type="checkbox" name="flags.about-face.indicatorDisabled" data-dtype="Boolean" {{checked indicatorDisabled}} />
 	</div>
 	<div class="form-group">
-		<label>{{localize "about-face.options.flip-or-rotate.name"}}</label>
+		<label for="{{rootId}}-flipOrRotate">{{localize "about-face.options.flip-or-rotate.name"}}</label>
 		<div class="form-fields">
-			<select name="flags.about-face.flipOrRotate" data-dtype="String">
+			<select id="{{rootId}}-flipOrRotate" name="flags.about-face.flipOrRotate" data-dtype="String">
 				{{ selectOptions flipOrRotates selected=flipOrRotate localize=true }}
 			</select>
 		</div>
 	</div>
 	<div class="form-group">
-		<label>{{localize "about-face.options.facing-direction.name"}}</label>
+		<label for="{{rootId}}-facingDirection">{{localize "about-face.options.facing-direction.name"}}</label>
 		<div class="form-fields">
 			<select
+				id="{{rootId}}-facingDirection"
 				name="flags.about-face.facingDirection"
 				class="token-config-select-facing-direction"
 				data-dtype="String"
@@ -24,10 +25,11 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<label>{{localize "about-face.tokenConfig.rotationOffset.name"}}</label>
+		<label for="{{rootId}}-rotationOffset">{{localize "about-face.tokenConfig.rotationOffset.name"}}</label>
 		<div class="form-fields">
 			<input
 				type="number"
+				id="{{rootId}}-rotationOffset"
 				name="flags.about-face.rotationOffset"
 				data-dtype="Number"
 				value="{{rotationOffset}}"
