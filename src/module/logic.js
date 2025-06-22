@@ -150,8 +150,8 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	}
 
 	if (
-		tokenDocument.x === updates.x
-		&& tokenDocument.y === updates.y
+		tokenDocument.x === (updates.x ?? tokenDocument.x)
+		&& tokenDocument.y === (updates.y ?? tokenDocument.y)
 		&& (
 			!("rotation" in updates)
 			|| tokenDocument.rotation === updates.rotation
@@ -164,9 +164,9 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	// store the direction in the token data
 
 	const { x, y, rotation } = updates;
-	const { flags, texture, x: tokenX, y: tokenY } = tokenDocument;
+	const { flags, texture, x: tokenX, y: tokenY, rotation: tokenRotation } = tokenDocument;
 	const flipOrRotate = getTokenFlipOrRotate(tokenDocument);
-	let tokenDirection = rotation + 90;
+	let tokenDirection = (rotation ?? tokenRotation) + 90;
 
 	if ((Number.isNumeric(x) || Number.isNumeric(y))) {
 		// get previous and new positions
