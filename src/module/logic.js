@@ -24,15 +24,15 @@ export class AboutFace {
 	}
 
 	drawAboutFaceIndicator(token) {
-		const deadIcon = CONFIG.statusEffects.find((x) => x.id === "dead")?.icon;
-		const isDead = token.actor?.effects.some((el) => el.statuses.has("dead") || el.img === deadIcon);
+		const { DEFEATED } = CONFIG.specialStatusEffects;
+		const isDefeated = token.actor?.effects.some((el) => el.statuses.has(DEFEATED));
 		if (this.combatOnly && !this.combatRunning) {
 			if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) {
 				token.aboutFaceIndicator.graphics.visible = false;
 			}
 			return;
 		}
-		if (this.hideIndicatorOnDead && isDead) {
+		if (this.hideIndicatorOnDead && isDefeated) {
 			if (token.aboutFaceIndicator && !token.aboutFaceIndicator?._destroyed) {
 				token.aboutFaceIndicator.graphics.visible = false;
 			}
@@ -120,8 +120,8 @@ export class AboutFace {
 
 export function onPreCreateToken(tokenDocument, data, options, userId) {
 	const updates = { flags: { [MODULE_ID]: {} } };
-	const facingDirection =
-		tokenDocument.flags?.[MODULE_ID]?.facingDirection ?? game.settings.get(MODULE_ID, "facing-direction");
+	let facingDirection = tokenDocument.flags[MODULE_ID]?.facingDirection;
+	if (facingDirection === "global") facingDirection = game.settings.get(MODULE_ID, "facing-direction");
 	if (facingDirection) {
 		const flipMode = game.settings.get(MODULE_ID, "flip-or-rotate");
 		const gridType = getGridType();
