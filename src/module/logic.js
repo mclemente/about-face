@@ -149,16 +149,10 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 		return;
 	}
 
-	if (
-		tokenDocument.x === (updates.x ?? tokenDocument.x)
-		&& tokenDocument.y === (updates.y ?? tokenDocument.y)
-		&& (
-			!("rotation" in updates)
-			|| tokenDocument.rotation === updates.rotation
-		)
-	) {
-		return;
-	}
+	const hasChanges = updates.x !== undefined && updates.y !== undefined;
+	const noPositionChanges = !hasChanges || (tokenDocument.x === updates.x && tokenDocument.y === updates.y);
+	const noRotation = !("rotation" in updates) || tokenDocument.rotation === updates.rotation;
+	if (noPositionChanges && noRotation) return;
 
 	let position = {};
 	// store the direction in the token data
