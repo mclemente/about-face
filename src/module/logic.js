@@ -151,7 +151,7 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 
 	const hasChanges = updates.x !== undefined && updates.y !== undefined;
 	const noPositionChanges = !hasChanges || (tokenDocument.x === updates.x && tokenDocument.y === updates.y);
-	const noRotation = !("rotation" in updates) || tokenDocument.rotation === updates.rotation;
+	const noRotation = updates.rotation === undefined || tokenDocument.rotation === updates.rotation;
 	if (noPositionChanges && noRotation) return;
 
 	let position = {};
