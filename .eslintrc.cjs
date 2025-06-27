@@ -174,7 +174,6 @@ module.exports = {
 	},
 
 	globals: {
-		ClientKeybindings: false,
 		PIXI: false,
 		libWrapper: false
 	},

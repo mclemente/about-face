@@ -247,11 +247,13 @@ function getMirror(tokenDocument, position = {}) {
 		let dx = 0;
 		let dy = 0;
 
+		const { LEFT, RIGHT, UP, DOWN } = foundry.helpers.interaction.ClientKeybindings.MOVEMENT_DIRECTIONS;
+
 		// Assign movement offsets
-		if (directions.has(ClientKeybindings.MOVEMENT_DIRECTIONS.LEFT)) dx -= 1;
-		else if (directions.has(ClientKeybindings.MOVEMENT_DIRECTIONS.RIGHT)) dx += 1;
-		if (directions.has(ClientKeybindings.MOVEMENT_DIRECTIONS.UP)) dy -= 1;
-		else if (directions.has(ClientKeybindings.MOVEMENT_DIRECTIONS.DOWN)) dy += 1;
+		if (directions.has(LEFT)) dx -= 1;
+		else if (directions.has(RIGHT)) dx += 1;
+		if (directions.has(UP)) dy -= 1;
+		else if (directions.has(DOWN)) dy += 1;
 
 		position = { x: dx, y: dy };
 	}
