@@ -195,6 +195,8 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 			if (flipOrRotate === "rotate") {
 				updates.rotation = tokenDirection - 90 + (flags[MODULE_ID]?.rotationOffset ?? 0);
 			}
+		} else if (rotation === undefined) {
+			tokenDirection = (Math.atan2(diffY, diffX) * 180) / Math.PI;
 		}
 		foundry.utils.setProperty(updates, `flags.${MODULE_ID}.prevPos`, prevPos);
 		position = { x: diffX, y: diffY };
