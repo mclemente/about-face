@@ -74,11 +74,11 @@
 				}
 			},
 			"flip-or-rotate": {
-				"name": "Espelhar ou rotacionar o token",
+				"name": "Espelhamento do Token",
 				"hint": "Espelha o token em vez de rotacioná-lo.",
 				"choices": {
 					"global": "Global",
-					"rotate": "Rotacionar",
+					"rotate": "Não Espelhar",
 					"flip-h": "Espelhar Horizontalmente",
 					"flip-v": "Espelhar Verticalmente"
 				}
