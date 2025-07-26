@@ -17,36 +17,7 @@ import {
 } from "./settings.js";
 
 function addTokenConfigTab(cls, document = "document") {
-	// We need to make sure the About Face tab renders before the footer
 	cls.TABS.sheet.tabs.push({ id: "aboutFace", label: "About Face", icon: "fas fa-caret-down fa-fw" });
-	const footerPart = cls.PARTS.footer;
-	delete cls.PARTS.footer;
-	cls.PARTS.aboutFace = {
-		template: "modules/about-face/templates/token-config.html"
-	};
-	cls.PARTS.footer = footerPart;
-
-	cls.prototype._prepareAboutfaceTab = async function (partId, context, options) {
-		const flipOrRotateSetting = game.settings.get(MODULE_ID, "flip-or-rotate");
-		return {
-			indicatorDisabled: this[document].getFlag(MODULE_ID, "indicatorDisabled"),
-			flipOrRotate: this[document].getFlag(MODULE_ID, "flipOrRotate") || "global",
-			facingDirection: this[document].getFlag(MODULE_ID, "facingDirection") || "global",
-			rotationOffset: this[document].getFlag(MODULE_ID, "rotationOffset") || 0,
-			flipOrRotates: {
-				global: `${game.i18n.localize("about-face.options.flip-or-rotate.choices.global")} (${game.i18n.localize(
-					`about-face.options.flip-or-rotate.choices.${flipOrRotateSetting}`
-				)})`,
-				...game.settings.settings.get("about-face.flip-or-rotate").type.choices,
-			},
-			facingDirections: {
-				global: `${game.i18n.localize("about-face.options.flip-or-rotate.choices.global")} (${game.i18n.localize(
-					`about-face.options.facing-direction.choices.${game.settings.get(MODULE_ID, "facing-direction")}`
-				)})`,
-				...facingOptions[flipOrRotateSetting],
-			}
-		};
-	};
 
 	libWrapper.register("about-face", `foundry.applications.sheets.${cls.name}.prototype._onChangeForm`, function (wrapped, formConfig, event) {
 		wrapped(formConfig, event);
@@ -66,6 +37,34 @@ function addTokenConfigTab(cls, document = "document") {
 			replaceSelectChoices(facingDirection, choices);
 		}
 	});
+}
+
+async function renderTokenConfigHandler(form, data, options, docPath = "document") {
+	if (!options.isFirstRender) return;
+	const flipOrRotateSetting = game.settings.get(MODULE_ID, "flip-or-rotate");
+	const flags = data[docPath].flags?.[MODULE_ID] ?? {};
+	const tabData = {
+		tab: data.tabs.aboutFace,
+		indicatorDisabled: flags.indicatorDisabled,
+		flipOrRotate: flags.flipOrRotate || "global",
+		facingDirection: flags.facingDirection || "global",
+		rotationOffset: flags.rotationOffset || 0,
+		flipOrRotates: {
+			global: `${game.i18n.localize("about-face.options.flip-or-rotate.choices.global")} (${game.i18n.localize(
+				`about-face.options.flip-or-rotate.choices.${flipOrRotateSetting}`
+			)})`,
+			...game.settings.settings.get("about-face.flip-or-rotate").type.choices,
+		},
+		facingDirections: {
+			global: `${game.i18n.localize("about-face.options.flip-or-rotate.choices.global")} (${game.i18n.localize(
+				`about-face.options.facing-direction.choices.${game.settings.get(MODULE_ID, "facing-direction")}`
+			)})`,
+			...facingOptions[flipOrRotateSetting],
+		}
+	};
+	const tab = await foundry.applications.handlebars.renderTemplate("modules/about-face/templates/token-config.html", tabData);
+	const lastTab = [...form.querySelectorAll(".tab")].pop();
+	lastTab.insertAdjacentHTML("afterend", tab);
 }
 
 function updateCombat(combat, updateData) {
@@ -113,3 +112,5 @@ Hooks.on("refreshToken", (token, options) => {
 	if (options.redrawEffects) game.aboutFace.drawAboutFaceIndicator(token);
 });
 Hooks.on("renderSettingsConfig", renderSettingsConfigHandler);
+Hooks.on("renderPrototypeTokenConfig", (_app, form, data, options) => renderTokenConfigHandler(form, data, options, "source"));
+Hooks.on("renderTokenConfig", (_app, form, data, options) => renderTokenConfigHandler(form, data, options));
