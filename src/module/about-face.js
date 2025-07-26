@@ -16,7 +16,7 @@ import {
 	tokenHover,
 } from "./settings.js";
 
-function addTokenConfigTab(cls, document = "document") {
+function addTokenConfigTab(cls) {
 	cls.TABS.sheet.tabs.push({ id: "aboutFace", label: "About Face", icon: "fas fa-caret-down fa-fw" });
 
 	libWrapper.register("about-face", `foundry.applications.sheets.${cls.name}.prototype._onChangeForm`, function (wrapped, formConfig, event) {
