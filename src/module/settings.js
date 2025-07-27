@@ -54,7 +54,7 @@ export function registerSettings() {
 		config: true,
 		type: new foundry.data.fields.ColorField({ nullable: false, initial: "#000000" }),
 		onChange: (value) => {
-			game.aboutFace.indicatorColor = value;
+			game.aboutFace.indicatorColor = value.css;
 			if (canvas === null) return;
 			const tokens = getAllTokens();
 			for (const token of tokens) {
