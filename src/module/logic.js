@@ -38,6 +38,7 @@ export class AboutFace {
 			}
 			return;
 		}
+		if (token.document.isSecret) return;
 		try {
 			// get the rotation of the token
 			let tokenDirection = token.document.flags[MODULE_ID]?.direction
