@@ -217,6 +217,18 @@ export function registerSettings() {
 		type: Boolean,
 	});
 
+	game.settings.register(MODULE_ID, "fasterAnimations", {
+		name: "about-face.options.fasterAnimations.name",
+		hint: "about-face.options.fasterAnimations.hint",
+		scope: "world",
+		config: true,
+		default: true,
+		type: Boolean,
+		onChange: (value) => {
+			game.aboutFace.fasterAnimations = value;
+		},
+	});
+
 	game.settings.register(MODULE_ID, "flip-or-rotate", {
 		name: "about-face.options.flip-or-rotate.name",
 		hint: "about-face.options.flip-or-rotate.hint",

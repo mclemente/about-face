@@ -9,6 +9,9 @@ export class AboutFace {
 		this.indicatorDrawingType = game.settings.get("about-face", "indicatorDrawingType");
 		this.indicatorSize = game.settings.get("about-face", "sprite-type");
 		this._tokenRotation = false;
+		this.fasterAnimations = game.settings.get("about-face", "fasterAnimations");
+		this.pendingFlips = new Map();
+		this.flipTimeout = null;
 	}
 
 	get tokenRotation() {
@@ -115,6 +118,59 @@ export class AboutFace {
 			);
 		}
 	}
+
+	// ------------------------------------------------------------
+	// Delayed flip handling for multiple tokens
+	// ------------------------------------------------------------
+	async applyDelayedFlip(tokenDocument, mirrorKey, mirrorVal, duration) {
+		const tokenId = tokenDocument.id;
+		const now = Date.now();
+		this.pendingFlips.set(tokenId, {
+			mirrorKey,
+			mirrorVal,
+			timestamp: now,
+			tokenDocument,
+			duration
+		});
+		if (this.flipTimeout) {
+			clearTimeout(this.flipTimeout);
+		}
+		this.flipTimeout = setTimeout(() => {
+			this.applyPendingFlips();
+		}, 50);
+	}
+
+	async applyPendingFlips() {
+		const now = Date.now();
+		for (const [tokenId, flipData] of this.pendingFlips.entries()) {
+			if (now - flipData.timestamp > 500) {
+				this.pendingFlips.delete(tokenId);
+				continue;
+			}
+			const tokenDocument = flipData.tokenDocument;
+			const token = tokenDocument?.object;
+			if (!token || !token.visible) {
+				this.pendingFlips.delete(tokenId);
+				continue;
+			}
+			try {
+				const source = tokenDocument.toObject();
+				const updates = {};
+				updates[`texture.${flipData.mirrorKey}`] = source.texture[flipData.mirrorKey] * -1;
+				await tokenDocument.update(updates, {
+					animate: flipData.duration > 0,
+					animation: {
+						duration: flipData.duration,
+						linkToMovement: false
+					}
+				});
+			} catch(error) {
+				console.error(`About Face | Error applying flip for token ${tokenId}:`, error);
+			}
+			this.pendingFlips.delete(tokenId);
+		}
+		this.flipTimeout = null;
+	}
 }
 
 // HOOKS
@@ -210,6 +266,32 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 		if ((texture[mirrorKey] < 0 && !mirrorVal) || (texture[mirrorKey] > 0 && mirrorVal)) {
 			const source = tokenDocument.toObject();
 			updates[`texture.${mirrorKey}`] = source.texture[mirrorKey] * -1;
+		}
+
+		if (game.aboutFace.fasterAnimations) {
+			const distance = Math.hypot(position.x, position.y);
+			const action = tokenDocument.movementAction || "walk";
+			const actionConfig = CONFIG.Token.movement?.actions?.[action];
+			if (actionConfig?.teleport) return 0;
+
+			const { speedMultiplier = 1 } = tokenDocument;
+			const { movementSpeed } = actionConfig.getAnimationOptions(tokenDocument);
+
+			const gridSize = canvas.grid.size || 100;
+			const speedPxPerSec = movementSpeed * gridSize * speedMultiplier;
+
+			const duration = Math.clamp((distance / speedPxPerSec) * 1000, 125, 500);
+
+			if (canvas.tokens?.controlled?.length) {
+				delete updates[`texture.${mirrorKey}`];
+				game.aboutFace.applyDelayedFlip(tokenDocument, mirrorKey, mirrorVal, duration);
+			} else if (duration > 0) {
+				options.animation ||= {};
+				options.animation.duration = duration;
+				options.animation.linkToMovement = false;
+			} else {
+				options.animate = false;
+			}
 		}
 	}
 }

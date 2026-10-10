@@ -19,6 +19,10 @@
 				"name": "Indicator Distance",
 				"hint": "Set the multiplier for the indicator's distance. Math: Largest Size × (Multiplier / 2)."
 			},
+			"fasterAnimations": {
+				"name": "Speed Up Animations on Movement",
+				"hint": "Speeds up mirroring animations whenever the token is moved."
+			},
 			"combatOnly": {
 				"name": "Hide Indicator While Out Of Combat",
 				"hint": "Hides the indicator when no combat is active."
