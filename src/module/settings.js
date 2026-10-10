@@ -74,8 +74,8 @@ export function registerSettings() {
 		default: 1.4,
 		type: Number,
 		range: {
-			min: 1.0,
-			max: 1.4,
+			min: 0.5,
+			max: 1.5,
 			step: 0.05,
 		},
 		onChange: (value) => {
