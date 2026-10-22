@@ -275,14 +275,16 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 			if (actionConfig?.teleport) return 0;
 
 			const { speedMultiplier = 1 } = tokenDocument;
-			const { movementSpeed } = actionConfig.getAnimationOptions(tokenDocument);
+			const {
+				movementSpeed = CONFIG.Token.movement.defaultSpeed
+			} = actionConfig.getAnimationOptions(tokenDocument);
 
 			const gridSize = canvas.grid.size || 100;
 			const speedPxPerSec = movementSpeed * gridSize * speedMultiplier;
 
 			const duration = Math.clamp((distance / speedPxPerSec) * 1000, 125, 500);
 
-			if (canvas.tokens?.controlled?.length) {
+			if (canvas.tokens?.controlled?.length > 1) {
 				delete updates[`texture.${mirrorKey}`];
 				game.aboutFace.applyDelayedFlip(tokenDocument, mirrorKey, mirrorVal, duration);
 			} else if (duration > 0) {
