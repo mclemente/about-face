@@ -79,6 +79,10 @@
 			"indicator-sprite": {
 				"name": "Indicator Size",
 				"hint": "Change the indicator icon's size."
+			},
+			"tokenScale": {
+				"name": "Scale Indicator With Token's Scale",
+				"hint": "The indicator's size will scale with the token's Scale."
 			}
 		}
 	}

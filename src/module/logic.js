@@ -10,6 +10,7 @@ export class AboutFace {
 		this.indicatorSize = game.settings.get("about-face", "sprite-type");
 		this._tokenRotation = false;
 		this.fasterAnimations = game.settings.get("about-face", "fasterAnimations");
+		this.tokenScale = game.settings.get("about-face", "tokenScale");
 		this.pendingFlips = new Map();
 		this.flipTimeout = null;
 	}
@@ -54,7 +55,9 @@ export class AboutFace {
 
 			// Calculate indicator's scale
 			const tokenSize = Math.max(token.document.width, token.document.height);
-			const tokenScale = Math.abs(token.document.texture.scaleX) + Math.abs(token.document.texture.scaleY);
+			const tokenScale = this.tokenScale
+				? Math.abs(token.document.texture.scaleX) + Math.abs(token.document.texture.scaleY)
+				: 1;
 			const indicatorSize = this.indicatorSize || 1;
 			const scale = ((tokenSize * tokenScale) / 2) * indicatorSize;
 

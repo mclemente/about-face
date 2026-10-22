@@ -110,6 +110,23 @@ export function registerSettings() {
 		},
 	});
 
+	game.settings.register(MODULE_ID, "tokenScale", {
+		name: "about-face.options.tokenScale.name",
+		hint: "about-face.options.tokenScale.hint",
+		scope: "world",
+		config: true,
+		default: false,
+		type: Boolean,
+		onChange: (value) => {
+			game.aboutFace.tokenScale = value;
+			if (canvas === null) return;
+			const tokens = getAllTokens();
+			for (const token of tokens) {
+				game.aboutFace.drawAboutFaceIndicator(token);
+			}
+		},
+	});
+
 	game.settings.register(MODULE_ID, "indicator-state", {
 		name: "about-face.options.enable-indicator.name",
 		hint: "about-face.options.enable-indicator.hint",
