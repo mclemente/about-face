@@ -125,6 +125,14 @@
 			"facing": "En face",
 			"combatOnly": {
 				"hint": "Cache l'indicateur lorsqu'aucun combat n'est actif."
+			},
+			"tokenScale": {
+				"hint": "La taille de l'indicateur s'adaptera à l'échelle du jeton.",
+				"name": "Ajuster l'échelle de l'indicateur à celle du jeton."
+			},
+			"fasterAnimations": {
+				"hint": "Accélère les animations miroir lorsque le jeton est déplacé.",
+				"name": "Accélérer les animations pendant les mouvements."
 			}
 		},
 		"tokenConfig": {
