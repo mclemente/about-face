@@ -126,6 +126,14 @@
 			"combatOnly": {
 				"name": "Esconder Indicador Fora do Combate",
 				"hint": "Esconde o indicador quando não há um combate ativo."
+			},
+			"tokenScale": {
+				"hint": "O tamanho do indicador vai escalar com o tamanho do token.",
+				"name": "Escalar Indicador com o Tamanho do Token"
+			},
+			"fasterAnimations": {
+				"name": "Acelerar Animações Durante o Movimento",
+				"hint": "Acelera animações espelhadas sempre que o token é movido."
 			}
 		},
 		"tokenConfig": {
